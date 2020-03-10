@@ -1,15 +1,32 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env ruby -W:no-experimental
 # frozen_string_literal: true
 
 require 'bundler/setup'
 require 'sober_swag'
+require 'dry-struct'
 
 # You can add fixtures and/or initialization code here to make experimenting
 # with your gem easier. You can also use a different console, if you like.
+module Types
+  include Dry.Types()
+end
+
+class Bio < Dry::Struct
+  attribute :name, Types::String
+end
+
+class Person < Dry::Struct
+  attribute :name, Types::String
+  attribute :age, Types::Integer.constrained(gt: 0).optional | Types::String.optional
+  attribute? :mood, Types::String
+  attribute :bio, Bio
+
+  attribute :foo do
+    attribute :bar, Types::String
+    attribute :baz, Types::String.optional
+  end
+end
 
 # (If you use this, don't forget to add pry to your Gemfile!)
-# require "pry"
-# Pry.start
-
-require 'irb'
-IRB.start(__FILE__)
+require "pry"
+Pry.start
