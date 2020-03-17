@@ -31,12 +31,9 @@ module SoberSwag
 
       attr_reader :type
 
-      def type_definition
+      def object_schema
         @type_definition ||=
-          begin
-            (parsed, _) = parsed_result
-            parsed.cata(&method(:rewrite_sums)).cata(&method(:flatten_one_ofs)).cata(&method(:to_json_api))
-          end
+          normalize(parsed_type).cata(&method(:to_object_schema))
       end
 
       def ref_name
@@ -48,6 +45,14 @@ module SoberSwag
           begin
             (_, found_types) = parsed_result
             found_types
+          end
+      end
+
+      def parsed_type
+        @parsed_type ||=
+          begin
+            (parsed, _)  = parsed_result
+            parsed
           end
       end
 
@@ -65,16 +70,20 @@ module SoberSwag
 
       private
 
+      def normalize(object)
+        object.cata { |e| rewrite_sums(e) }.cata { |e| flatten_one_ofs(e) }
+      end
+
       def rewrite_sums(object)
         case object
-          in Nodes::Sum[Nodes::OneOf[*lhs], Nodes::OneOf[*rhs]]
-          Nodes::OneOf.new(lhs + rhs)
-          in Nodes::Sum[Nodes::OneOf[*args], rhs]
-          Nodes::OneOf.new(args + [rhs])
-          in Nodes::Sum[lhs, Nodes::OneOf[*args]]
-          Nodes::OneOf.new([lhs] + args)
-          in Nodes::Sum[lhs, rhs]
-          Nodes::OneOf.new([lhs, rhs])
+        in Nodes::Sum[Nodes::OneOf[*lhs], Nodes::OneOf[*rhs]]
+        Nodes::OneOf.new(lhs + rhs)
+        in Nodes::Sum[Nodes::OneOf[*args], rhs]
+        Nodes::OneOf.new(args + [rhs])
+        in Nodes::Sum[lhs, Nodes::OneOf[*args]]
+        Nodes::OneOf.new([lhs] + args)
+        in Nodes::Sum[lhs, rhs]
+        Nodes::OneOf.new([lhs, rhs])
         else
           object
         end
@@ -89,25 +98,25 @@ module SoberSwag
         end
       end
 
-      def to_json_api(object)
+      def to_object_schema(object)
         case object
-          in Nodes::OneOf[*cases] if cases.include?(type: 'null')
-          { oneOf: cases - [{type: 'null'}], nullable: true }
-          in Nodes::OneOf[*cases]
-          { oneOf: cases }
-          in Nodes::Object[*attrs]
-          { type: :object, properties: attrs.to_h }
-          in Nodes::Attribute[name, true, value]
-          [name, value.merge(required: true)]
-          in Nodes::Attribute[name, false, value]
-          [name, value]
-          # can't match on value directly as ruby uses `===` to match,
-          # and classes use `===` to mean `is an instance of`, as
-          # opposed to direct equality lmao
-          in Nodes::Primitive[value:] if self.class.primitive?(value)
-          { type: self.class.primitive_name(value) }
-          in Nodes::Primitive[value:]
-          { '$ref': self.class.get_ref(value) }
+        in Nodes::OneOf[*cases] if cases.include?(type: 'null')
+        { oneOf: cases - [{type: 'null'}], nullable: true }
+        in Nodes::OneOf[*cases]
+        { oneOf: cases }
+        in Nodes::Object[*attrs]
+        { type: :object, properties: attrs.to_h }
+        in Nodes::Attribute[name, true, value]
+        [name, value.merge(required: true)]
+        in Nodes::Attribute[name, false, value]
+        [name, value]
+        # can't match on value directly as ruby uses `===` to match,
+        # and classes use `===` to mean `is an instance of`, as
+        # opposed to direct equality lmao
+        in Nodes::Primitive[value:] if self.class.primitive?(value)
+        { type: self.class.primitive_name(value) }
+        in Nodes::Primitive[value:]
+        { '$ref': self.class.get_ref(value) }
         end
       end
 

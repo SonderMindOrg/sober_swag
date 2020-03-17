@@ -8,12 +8,12 @@ module SoberSwag
       @types = Set.new
     end
 
-    def type_schema
+    def object_schemas
       @types.map { |v| [v.ref_name, v.type_definition] }.to_h
     end
 
-    def typedef_for(type)
-      @types.find { |type_comp| type_comp.type == type }&.type_definition
+    def schema_for(type)
+      @types.find { |type_comp| type_comp.type == type }&.object_schema
     end
 
     def add_type(type)

@@ -15,7 +15,7 @@ RSpec.describe 'compilation integration round-tripping' do
   end
 
   def compile_def(klass)
-    SoberSwag::Compiler.new.add_type(klass).typedef_for(klass)
+    SoberSwag::Compiler.new.add_type(klass).schema_for(klass)
   end
 
   context 'with a basic as hell case' do
