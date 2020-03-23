@@ -27,6 +27,11 @@ class Person < Dry::Struct
   end
 end
 
+class PersonSearch < Dry::Struct
+  attribute? :name, Types::String
+  attribute? :age, Types::Integer
+end
+
 
 # (If you use this, don't forget to add pry to your Gemfile!)
 require "pry"

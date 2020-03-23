@@ -24,6 +24,10 @@ module SoberSwag
         end
       end
 
+      class TooComplicatedError < ::SoberSwag::Compiler::Error; end
+      class TooComplicatedForPathError < TooComplicatedError; end
+      class TooComplicatedForQueryError < TooComplicatedError; end
+
       def initialize(type)
         raise ArgumentError, 'is not a dry struct' unless type.ancestors.include?(Dry::Struct)
         @type = type
@@ -34,6 +38,18 @@ module SoberSwag
       def object_schema
         @type_definition ||=
           normalize(parsed_type).cata(&method(:to_object_schema))
+      end
+
+      def path_schema
+        path_schema_stub.map { |e| e.merge(in: :path) }
+      rescue TooComplicatedError => e
+        raise TooComplicatedForPathError, e.message
+      end
+
+      def query_schema
+        path_schema_stub.map { |e| e.merge(in: :query_schema) }
+      rescue TooComplicatedErrror => e
+        raise TooComplicatedForQueryError, e.message
       end
 
       def ref_name
@@ -118,6 +134,25 @@ module SoberSwag
         in Nodes::Primitive[value:]
         { '$ref': self.class.get_ref(value) }
         end
+      end
+
+      def path_schema_stub
+        @path_schema_stub ||=
+          object_schema[:properties].map do |k, v|
+            ensure_uncomplicated(k, v)
+            {
+              name: k,
+              schema: v.reject { |k, _| %i[required nullable].include?(k) },
+              allowEmptyValue: !v[:required] || v[:nullable]
+            }
+          end
+      end
+
+      def ensure_uncomplicated(key, value)
+        return if value[:type]
+        raise TooComplicatedError, <<~ERROR
+          Property #{key} has object-schema #{value}, but this type of param should be simple (IE a primitive of some kind)
+        ERROR
       end
 
     end
