@@ -19,8 +19,10 @@ module SoberSwag
 
         def primitive_name(value)
           return 'null' if value == NilClass
-          return 'number' if value == Integer
+          return 'integer' if value == Integer
+          return 'number' if value == Float
           return 'string' if value == String
+          return 'boolean' if [TrueClass, FalseClass].include?(value)
         end
       end
 
@@ -116,8 +118,12 @@ module SoberSwag
 
       def to_object_schema(object)
         case object
-        in Nodes::OneOf[*cases] if cases.include?(type: 'null')
-        { oneOf: cases - [{type: 'null'}], nullable: true }
+        in Nodes::OneOf[{ type: 'null' }, b]
+        b.merge(nullable: true)
+        in Nodes::OneOf[a, { type: 'null' }]
+        a.merge(nullable: true)
+        in Nodes::OneOf[*attrs] if attrs.include?(type: 'null')
+        { oneOf: attrs.reject { |e| e[:type] == 'null' }, nullable: true }
         in Nodes::OneOf[*cases]
         { oneOf: cases }
         in Nodes::Object[*attrs]
@@ -143,7 +149,7 @@ module SoberSwag
             {
               name: k,
               schema: v.reject { |k, _| %i[required nullable].include?(k) },
-              allowEmptyValue: !v[:required] || v[:nullable]
+              allowEmptyValue: !v[:required] || !!v[:nullable]
             }
           end
       end

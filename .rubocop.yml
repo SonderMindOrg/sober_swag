@@ -4,3 +4,4 @@ Style/BlockDelimiters:
   EnforcedStyle: braces_for_chaining
 AllCops:
   TargetRubyVersion: 2.7.0
+require: rubocop-rspec

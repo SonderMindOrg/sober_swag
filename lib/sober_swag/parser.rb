@@ -18,15 +18,29 @@ module SoberSwag
           bind(Parser.new(@node.type))
         )
       when Dry::Types::Sum
-        Nodes::Sum.new(bind(Parser.new(@node.left)), bind(Parser.new(@node.right)))
+        left = bind(Parser.new(@node.left))
+        right = bind(Parser.new(@node.right))
+        # special case booleans to just return the left value
+        # this is because modeling a boolean as a sum type of
+        # TrueClass and FalseClass is kinda weird, because they're
+        # considered different types instead of different constructors,
+        # which we don't want to do
+        is_bool = [left, right].all? do |e|
+          e.respond_to?(:value) && [TrueClass, FalseClass].include?(e.value)
+        end
+        if is_bool
+          left
+        else
+          Nodes::Sum.new(left, right)
+        end
       when Dry::Types::Constrained
         bind(Parser.new(@node.type))
       when Dry::Types::Nominal
         # start off with the moral equivalent of NodeTree[String]
         Nodes::Primitive.new(@node.primitive)
       else
-        # Inside of this case we have a class that is some user-defined type sorta deal.
-        # We put it in our array of found types, and consider it a primitive type
+        # Inside of this case we have a class that is some user-defined type
+        # We put it in our array of found types, and consider it a primitive
         @found.add(@node)
         Nodes::Primitive.new(@node)
       end

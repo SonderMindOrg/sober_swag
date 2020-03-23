@@ -54,7 +54,7 @@ RSpec.describe 'compilation integration round-tripping' do
     result(
       properties: {
         foo: {
-          oneOf: [{ type: 'string' }, { type: 'number' }],
+          oneOf: [{ type: 'string' }, { type: 'integer' }],
           required: true
         }
       },
