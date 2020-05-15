@@ -11,23 +11,50 @@ module SoberSwag
         assign_action_module!
       end
 
-      attr_reader :controller, :method, :path, :action_name, :body_class
+      attr_reader :controller
+      attr_reader :method
+      attr_reader :path
+      attr_reader :action_name
+      ##
+      # What to parse the request body in to.
+      attr_reader :body_class
+      ##
+      # What to parse the request query in to
+      attr_reader :query_class
 
-      def body(&block)
-        @body_class = make_struct!(&block)
+      ##
+      # What to parse the path params into
+      attr_reader :path_params_class
+
+      ##
+      # Define the request body, using SoberSwag's type-definition scheme.
+      # The block passed will be used to define the body of a new sublcass of `base` (defaulted to {Dry::Struct}.)
+      # If you want, you can also define utility methods in here
+      def body(base = Dry::Struct, &block)
+        @body_class = make_struct!(base, &block)
         action_module.const_set('Body', @body_class)
       end
 
-      def query(&block)
-        @query_class = make_struct!(&block)
+      ##
+      # Define the shape of the query parameters, using SoberSwag's type-definition scheme.
+      # The block passed is the body of the newly-defined type.
+      # You can also include a base type.
+      def query(base = Dry::Struct, &block)
+        @query_class = make_struct!(base, &block)
         action_module.const_set('Query', @query_class)
       end
 
-      def path_params(&block)
-        @path_params_class = make_struct!(&block)
+      ##
+      # Define the shape of the *path* parameters, using SoberSwag's type-definition scheme.
+      # The block passed will be the body of a new subclass of `base` (defaulted to {Dry::Struct}).
+      # Names of this should match the names in the path template originally passed to {SoberSwag::Controller#define}
+      def path_params(base = Dry::Struct, &block)
+        @path_params_class = make_struct!(base, &block)
         action_module.const_set('PathParams', @path_params_class)
       end
 
+      ##
+      # Define the body of the action method in the controller.
       def action(&body)
         return @action if body.nil?
 
@@ -40,8 +67,8 @@ module SoberSwag
         @controller.send(:const_set, action_name.to_s.classify, action_module)
       end
 
-      def make_struct!(&block)
-        Class.new(Dry::Struct, &block).tap { |e| e.transform_keys(&:to_sym) }
+      def make_struct!(base, &block)
+        Class.new(base, &block).tap { |e| e.transform_keys(&:to_sym) if base == Dry::Struct }
       end
 
       def action_module
