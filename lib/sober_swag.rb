@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-require 'sober_swag/version'
 require 'dry-types'
 require 'dry-struct'
+require 'sober_swag/types'
+require 'sober_swag/version'
 
 ##
 # Root namespace
@@ -13,5 +14,4 @@ module SoberSwag
   autoload :Nodes, 'sober_swag/nodes'
   autoload :Compiler, 'sober_swag/compiler'
   autoload :Controller, 'sober_swag/controller'
-  autoload :Types, 'sober_swag/types'
 end
