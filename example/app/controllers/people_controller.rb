@@ -2,14 +2,18 @@ class PeopleController < SoberSwag::Controller
 
   before_action :load_person, only: %i[show update]
 
-  class PostCreateParams < Dry::Struct
+  class PersonBodyParams < Dry::Struct
     attribute :first_name, SoberSwag::Types::String
     attribute :last_name, SoberSwag::Types::String
     attribute? :date_of_birth, SoberSwag::Types::Params::DateTime.optional
   end
 
+  class PersonParams < Dry::Struct
+    attribute :person, PersonBodyParams
+  end
+
   define :post, :create, '/people/' do
-    body(PostCreateParams) {}
+    body(PersonParams)
 
     action do
       p = Person.create!(parsed_body.to_h)
@@ -18,7 +22,7 @@ class PeopleController < SoberSwag::Controller
   end
 
   define :patch, :update, '/people/{id}' do
-    body(PostCreateParams)
+    body(PersonParams)
     path_params { attribute :id, Types::Params::Integer }
     action do
       if @person.update(parsed_body.to_h)

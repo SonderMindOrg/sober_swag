@@ -1,6 +1,8 @@
 module SoberSwag
   ##
-  # Compiler for an entire API
+  # Compiler for an entire API.
+  #
+  # This compiler has a *lot* of state as we need to get
   class Compiler
     autoload(:Type, 'sober_swag/compiler/type')
     autoload(:Error, 'sober_swag/compiler/error')

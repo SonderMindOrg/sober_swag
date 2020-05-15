@@ -10,7 +10,7 @@ module SoberSwag
         end
 
         def safe_name(klass)
-          klass.to_s.gsub('::', '_')
+          klass.to_s.gsub('::', '.')
         end
 
         def primitive?(value)
