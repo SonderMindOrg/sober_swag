@@ -12,7 +12,7 @@ module SoberSwag
     end
 
     def object_schemas
-      @types.map { |v| [v.ref_name, v.type_definition] }.to_h
+      @types.map { |v| [v.ref_name, v.object_schema] }.to_h
     end
 
     ##
