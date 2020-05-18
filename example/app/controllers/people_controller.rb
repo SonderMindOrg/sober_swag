@@ -12,21 +12,30 @@ class PeopleController < SoberSwag::Controller
     attribute :person, PersonBodyParams
   end
 
+  PersonSerializer = SoberSwag::Blueprint.define do
+    field :id, primitive(:Integer)
+    field :first_name, primitive(:String)
+    field :last_name, primitive(:String)
+  end
+
   define :post, :create, '/people/' do
     body(PersonParams)
 
     action do
       p = Person.create!(parsed_body.to_h)
-      redirect_to p
+      respond!(:ok, p)
     end
+
+    response(:ok, 'the person created', PersonSerializer)
   end
 
   define :patch, :update, '/people/{id}' do
     body(PersonParams)
     path_params { attribute :id, Types::Params::Integer }
+    response(:ok, 'the person updated', PersonSerializer)
     action do
       if @person.update(parsed_body.to_h)
-        render json: @person
+        respond!(:ok, @person)
       else
         render json: @person.errors, status: :unprocessable_entity
       end
@@ -39,11 +48,13 @@ class PeopleController < SoberSwag::Controller
       attribute? :last_name, Types::String
     end
 
+    response(:ok, 'all the people', PersonSerializer.new.array)
+
     action do
       @people = Person.all
       @people = @people.where('first_name ILIKE ?', "%#{parsed_query.first_name}%") if parsed_query.first_name
       @people = @people.where('last_name ILIKE ?', "%#{parsed_query.last_name}%") if parsed_query.last_name
-      render json: @people
+      respond!(:ok, @people)
     end
   end
 
@@ -52,8 +63,10 @@ class PeopleController < SoberSwag::Controller
       attribute :id, Types::Params::Integer
     end
 
+    response(:ok, 'the person requested', PersonSerializer.new)
+
     action do
-      render json: @person
+      respond!(:ok, @person)
     end
   end
 

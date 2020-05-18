@@ -14,10 +14,9 @@ module SoberSwag
   class Error < StandardError; end
 
   autoload :Parser, 'sober_swag/parser'
+  autoload :Serializer, 'sober_swag/serializer'
+  autoload :Blueprint, 'sober_swag/blueprint'
   autoload :Nodes, 'sober_swag/nodes'
   autoload :Compiler, 'sober_swag/compiler'
   autoload :Controller, 'sober_swag/controller'
-  autoload :Serializer, 'sober_swag/serializer'
-  autoload :Blueprint, 'sober_swag/blueprint'
 end
-

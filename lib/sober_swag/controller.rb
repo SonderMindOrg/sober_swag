@@ -1,7 +1,6 @@
 module SoberSwag
   class Controller < ActionController::API
 
-    autoload :Route, 'sober_swag/controller/route'
     autoload :UndefinedBodyError, 'sober_swag/controller/undefined_body_error'
     autoload :UndefinedPathError, 'sober_swag/controller/undefined_path_error'
     autoload :UndefinedQueryError, 'sober_swag/controller/undefined_query_error'
@@ -85,7 +84,7 @@ module SoberSwag
 
     def respond!(status, entity)
       r = current_action_def
-      serializer = r.response_serializers[Rack::Util.status_code(status)]
+      serializer = r.response_serializers[Rack::Utils.status_code(status)]
       serializer ||= serializer.new if serializer.respond_to?(:new)
       render json: serializer.serialize(entity)
     end
@@ -109,3 +108,5 @@ module SoberSwag
 
   end
 end
+
+require 'sober_swag/controller/route'

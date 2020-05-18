@@ -98,6 +98,14 @@ module SoberSwag
 
     private
 
+    def referenced_type(type)
+      case type
+      when Dry::Types::Constrained
+        referenced_type(type.type)
+      when Dry::Types::Array::Member
+      end
+    end
+
     def with_types_discovered(type)
       Type.new(type).tap do |type_compiler|
         type_compiler.found_types.each { |ft| add_type(ft) }

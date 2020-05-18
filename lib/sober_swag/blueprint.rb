@@ -1,3 +1,5 @@
+require 'sober_swag/serializer'
+
 module SoberSwag
   ##
   # Create a serializer that is heavily inspired by the "Blueprinter" library.

@@ -1,3 +1,5 @@
+require 'sober_swag/blueprint'
+
 module SoberSwag
   class Controller
     class Route
@@ -104,7 +106,7 @@ module SoberSwag
       # You may either give a serializer you defined elsewhere, or define one inline as if passed to
       # {SoberSwag::Blueprint.define}
       def response(status_code, description, serializer = nil, &block)
-        status_key = Rack::Util.status_code(status_code)
+        status_key = Rack::Utils.status_code(status_code)
 
         raise ArgumentError, 'Response defiend!' if @response_serializers.key?(status_key)
 

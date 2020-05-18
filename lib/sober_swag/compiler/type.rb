@@ -41,14 +41,13 @@ module SoberSwag
       class TooComplicatedForQueryError < TooComplicatedError; end
 
       def initialize(type)
-        raise ArgumentError, 'is not a dry struct' unless type.ancestors.include?(Dry::Struct)
         @type = type
       end
 
       attr_reader :type
 
       def object_schema
-        @type_definition ||=
+        @object_schema ||=
           normalize(parsed_type).cata(&method(:to_object_schema))
       end
 
@@ -60,7 +59,7 @@ module SoberSwag
 
       def query_schema
         path_schema_stub.map { |e| e.merge(in: :query) }
-      rescue TooComplicatedErrror => e
+      rescue TooComplicatedError => e
         raise TooComplicatedForQueryError, e.message
       end
 
@@ -85,7 +84,7 @@ module SoberSwag
       end
 
       def parsed_result
-        @parsed_result ||= Parser.new(type.schema.type).run_parser
+        @parsed_result ||= Parser.new(type_for_parser).run_parser
       end
 
       def eql?(other)
@@ -97,6 +96,15 @@ module SoberSwag
       end
 
       private
+
+      def type_for_parser
+        if type.is_a?(Class)
+          type.schema.type
+        else
+          # Probably a constrained array
+          type
+        end
+      end
 
       def normalize(object)
         object.cata { |e| rewrite_sums(e) }.cata { |e| flatten_one_ofs(e) }
@@ -159,6 +167,8 @@ module SoberSwag
         self.class.primitive_def(value)
         in Nodes::Primitive[value:]
         { '$ref': self.class.get_ref(value) }
+        else
+          raise ArgumentError, "Got confusing node #{object} (#{object.class})"
         end
       end
 
