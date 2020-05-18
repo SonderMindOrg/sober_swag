@@ -23,16 +23,14 @@ module SoberSwag
 
       attr_reader :chooser, :left, :right
 
-      def extraction
-        @extractor ||= Proc.new do |object, options = {}|
-          tag, val = chooser.call(object, options)
-          if tag == :left
-            left.serialize(val, options)
-          elsif tag == :right
-            right.serialize(val, options)
-          else
-            raise BadChoiceError, "result of chooser proc was not a left or right, but a #{val.class}"
-          end
+      def serialize(object, options = {})
+        tag, val = chooser.call(object, options)
+        if tag == :left
+          left.serialize(val, options)
+        elsif tag == :right
+          right.serialize(val, options)
+        else
+          raise BadChoiceError, "result of chooser proc was not a left or right, but a #{val.class}"
         end
       end
 

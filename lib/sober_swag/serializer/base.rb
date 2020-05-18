@@ -3,42 +3,15 @@ module SoberSwag
     class Base
 
       ##
-      # Fundamentally, a serialize is a type definition, and a proc to extract a value of that type.
-      def initialize(type, extraction)
-        @type = type
-        @extraction = extraction
-      end
-
-      attr_reader :type, :extraction
-
-      ##
-      # Actually serialize out an object, with the given options.
-      def serialize(object, options = {})
-        extraction.call(object, options)
-      end
-
-      ##
       # Return a new serializer that is an *array* of elements of this serializer.
       def array
-        SoberSwag::Serializer::Base.new(
-          SoberSwag::Types::Array.of(type),
-          proc { |array, opts = {}| array.map { |a| serialize(a, opts) } }
-        )
+        SoberSwag::Serializer::Array.new(self)
       end
 
       ##
       # Returns a serializer that will pass `nil` values on unscathed
       def optional
-        SoberSwag::Serializer::Base.new(
-          type.optional,
-          proc do |object, opts = {}|
-            if object.nil?
-              object
-            else
-              serialize(object, opts)
-            end
-          end
-        )
+        SoberSwag::Serializer::Optional.new(self)
       end
 
       ##
@@ -50,10 +23,7 @@ module SoberSwag
       # Note that the *declared* type of this is *not* changed: from a user's perspective,
       # they see a "string"
       def via_map(&block)
-        SoberSwag::Serializer::Base.new(
-          type,
-          proc { |object, opts = {}| extraction.call(block.call(object), opts) }
-        )
+        SoberSwag::Serializer::Mapped.new(self, block)
       end
 
     end
