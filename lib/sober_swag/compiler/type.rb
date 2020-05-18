@@ -49,7 +49,7 @@ module SoberSwag
       end
 
       def query_schema
-        path_schema_stub.map { |e| e.merge(in: :query_schema) }
+        path_schema_stub.map { |e| e.merge(in: :query) }
       rescue TooComplicatedErrror => e
         raise TooComplicatedForQueryError, e.message
       end
