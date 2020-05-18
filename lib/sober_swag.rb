@@ -17,4 +17,5 @@ module SoberSwag
   autoload :Nodes, 'sober_swag/nodes'
   autoload :Compiler, 'sober_swag/compiler'
   autoload :Controller, 'sober_swag/controller'
+  autoload :Serializer, 'sober_swag/serializer'
 end
