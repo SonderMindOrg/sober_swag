@@ -3,6 +3,7 @@ module SoberSwag
     autoload(:Base, 'sober_swag/serializer/base')
     autoload(:Primitive, 'sober_swag/serializer/primitive')
     autoload(:Conditional, 'sober_swag/serializer/conditional')
+    autoload(:FieldList, 'sober_swag/serializer/field_list')
 
     class << self
       ##

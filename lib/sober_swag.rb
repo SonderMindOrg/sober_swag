@@ -18,4 +18,5 @@ module SoberSwag
   autoload :Compiler, 'sober_swag/compiler'
   autoload :Controller, 'sober_swag/controller'
   autoload :Serializer, 'sober_swag/serializer'
+  autoload :Blueprint, 'sober_swag/blueprint'
 end

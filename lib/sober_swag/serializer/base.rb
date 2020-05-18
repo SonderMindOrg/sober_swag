@@ -22,7 +22,7 @@ module SoberSwag
       def array
         SoberSwag::Serializer::Base.new(
           SoberSwag::Types::Array.of(type),
-          proc { |array, opts = {}| array.map { |a| extraction.call(a, opts) } }
+          proc { |array, opts = {}| array.map { |a| serialize(a, opts) } }
         )
       end
 
@@ -35,7 +35,7 @@ module SoberSwag
             if object.nil?
               object
             else
-              extraction.call(object, opts)
+              serialize(object, opts)
             end
           end
         )
