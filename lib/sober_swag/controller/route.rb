@@ -6,8 +6,12 @@ module SoberSwag
         @method = method
         @path = path
         @action_name = action_name
+        @response_serializers = {}
+        @response_descriptions = {}
       end
 
+      attr_reader :response_serializers
+      attr_reader :response_descriptions
       attr_reader :controller
       attr_reader :method
       attr_reader :path
@@ -96,12 +100,31 @@ module SoberSwag
       end
 
       ##
-      # The
+      # Define a serializer for a response with the given status code.
+      # You may either give a serializer you defined elsewhere, or define one inline as if passed to
+      # {SoberSwag::Blueprint.define}
+      def response(status_code, description, serializer = nil, &block)
+        status_key = Rack::Util.status_code(status_code)
+
+        raise ArgumentError, 'Response defiend!' if @response_serializers.key?(status_key)
+
+        serializer ||= SoberSwag::Blueprint.define(&block)
+        response_module.const_set(status_code.to_s.classify, serializer)
+        @response_serializers[status_key] = serializer
+        @response_descriptions[status_key] = serializer
+      end
+
+      ##
+      # What you should call the module of this action in your controller
       def action_module_name
         action_name.to_s.classify
       end
 
       private
+
+      def response_module
+        @response_module ||= Module.new.tap { |m| action_module.const_set(:Response, m) }
+      end
 
       def make_struct!(base, &block)
         Class.new(base, &block).tap { |e| e.transform_keys(&:to_sym) if base == Dry::Struct }

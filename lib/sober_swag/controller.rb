@@ -83,6 +83,13 @@ module SoberSwag
         end
     end
 
+    def respond!(status, entity)
+      r = current_action_def
+      serializer = r.response_serializers[Rack::Util.status_code(status)]
+      serializer ||= serializer.new if serializer.respond_to?(:new)
+      render json: serializer.serialize(entity)
+    end
+
     ##
     # Obtain a parameters hash of *only* those parameters which come in the hash.
     # These will be *unsafe* in the sense that they will all be allowed.

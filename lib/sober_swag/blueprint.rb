@@ -66,11 +66,13 @@ module SoberSwag
           base
         )
       end
-      klass.send(:define_method, :initialize) {}
       klass.send(:define_method, :serialize) do |object, options = {}|
         final_serializer.serialize(object, options)
       end
       klass.send(:define_method, :type) do
+        final_serializer.type
+      end
+      klass.send(:define_singleton_method, :type) do
         final_serializer.type
       end
       klass

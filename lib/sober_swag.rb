@@ -20,3 +20,4 @@ module SoberSwag
   autoload :Serializer, 'sober_swag/serializer'
   autoload :Blueprint, 'sober_swag/blueprint'
 end
+

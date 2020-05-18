@@ -19,8 +19,27 @@ module SoberSwag
         base[:summary] = route.summary if route.summary
         base[:description] = route.description if route.description
         base[:parameters] = params if params.any?
+        base[:responses] = responses
         base[:requestBody] = request_body if request_body
         base
+      end
+
+      def responses
+        route.response_serializers.map { |status, serializer|
+          [
+            status.to_s,
+            {
+              description: route.response_descriptions[status],
+              content: {
+                'application/json': {
+                  schema: compiler.response_for(
+                    serializer.respond_to?(:new) ? serializer.new.type : serializer.type
+                  )
+                }
+              }
+            }
+          ]
+        }.to_h
       end
 
       def params

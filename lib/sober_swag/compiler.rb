@@ -65,6 +65,12 @@ module SoberSwag
     end
 
     ##
+    # Get the definition of a response type
+    def response_for(type)
+      body_for(type)
+    end
+
+    ##
     # Get the existing schema for a given type
     def schema_for(type)
       @types.find { |type_comp| type_comp.type == type }&.object_schema
