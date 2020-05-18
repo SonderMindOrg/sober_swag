@@ -14,7 +14,17 @@ module SoberSwag
         end
 
         def primitive?(value)
-          primitive_name(value) != nil
+          primitive_def(value) != nil
+        end
+
+        def primitive_def(value)
+          if (name = primitive_name(value))
+            { type: name }
+          elsif value == Date
+            { type: 'string', format: 'date' }
+          elsif [Time, DateTime].any?(&value.ancestors.method(:include?))
+            { type: 'string', format: 'date-time' }
+          end
         end
 
         def primitive_name(value)
@@ -127,7 +137,17 @@ module SoberSwag
         in Nodes::OneOf[*cases]
         { oneOf: cases }
         in Nodes::Object[*attrs]
-        { type: :object, properties: attrs.to_h }
+        # openAPI requires that you give a list of required attributes
+        # (which IMO is the *totally* wrong thing to do but whatever)
+        # so we must do this garbage
+        required = attrs.filter {|(_, b)| b[:required] }.map(&:first)
+        {
+          type: :object,
+          properties: attrs.map { |(a,b)|
+            [a, b.select { |k, _| k != :required }]
+          }.to_h,
+          required: required
+        }
         in Nodes::Attribute[name, true, value]
         [name, value.merge(required: true)]
         in Nodes::Attribute[name, false, value]
@@ -136,7 +156,7 @@ module SoberSwag
         # and classes use `===` to mean `is an instance of`, as
         # opposed to direct equality lmao
         in Nodes::Primitive[value:] if self.class.primitive?(value)
-        { type: self.class.primitive_name(value) }
+        self.class.primitive_def(value)
         in Nodes::Primitive[value:]
         { '$ref': self.class.get_ref(value) }
         end
@@ -149,7 +169,8 @@ module SoberSwag
             {
               name: k,
               schema: v.reject { |k, _| %i[required nullable].include?(k) },
-              allowEmptyValue: !v[:required] || !!v[:nullable]
+              allowEmptyValue: !object_schema[:required].include?(k) || !!v[:nullable], # if it's required, no empties, but if *nullabe*, empties are okay
+              required: object_schema[:required].include?(k) || false,
             }
           end
       end

@@ -19,7 +19,7 @@ RSpec.describe SoberSwag::Compiler::Type do
     compiling do
       attribute? :foo, Types::String
       attribute? :bar, Types::Integer
-      attribute :baz, Types::Bool.optional
+      attribute :baz, Types::Bool.optional # optional bool, allows empty value
       attribute :mike, Types::Bool
     end
 
