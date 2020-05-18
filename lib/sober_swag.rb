@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
-require 'dry-types'
+require 'bundler'
+Bundler.setup
 require 'dry-struct'
+require 'dry-types'
+require 'action_controller'
 require 'sober_swag/types'
 require 'sober_swag/version'
 

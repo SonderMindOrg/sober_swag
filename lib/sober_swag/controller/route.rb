@@ -33,6 +33,12 @@ module SoberSwag
       end
 
       ##
+      # Does this route have a body defined?
+      def body?
+        !body_class.nil?
+      end
+
+      ##
       # Define the shape of the query parameters, using SoberSwag's type-definition scheme.
       # The block passed is the body of the newly-defined type.
       # You can also include a base type.
@@ -42,12 +48,24 @@ module SoberSwag
       end
 
       ##
+      # Does this route have query params defined?
+      def query?
+        !query_class.nil?
+      end
+
+      ##
       # Define the shape of the *path* parameters, using SoberSwag's type-definition scheme.
       # The block passed will be the body of a new subclass of `base` (defaulted to {Dry::Struct}).
-      # Names of this should match the names in the path template originally passed to {SoberSwag::Controller#define}
+      # Names of this should match the names in the path template originally passed to {SoberSwag::Controller::Route.new}
       def path_params(base = Dry::Struct, &block)
         @path_params_class = make_struct!(base, &block)
         action_module.const_set('PathParams', @path_params_class)
+      end
+
+      ##
+      # Does this route have path params defined?
+      def path_params?
+        !path_params_class.nil?
       end
 
       ##
