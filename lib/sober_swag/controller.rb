@@ -27,9 +27,13 @@ module SoberSwag
       #         render json: @post
       #       end
       #     end
+      #
+      # This will define an "aciton module" on this class to contain the generated types.
+      # So, in the same controller, you can refer to Show::PathParams to get the type created by the 'path_params' block above.
       def define(method, action, path, &block)
-        r = Route.new(self, method, action, path)
+        r = Route.new(method, action, path)
         r.instance_eval(&block)
+        const_set(r.action_module_name, r.action_module)
         defined_routes << r
         define_method(action, r.action)
       end
