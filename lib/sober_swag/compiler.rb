@@ -6,13 +6,40 @@ module SoberSwag
   class Compiler
     autoload(:Type, 'sober_swag/compiler/type')
     autoload(:Error, 'sober_swag/compiler/error')
+    autoload(:Path, 'sober_swag/compiler/path')
+    autoload(:Paths, 'sober_swag/compiler/paths')
 
     def initialize
       @types = Set.new
+      @paths = Paths.new
+    end
+
+    ##
+    # Convert a compiler to the overall type definition.
+    def to_swagger
+      {
+        paths: path_schemas,
+        components: {
+          schemas: object_schemas
+        }
+      }
+    end
+
+    ##
+    # Add a path to be compiled.
+    # @param route [SoberSwag::Controller::Route] the route to add.
+    def add_route(route)
+      tap { @paths.add_route(route) }
     end
 
     def object_schemas
       @types.map { |v| [v.ref_name, v.object_schema] }.to_h
+    end
+
+    ##
+    # The path section of the swagger schema.
+    def path_schemas
+      @paths.paths_list(self)
     end
 
     ##
@@ -27,6 +54,14 @@ module SoberSwag
     # All found types will be added to the reference dictionary.
     def query_params_for(type)
       with_types_discovered(type).query_schema
+    end
+
+    ##
+    # Get the request body definition for a type.
+    # This will always be a ref.
+    def body_for(type)
+      add_type(type)
+      { :$ref => Type.get_ref(type) }
     end
 
     ##

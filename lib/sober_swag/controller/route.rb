@@ -61,6 +61,18 @@ module SoberSwag
         @action ||= body
       end
 
+      def description(desc = nil)
+        return @description if desc.nil?
+
+        @description = desc
+      end
+
+      def summary(sum = nil)
+        return @summary if sum.nil?
+
+        @summary = sum
+      end
+
       private
 
       def assign_action_module!
