@@ -113,7 +113,7 @@ module SoberSwag
         serializer ||= SoberSwag::Blueprint.define(&block)
         response_module.const_set(status_code.to_s.classify, serializer)
         @response_serializers[status_key] = serializer
-        @response_descriptions[status_key] = serializer
+        @response_descriptions[status_key] = description
       end
 
       ##
