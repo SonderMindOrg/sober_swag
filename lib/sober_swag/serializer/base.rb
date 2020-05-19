@@ -26,6 +26,13 @@ module SoberSwag
         SoberSwag::Serializer::Mapped.new(self, block)
       end
 
+      ##
+      # Serializer lets you get a serializer from things that might be classes
+      # because of the blueprint naming hack.
+      def serializer
+        self
+      end
+
     end
   end
 end

@@ -102,6 +102,10 @@ module SoberSwag
       klass.send(:define_singleton_method, :type) do
         final_serializer.type
       end
+      klass.send(:define_singleton_method, :serializer) do
+        klass.new
+      end
+
       klass
     end
 
