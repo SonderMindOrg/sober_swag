@@ -48,6 +48,26 @@ module SoberSwag
       def find_route(name)
         defined_routes.find { |r| r.action_name.to_s == name.to_s }
       end
+
+      def swagger_info
+        @swagger_info ||=
+          begin
+            res = defined_routes.reduce(SoberSwag::Compiler.new) { |c, r| c.add_route(r) }
+            {
+              openapi: '3.0.0',
+              info: {
+                version: '1',
+                title: self.name
+              }
+            }.merge(res.to_swagger)
+          end
+      end
+    end
+
+    ##
+    # Action to get the singular swagger for this entire API.
+    def swagger
+      render json: self.class.swagger_info
     end
 
     ##
