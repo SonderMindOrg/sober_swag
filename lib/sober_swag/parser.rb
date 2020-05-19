@@ -7,6 +7,8 @@ module SoberSwag
 
     def to_syntax
       case @node
+      when Dry::Types::Array::Member
+        Nodes::List.new(bind(Parser.new(@node.member)))
       when Dry::Types::Schema
         Nodes::Object.new(
           @node.map { |attr| bind(Parser.new(attr)) }

@@ -13,5 +13,6 @@ module SoberSwag
     autoload :Object, 'sober_swag/nodes/object'
     autoload :Attribute, 'sober_swag/nodes/attribute'
     autoload :OneOf, 'sober_swag/nodes/one_of'
+    autoload :List, 'sober_swag/nodes/list'
   end
 end

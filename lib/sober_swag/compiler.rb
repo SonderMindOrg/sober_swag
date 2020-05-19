@@ -61,7 +61,7 @@ module SoberSwag
     # This will always be a ref.
     def body_for(type)
       add_type(type)
-      { :$ref => Type.get_ref(type) }
+      Type.new(type).schema_stub
     end
 
     ##
@@ -88,7 +88,7 @@ module SoberSwag
         # Do nothing if we already have a type
         return self if @types.include?(type_compiler)
 
-        @types.add(type_compiler)
+        @types.add(type_compiler) if type_compiler.standalone?
 
         type_compiler.found_types.each do |ft|
           add_type(ft)
@@ -97,14 +97,6 @@ module SoberSwag
     end
 
     private
-
-    def referenced_type(type)
-      case type
-      when Dry::Types::Constrained
-        referenced_type(type.type)
-      when Dry::Types::Array::Member
-      end
-    end
 
     def with_types_discovered(type)
       Type.new(type).tap do |type_compiler|

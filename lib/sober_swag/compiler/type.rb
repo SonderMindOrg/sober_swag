@@ -18,6 +18,8 @@ module SoberSwag
         end
 
         def primitive_def(value)
+          return nil unless value.is_a?(Class)
+
           if (name = primitive_name(value))
             { type: name }
           elsif value == Date
@@ -46,9 +48,20 @@ module SoberSwag
 
       attr_reader :type
 
+      ##
+      # Is this type standalone, IE, worth serializing on its own
+      # in the schemas section of our schema?
+      def standalone?
+        type.is_a?(Class)
+      end
+
       def object_schema
         @object_schema ||=
           normalize(parsed_type).cata(&method(:to_object_schema))
+      end
+
+      def schema_stub
+        @schema_stub ||= generate_schema_stub
       end
 
       def path_schema
@@ -97,6 +110,21 @@ module SoberSwag
 
       private
 
+      def generate_schema_stub
+        return self.class.primitive_def(type) if self.class.primitive?(type)
+
+        case type
+        when Class
+          { :$ref => self.class.get_ref(type) }
+        when Dry::Types::Constrained
+          self.class.new(type.type).schema_stub
+        when Dry::Types::Array::Member
+          { type: :array, items: self.class.new(type.member).schema_stub }
+        else
+          raise ArgumentError, "Cannot generate a schema stub for #{type} (#{type.class})"
+        end
+      end
+
       def type_for_parser
         if type.is_a?(Class)
           type.schema.type
@@ -136,6 +164,11 @@ module SoberSwag
 
       def to_object_schema(object)
         case object
+        in Nodes::List[element]
+          {
+            type: :array,
+            items: element
+          }
         in Nodes::OneOf[{ type: 'null' }, b]
         b.merge(nullable: true)
         in Nodes::OneOf[a, { type: 'null' }]
