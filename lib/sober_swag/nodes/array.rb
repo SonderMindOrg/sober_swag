@@ -3,25 +3,9 @@ module SoberSwag
     ##
     # Base class for nodes that contain arrays of other nodes.
     # This is very different from an attribute representing a node which *is* an array of some element type!!
-    class Array
+    class Array < Base
       def initialize(elements)
         @elements = elements
-      end
-
-      include Comparable
-
-      def <=>(other)
-        return other.class.name <=> self.class.name unless other.class == self.class
-
-        @elements <=> other.elements
-      end
-
-      def eql?(other)
-        self == other
-      end
-
-      def hash
-        elements.hash
       end
 
       attr_reader :elements

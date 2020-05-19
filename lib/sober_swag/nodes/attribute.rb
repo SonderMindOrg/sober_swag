@@ -9,22 +9,6 @@ module SoberSwag
         @value = value
       end
 
-      include Comparable
-
-      def <=>(other)
-        return other.class.name <=> self.class.name unless other.class == self.class
-
-        deconstruct <=> other.deconstruct
-      end
-
-      def eql?(other)
-        self == other
-      end
-
-      def hash
-        deconstruct.hash
-      end
-
       def deconstruct
         [key, required, value]
       end

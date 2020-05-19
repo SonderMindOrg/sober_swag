@@ -11,6 +11,29 @@ module SoberSwag
     autoload(:FieldSyntax, 'sober_swag/blueprint/field_syntax')
     autoload(:View, 'sober_swag/blueprint/view')
 
+    ##
+    # Use a Blueprint to define a new serializer.
+    # It will be based on {SoberSwag::Serializer::Base}.
+    #
+    # An example is illustrative:
+    #
+    #     PersonSerializer = SoberSwag::Blueprint.define do
+    #       field :id, primitive(:Integer)
+    #       field :name, primtive(:String).optional
+    #
+    #       view :complex do
+    #         field :age, primitive(:Integer)
+    #         field :title, primitive(:String)
+    #       end
+    #     end
+    #
+    # Note: This currently will generate a new *class* that does serialization.
+    # However, this is only a hack to get rid of the weird naming issue when
+    # generating swagger from dry structs: their section of the schema area
+    # is defined by their *Ruby Class Name*. In the future, if we get rid of this,
+    # we might be able to keep this on the value-level, in which case {#define}
+    # can simply return an *instance* of SoberSwag::Serializer that does
+    # the correct thing, with the name you give it. This works for now, though.
     def self.define(&block)
       self.new.tap { |o|
         o.instance_eval(&block)
@@ -47,9 +70,11 @@ module SoberSwag
     private
 
     def make_serializer_class!
+      # Klass we'll use
       klass = Class.new(SoberSwag::Serializer::Base)
+      # The actual serialization logic is defined in a field list
       base_serializer = SoberSwag::Serializer::FieldList.new(fields)
-      # WhateverBlueprint::Base is now used as a ref
+      # WhateverBlueprint::Base is now used as the name for a ref
       klass.const_set(:Base, base_serializer.type)
       final_serializer = views.reduce(base_serializer) do |base, view|
         view_serializer = view.serializer

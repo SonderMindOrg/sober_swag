@@ -6,28 +6,12 @@ module SoberSwag
     # Unlike {SoberSwag::Nodes::Array}, this actually models arrays.
     # The other one is a node that *is* an array in terms of what it contains.
     # Kinda confusing, but oh well.
-    class List
+    class List < Base
       def initialize(element)
         @element = element
       end
 
-      include Comparable
-
       attr_reader :element
-
-      def <=>(other)
-        return self.class.name <=> other.class.name unless self.class == other.class
-
-        element <=> other.element
-      end
-
-      def eql?(other)
-        self == other
-      end
-
-      def hash
-        [self.class, element].hash
-      end
 
       def deconstruct
         [element]

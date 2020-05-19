@@ -1,16 +1,14 @@
 module SoberSwag
   module Nodes
     ##
-    # Extremely basic binary node base class!
+    # A
     #
     # It's cool I promise.
-    class Binary
+    class Binary < Base
       def initialize(lhs, rhs)
         @lhs = lhs
         @rhs = rhs
       end
-
-      include Comparable
 
       attr_reader :lhs, :rhs
       ##
@@ -21,20 +19,6 @@ module SoberSwag
           lhs.map(&block),
           rhs.map(&block)
         )
-      end
-
-      def <=>(other)
-        return self.class.name <=> other.class.name unless self.class == other.class
-
-        deconstruct <=> other.deconstruct
-      end
-
-      def eql?(other)
-        self == other
-      end
-
-      def hash
-        deconstruct.hash
       end
 
       def deconstruct

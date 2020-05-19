@@ -5,6 +5,7 @@ module SoberSwag
   # via a catamorphism, which I promise is not nearly as scary as it sounds.
   # Sort of.
   module Nodes
+    autoload :Base, 'sober_swag/nodes/base'
     autoload :Binary, 'sober_swag/nodes/binary'
     autoload :Primitive, 'sober_swag/nodes/primitive'
     autoload :NullablePrimitive, 'sober_swag/nodes/nullable_primitive'
