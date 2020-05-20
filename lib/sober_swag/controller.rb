@@ -1,5 +1,10 @@
+require 'active_support/concern'
+
 module SoberSwag
-  class Controller < ActionController::API
+  ##
+  # Controller concern
+  module Controller
+    extend ActiveSupport::Concern
 
     autoload :UndefinedBodyError, 'sober_swag/controller/undefined_body_error'
     autoload :UndefinedPathError, 'sober_swag/controller/undefined_path_error'
@@ -9,7 +14,7 @@ module SoberSwag
       include ::Dry::Types()
     end
 
-    class << self
+    class_methods do
       ##
       # Define a new action with the given HTTP method, action name, and path.
       # This will eventaully delegate to making an actual method on your controller,
@@ -37,7 +42,7 @@ module SoberSwag
         r.instance_eval(&block)
         const_set(r.action_module_name, r.action_module)
         defined_routes << r
-        define_method(action, r.action)
+        define_method(action, r.action) if r.action
       end
 
       ##
@@ -96,7 +101,7 @@ module SoberSwag
       @parsed_body ||=
         begin
           r = current_action_def
-          raise UndefinedBodyError unless r&.body_class
+          raise UndefinedBodyError unless r&.request_body_class
           r.request_body_class.new(body_params)
         end
     end
@@ -109,7 +114,7 @@ module SoberSwag
       @parsed_query ||=
         begin
           r = current_action_def
-          raise UndefinedQueryError unless r&.query_class
+          raise UndefinedQueryError unless r&.query_params_class
           r.query_params_class.new(request.query_parameters)
         end
     end

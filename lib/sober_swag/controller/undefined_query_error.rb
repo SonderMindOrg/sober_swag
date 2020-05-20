@@ -1,5 +1,5 @@
 module SoberSwag
-  class Controller
+  module Controller
     class UndefinedQueryError < Error
     end
   end
