@@ -2,26 +2,21 @@ class PeopleController < SoberSwag::Controller
 
   before_action :load_person, only: %i[show update]
 
-  unless defined?(PersonBodyParams)
-    class PersonBodyParams < Dry::Struct
-      attribute :first_name, SoberSwag::Types::String
-      attribute :last_name, SoberSwag::Types::String
-      attribute? :date_of_birth, SoberSwag::Types::Params::DateTime.optional
-    end
+
+  PersonBodyParams = SoberSwag.struct do
+    attribute :first_name, SoberSwag::Types::String
+    attribute :last_name, SoberSwag::Types::String
+    attribute? :date_of_birth, SoberSwag::Types::Params::DateTime.optional
   end
 
-  unless defined?(PersonParams)
-    class PersonParams < Dry::Struct
-      attribute :person, PersonBodyParams
-    end
+  PersonParams = SoberSwag.struct do
+    attribute :person, PersonBodyParams
   end
 
-  unless defined?(PersonSerializer)
-    PersonSerializer = SoberSwag::Blueprint.define do
-      field :id, primitive(:Integer)
-      field :first_name, primitive(:String)
-      field :last_name, primitive(:String)
-    end
+  PersonSerializer = SoberSwag::Blueprint.define do
+    field :id, primitive(:Integer)
+    field :first_name, primitive(:String)
+    field :last_name, primitive(:String)
   end
 
   define :post, :create, '/people/' do
