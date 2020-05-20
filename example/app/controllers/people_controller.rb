@@ -19,26 +19,26 @@ class PeopleController < SoberSwag::Controller
   end
 
   define :post, :create, '/people/' do
-    body(PersonParams)
-
-    action do
-      p = Person.create!(parsed_body.to_h)
-      respond!(:ok, p)
-    end
-
-    response(:ok, 'the person created', PersonSerializer)
+    request_body(PersonParams)
+    response(:ok, 'the persona created', PersonSerializer)
+  end
+  
+  def create
+    p = Person.create!(parsed_body.to_h)
+    respond!(:ok, p)
   end
 
   define :patch, :update, '/people/{id}' do
     body(PersonParams)
     path_params { attribute :id, Types::Params::Integer }
     response(:ok, 'the person updated', PersonSerializer)
-    action do
-      if @person.update(parsed_body.to_h)
-        respond!(:ok, @person)
-      else
-        render json: @person.errors, status: :unprocessable_entity
-      end
+  end
+  
+  def update
+    if @person.update(parsed_body.to_h)
+      respond!(:ok, @person)
+    else
+      render json: @person.errors, status: :unprocessable_entity
     end
   end
 
