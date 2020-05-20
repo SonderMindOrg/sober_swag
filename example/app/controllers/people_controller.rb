@@ -2,24 +2,30 @@ class PeopleController < SoberSwag::Controller
 
   before_action :load_person, only: %i[show update]
 
-  class PersonBodyParams < Dry::Struct
-    attribute :first_name, SoberSwag::Types::String
-    attribute :last_name, SoberSwag::Types::String
-    attribute? :date_of_birth, SoberSwag::Types::Params::DateTime.optional
+  unless defined?(PersonBodyParams)
+    class PersonBodyParams < Dry::Struct
+      attribute :first_name, SoberSwag::Types::String
+      attribute :last_name, SoberSwag::Types::String
+      attribute? :date_of_birth, SoberSwag::Types::Params::DateTime.optional
+    end
   end
 
-  class PersonParams < Dry::Struct
-    attribute :person, PersonBodyParams
+  unless defined?(PersonParams)
+    class PersonParams < Dry::Struct
+      attribute :person, PersonBodyParams
+    end
   end
 
-  PersonSerializer = SoberSwag::Blueprint.define do
-    field :id, primitive(:Integer)
-    field :first_name, primitive(:String)
-    field :last_name, primitive(:String)
+  unless defined?(PersonSerializer)
+    PersonSerializer = SoberSwag::Blueprint.define do
+      field :id, primitive(:Integer)
+      field :first_name, primitive(:String)
+      field :last_name, primitive(:String)
+    end
   end
 
   define :post, :create, '/people/' do
-    body(PersonParams)
+    request_body(PersonParams)
 
     action do
       p = Person.create!(parsed_body.to_h)
@@ -30,7 +36,7 @@ class PeopleController < SoberSwag::Controller
   end
 
   define :patch, :update, '/people/{id}' do
-    body(PersonParams)
+    request_body(PersonParams)
     path_params { attribute :id, Types::Params::Integer }
     response(:ok, 'the person updated', PersonSerializer)
     action do
@@ -43,7 +49,7 @@ class PeopleController < SoberSwag::Controller
   end
 
   define :get, :index, '/people/' do
-    query do
+    query_params do
       attribute? :first_name, Types::String
       attribute? :last_name, Types::String
     end
