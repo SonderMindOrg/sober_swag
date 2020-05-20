@@ -19,8 +19,8 @@ RSpec.describe SoberSwag::Controller::Route do
       it { should have_attributes(description: 'It shows a thing') }
       it { should have_attributes(action_module: be_a(Module)) }
       it { should have_attributes(action_module_name: 'Show') }
-      it { should_not be_query }
-      it { should_not be_body }
+      it { should_not be_query_params }
+      it { should_not be_request_body }
       it { should be_path_params }
     end
 

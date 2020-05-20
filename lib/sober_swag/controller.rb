@@ -27,7 +27,10 @@ module SoberSwag
       #       end
       #     end
       #
-      # This will define an "aciton module" on this class to contain the generated types.
+      # This will define an "action module" on this class to contain the generated types.
+      # In the above example, the following constants will be deifned on the controller:
+      #     PostsController::Show # the container module for everything in this action
+      #     PostsController::Show::PathParams # the dry-struct type for the path attribute.
       # So, in the same controller, you can refer to Show::PathParams to get the type created by the 'path_params' block above.
       def define(method, action, path, &block)
         r = Route.new(method, action, path)
@@ -49,6 +52,8 @@ module SoberSwag
         defined_routes.find { |r| r.action_name.to_s == name.to_s }
       end
 
+      ##
+      # A swagger definition for *this controller only*.
       def swagger_info
         @swagger_info ||=
           begin
@@ -72,8 +77,10 @@ module SoberSwag
 
     ##
     # Get the path parameters, parsed into the type you defined with {SoberSwag::Controller.define}
+    # @raise [UndefinedPathError] if there's no path params defined for this route
+    # @raise [Dry::Struct::Error] if we cannot convert the path params to the defined type.
     def parsed_path
-      @parsed_query ||=
+      @parsed_path ||=
         begin
           r = current_action_def
           raise UndefinedPathError unless r&.path_params_class
@@ -83,25 +90,35 @@ module SoberSwag
 
     ##
     # Get the request body, parsed into the type you defined with {SoberSwag::Controller.define}.
-    # If the request body cannot be parsed into that struct, this will throw an error.
+    # @raise [UndefinedBodyError] if there's no request body defined for this route
+    # @raise [Dry::Struct::Error] if we cannot convert the path params to the defined type.
     def parsed_body
       @parsed_body ||=
         begin
           r = current_action_def
           raise UndefinedBodyError unless r&.body_class
-          r.body_class.new(body_params)
+          r.request_body_class.new(body_params)
         end
     end
 
+    ##
+    # Get the query params, parsed into the type you defined with {SoberSwag::Controller.define}
+    # @raise [UndefinedQueryError] if there's no query params defined for this route
+    # @raise [Dry::Struct::Error] if we cannot convert the path params to the defined type.
     def parsed_query
-      @parsed_body ||=
+      @parsed_query ||=
         begin
           r = current_action_def
           raise UndefinedQueryError unless r&.query_class
-          r.query_class.new(request.query_parameters)
+          r.query_params_class.new(request.query_parameters)
         end
     end
 
+    ##
+    # Respond with the serialized type that you defined for this route.
+    # @todo figure out how to specify views and other options for the serializer here
+    # @param status [Symbol] the HTTP status symbol to use for the status code
+    # @param entity the thing to serialize
     def respond!(status, entity)
       r = current_action_def
       serializer = r.response_serializers[Rack::Utils.status_code(status)]
@@ -122,6 +139,9 @@ module SoberSwag
       bparams.permit(bparams.keys)
     end
 
+    ##
+    # Get the action-definition for the current action.
+    # Under the hood, delegates to the `:action` key of rails params.
     def current_action_def
       self.class.find_route(params[:action])
     end

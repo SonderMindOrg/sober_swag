@@ -19,4 +19,11 @@ module SoberSwag
   autoload :Nodes, 'sober_swag/nodes'
   autoload :Compiler, 'sober_swag/compiler'
   autoload :Controller, 'sober_swag/controller'
+
+  ##
+  # Define a struct of something.
+  # Useful to prevent weirdness from autoloading.
+  def self.struct(parent = Dry::Struct, &block)
+    Class.new(parent, &block)
+  end
 end

@@ -47,8 +47,8 @@ module SoberSwag
       end
 
       def query_params
-        if route.query_class
-          compiler.query_params_for(route.query_class)
+        if route.query_params_class
+          compiler.query_params_for(route.query_params_class)
         else
           []
         end
@@ -63,13 +63,13 @@ module SoberSwag
       end
 
       def request_body
-        return nil unless route.body_class
+        return nil unless route.request_body_class
 
         {
           required: true,
           content: {
             'application/json': {
-              schema: compiler.body_for(route.body_class)
+              schema: compiler.body_for(route.request_body_class)
             }
           }
         }

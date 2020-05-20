@@ -20,10 +20,10 @@ module SoberSwag
       attr_reader :action_name
       ##
       # What to parse the request body in to.
-      attr_reader :body_class
+      attr_reader :request_body_class
       ##
-      # What to parse the request query in to
-      attr_reader :query_class
+      # What to parse the request query_params in to
+      attr_reader :query_params_class
 
       ##
       # What to parse the path params into
@@ -33,30 +33,30 @@ module SoberSwag
       # Define the request body, using SoberSwag's type-definition scheme.
       # The block passed will be used to define the body of a new sublcass of `base` (defaulted to {Dry::Struct}.)
       # If you want, you can also define utility methods in here
-      def body(base = Dry::Struct, &block)
-        @body_class = make_struct!(base, &block)
-        action_module.const_set('Body', @body_class)
+      def request_body(base = Dry::Struct, &block)
+        @request_body_class = make_struct!(base, &block)
+        action_module.const_set('ResponseBody', @request_body_class)
       end
 
       ##
       # Does this route have a body defined?
-      def body?
-        !body_class.nil?
+      def request_body?
+        !request_body_class.nil?
       end
 
       ##
-      # Define the shape of the query parameters, using SoberSwag's type-definition scheme.
+      # Define the shape of the query_params parameters, using SoberSwag's type-definition scheme.
       # The block passed is the body of the newly-defined type.
       # You can also include a base type.
-      def query(base = Dry::Struct, &block)
-        @query_class = make_struct!(base, &block)
-        action_module.const_set('Query', @query_class)
+      def query_params(base = Dry::Struct, &block)
+        @query_params_class = make_struct!(base, &block)
+        action_module.const_set('QueryParams', @query_params_class)
       end
 
       ##
       # Does this route have query params defined?
-      def query?
-        !query_class.nil?
+      def query_params?
+        !query_params_class.nil?
       end
 
       ##
