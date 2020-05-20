@@ -1,4 +1,6 @@
-class PeopleController < SoberSwag::Controller
+class PeopleController < ApplicationController
+
+  include SoberSwag::Controller
 
   before_action :load_person, only: %i[show update]
 
@@ -21,25 +23,23 @@ class PeopleController < SoberSwag::Controller
 
   define :post, :create, '/people/' do
     request_body(PersonParams)
-
-    action do
-      p = Person.create!(parsed_body.to_h)
-      respond!(:ok, p)
-    end
-
     response(:ok, 'the person created', PersonSerializer)
+  end
+  def create
+    p = Person.create!(parsed_body.to_h)
+    respond!(:ok, p)
   end
 
   define :patch, :update, '/people/{id}' do
     request_body(PersonParams)
     path_params { attribute :id, Types::Params::Integer }
     response(:ok, 'the person updated', PersonSerializer)
-    action do
-      if @person.update(parsed_body.to_h)
-        respond!(:ok, @person)
-      else
-        render json: @person.errors, status: :unprocessable_entity
-      end
+  end
+  def update
+    if @person.update(parsed_body.to_h)
+      respond!(:ok, @person)
+    else
+      render json: @person.errors, status: :unprocessable_entity
     end
   end
 
@@ -48,27 +48,24 @@ class PeopleController < SoberSwag::Controller
       attribute? :first_name, Types::String
       attribute? :last_name, Types::String
     end
-
     response(:ok, 'all the people', PersonSerializer.new.array)
-
-    action do
-      @people = Person.all
-      @people = @people.where('first_name ILIKE ?', "%#{parsed_query.first_name}%") if parsed_query.first_name
-      @people = @people.where('last_name ILIKE ?', "%#{parsed_query.last_name}%") if parsed_query.last_name
-      respond!(:ok, @people)
-    end
   end
+
+  def index
+    @people = Person.all
+    @people = @people.where('first_name ILIKE ?', "%#{parsed_query.first_name}%") if parsed_query.first_name
+    @people = @people.where('last_name ILIKE ?', "%#{parsed_query.last_name}%") if parsed_query.last_name
+    respond!(:ok, @people)
+    end
 
   define :get, :show, '/people/{id}' do
     path_params do
       attribute :id, Types::Params::Integer
     end
-
     response(:ok, 'the person requested', PersonSerializer.new)
-
-    action do
-      respond!(:ok, @person)
-    end
+  end
+  def show
+    respond!(:ok, @person)
   end
 
   def load_person

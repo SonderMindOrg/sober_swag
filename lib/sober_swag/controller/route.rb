@@ -1,7 +1,7 @@
 require 'sober_swag/blueprint'
 
 module SoberSwag
-  class Controller
+  module Controller
     class Route
 
       def initialize(method, action_name, path)
