@@ -37,7 +37,7 @@ module SoberSwag
         r.instance_eval(&block)
         const_set(r.action_module_name, r.action_module)
         defined_routes << r
-        define_method(action, r.action)
+        define_method(action, r.action) if r.action
       end
 
       ##
