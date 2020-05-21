@@ -56,7 +56,7 @@ class PeopleController < ApplicationController
     @people = @people.where('first_name ILIKE ?', "%#{parsed_query.first_name}%") if parsed_query.first_name
     @people = @people.where('last_name ILIKE ?', "%#{parsed_query.last_name}%") if parsed_query.last_name
     respond!(:ok, @people)
-    end
+  end
 
   define :get, :show, '/people/{id}' do
     path_params do
