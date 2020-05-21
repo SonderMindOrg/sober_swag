@@ -4,9 +4,9 @@ require 'bundler'
 Bundler.setup
 require 'dry-struct'
 require 'dry-types'
-require 'action_controller'
 require 'sober_swag/types'
 require 'sober_swag/version'
+require 'active_support/inflector'
 
 ##
 # Root namespace

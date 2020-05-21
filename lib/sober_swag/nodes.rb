@@ -6,6 +6,7 @@ module SoberSwag
   # Sort of.
   module Nodes
     autoload :Base, 'sober_swag/nodes/base'
+    autoload :Enum, 'sober_swag/nodes/enum'
     autoload :Binary, 'sober_swag/nodes/binary'
     autoload :Primitive, 'sober_swag/nodes/primitive'
     autoload :NullablePrimitive, 'sober_swag/nodes/nullable_primitive'

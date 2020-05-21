@@ -9,6 +9,8 @@ module SoberSwag
       case @node
       when Dry::Types::Array::Member
         Nodes::List.new(bind(Parser.new(@node.member)))
+      when Dry::Types::Enum
+        Nodes::Enum.new(@node.values)
       when Dry::Types::Schema
         Nodes::Object.new(
           @node.map { |attr| bind(Parser.new(attr)) }

@@ -169,6 +169,11 @@ module SoberSwag
             type: :array,
             items: element
           }
+        in Nodes::Enum[values]
+          {
+            type: :string,
+            enum: values
+          }
         in Nodes::OneOf[{ type: 'null' }, b]
         b.merge(nullable: true)
         in Nodes::OneOf[a, { type: 'null' }]
