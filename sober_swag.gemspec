@@ -11,11 +11,11 @@ Gem::Specification.new do |spec|
   spec.email         = ['asuper@sondermind.com']
 
   spec.summary       = 'Generate swagger types from dry-types'
-  spec.description   = 'A cool thing'
-  spec.homepage      = 'https://www.example.com'
+  spec.description   = 'Parse data, don\'t write docs'
+  spec.homepage      = 'https://github.com/SonderMindOrg/sober_swag'
   spec.license       = 'MIT'
 
-  spec.metadata['allowed_push_host'] = "TODO: Set to 'http://mygemserver.com'"
+  spec.metadata['allowed_push_host'] = "https://rubygems.org"
 
   spec.metadata['homepage_uri'] = spec.homepage
 
