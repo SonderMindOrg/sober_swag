@@ -52,4 +52,28 @@ RSpec.describe SoberSwag::Compiler::Type do
       end
     end
   end
+
+  context 'with a class that has enums' do
+    compiling do
+      attribute :foo, Types::String.enum('foo', 'bar', 'baz')
+    end
+
+    it 'parses as path schema' do
+      expect { subject.path_schema }.to_not raise_error
+    end
+
+    it 'parses as query schema' do
+      expect { subject.query_schema }.to_not raise_error
+    end
+
+    it 'parses as object schema' do
+      expect { subject.object_schema }.to_not raise_error
+    end
+
+    describe 'as path schema' do
+      subject { compiler.path_schema }
+      it { should all(include(in: :path)) }
+      it { should include(include(schema: { type: :string, enum: %w[foo bar baz] })) }
+    end
+  end
 end
