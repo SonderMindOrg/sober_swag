@@ -18,7 +18,7 @@ module SoberSwag
       end
 
 
-      def serialize(object, options)
+      def serialize(object, options = {})
         field_list.map { |field|
           [field.name, field.serializer.serialize(object, options)]
         }.to_h
@@ -32,7 +32,9 @@ module SoberSwag
 
       def make_struct_type!
         f = field_list
-        Class.new(Dry::Struct) do
+        s = sober_name
+        Class.new(SoberSwag::Struct) do
+          sober_name(s)
           f.each do |field|
             attribute field.name, field.serializer.type
           end

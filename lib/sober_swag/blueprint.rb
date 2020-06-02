@@ -37,7 +37,7 @@ module SoberSwag
     def self.define(&block)
       self.new.tap { |o|
         o.instance_eval(&block)
-      }.serializer_class
+      }.serializer
     end
 
     def initialize(base_fields = [])
@@ -57,30 +57,18 @@ module SoberSwag
       @views << View.define(name, fields, &block)
     end
 
-    ##
-    # Instead of generating a new value-level construct,
-    # this will generate a new *class*. This is so that you can
-    # name this blueprint, and have the views named as sub-classes.
-    # This is important as the type compiler uses class names
-    # for generating refs.
-    def serializer_class
-      @serializer_class ||= make_serializer_class!
+    def sober_name(arg = nil)
+      @sober_name = arg if arg
+      @sober_name
     end
 
-    private
-
-    def make_serializer_class!
-      # Klass we'll use
-      klass = Class.new(SoberSwag::Serializer::Base)
-      # The actual serialization logic is defined in a field list
-      base_serializer = SoberSwag::Serializer::FieldList.new(fields)
-      # WhateverBlueprint::Base is now used as the name for a ref
-      klass.const_set(:Base, base_serializer.type)
-      final_serializer = views.reduce(base_serializer) do |base, view|
+    def serializer
+      base_serializer = SoberSwag::Serializer::FieldList.new(fields).tap do |s|
+        s.sober_name(sober_name)
+      end
+      views.reduce(base_serializer) do |base, view|
         view_serializer = view.serializer
-        # If we have a view :foo, its type is named
-        # WhateverBlueprint::Foo
-        klass.const_set(view.name.to_s.classify, view_serializer.type)
+        view_serializer.sober_name("#{sober_name}.#{view.name.to_s.classify}") if sober_name
         SoberSwag::Serializer::Conditional.new(
           proc do |object, options|
             if options[:view].to_s == view.name.to_s
@@ -93,20 +81,6 @@ module SoberSwag
           base
         )
       end
-      klass.send(:define_method, :serialize) do |object, options = {}|
-        final_serializer.serialize(object, options)
-      end
-      klass.send(:define_method, :type) do
-        final_serializer.type
-      end
-      klass.send(:define_singleton_method, :type) do
-        final_serializer.type
-      end
-      klass.send(:define_singleton_method, :serializer) do
-        klass.new
-      end
-
-      klass
     end
 
   end

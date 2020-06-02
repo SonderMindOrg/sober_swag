@@ -32,9 +32,7 @@ module SoberSwag
               description: route.response_descriptions[status],
               content: {
                 'application/json': {
-                  schema: compiler.response_for(
-                    serializer.respond_to?(:new) ? serializer.new.type : serializer.type
-                  )
+                  schema: compiler.response_for(serializer.type)
                 }
               }
             }

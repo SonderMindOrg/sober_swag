@@ -3,6 +3,7 @@ require 'spec_helper'
 RSpec.describe 'A SoberSwag::Blueprint with a view that uses except' do
   let(:blueprint) do
     SoberSwag::Blueprint.define do
+      sober_name 'Base'
       field :id, primitive(:Integer)
       view :only_name do
         except! :id
@@ -13,31 +14,30 @@ RSpec.describe 'A SoberSwag::Blueprint with a view that uses except' do
 
   describe 'the blueprint' do
     subject { blueprint }
-    it { should be_a(Class) }
-    it { should have_attributes(ancestors: include(SoberSwag::Serializer::Base)) }
-    it { should be_const_defined(:Base) }
-    it { should be_const_defined(:OnlyName) }
+    it { should respond_to(:serialize) }
+    it { should respond_to(:type) }
+    it { should have_attributes(type: be_a(Dry::Struct::Sum)) }
   end
 
   describe 'serializing' do
     let(:target) { { id: 1, name: 'Anthony' } }
     context 'with the view' do
-      subject { blueprint.new.serialize(target, { view: :only_name }) }
+      subject { blueprint.serialize(target, { view: :only_name }) }
       it { should be_a(Hash) }
       it { should have_key(:name) }
       it { should_not have_key(:id) }
       it 'roundtrips' do
-        expect(blueprint.new.type.call(subject)).to be_a(blueprint::OnlyName)
+        expect { blueprint.type.call(subject) }.to_not raise_error
       end
     end
 
     context 'without the view' do
-      subject { blueprint.new.serialize(target) }
+      subject { blueprint.serialize(target) }
       it { should be_a(Hash) }
       it { should have_key(:id) }
       it { should_not have_key(:name) }
       it 'roundtrips' do
-        expect(blueprint.new.type.call(subject)).to be_a(blueprint::Base)
+        expect { blueprint.type.call(subject) }.to_not raise_error
       end
     end
   end

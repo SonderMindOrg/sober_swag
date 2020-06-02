@@ -19,6 +19,7 @@ class PeopleController < ApplicationController
   end
 
   PersonSerializer = SoberSwag::Blueprint.define do
+    sober_name 'Person'
     field :id, primitive(:Integer)
     field :first_name, primitive(:String)
     field :last_name, primitive(:String)
@@ -51,7 +52,7 @@ class PeopleController < ApplicationController
       attribute? :first_name, Types::String
       attribute? :last_name, Types::String
     end
-    response(:ok, 'all the people', PersonSerializer.new.array)
+    response(:ok, 'all the people', PersonSerializer.array)
   end
 
   def index
@@ -65,7 +66,7 @@ class PeopleController < ApplicationController
     path_params do
       attribute :id, Types::Params::Integer
     end
-    response(:ok, 'the person requested', PersonSerializer.new)
+    response(:ok, 'the person requested', PersonSerializer)
   end
   def show
     respond!(:ok, @person)
