@@ -6,12 +6,15 @@ class PeopleController < ApplicationController
 
 
   PersonBodyParams = SoberSwag.struct do
+    sober_name 'PersonBodyParams'
+
     attribute :first_name, SoberSwag::Types::String
     attribute :last_name, SoberSwag::Types::String
     attribute? :date_of_birth, SoberSwag::Types::Params::DateTime.optional
   end
 
   PersonParams = SoberSwag.struct do
+    sober_name 'PersonParams'
     attribute :person, PersonBodyParams
   end
 

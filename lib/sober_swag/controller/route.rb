@@ -31,9 +31,9 @@ module SoberSwag
 
       ##
       # Define the request body, using SoberSwag's type-definition scheme.
-      # The block passed will be used to define the body of a new sublcass of `base` (defaulted to {Dry::Struct}.)
+      # The block passed will be used to define the body of a new sublcass of `base` (defaulted to {SoberSwag::Struct}.)
       # If you want, you can also define utility methods in here
-      def request_body(base = Dry::Struct, &block)
+      def request_body(base = SoberSwag::Struct, &block)
         @request_body_class = make_struct!(base, &block)
         action_module.const_set('ResponseBody', @request_body_class)
       end
@@ -48,7 +48,7 @@ module SoberSwag
       # Define the shape of the query_params parameters, using SoberSwag's type-definition scheme.
       # The block passed is the body of the newly-defined type.
       # You can also include a base type.
-      def query_params(base = Dry::Struct, &block)
+      def query_params(base = SoberSwag::Struct, &block)
         @query_params_class = make_struct!(base, &block)
         action_module.const_set('QueryParams', @query_params_class)
       end
@@ -61,9 +61,9 @@ module SoberSwag
 
       ##
       # Define the shape of the *path* parameters, using SoberSwag's type-definition scheme.
-      # The block passed will be the body of a new subclass of `base` (defaulted to {Dry::Struct}).
+      # The block passed will be the body of a new subclass of `base` (defaulted to {SoberSwag::Struct}).
       # Names of this should match the names in the path template originally passed to {SoberSwag::Controller::Route.new}
-      def path_params(base = Dry::Struct, &block)
+      def path_params(base = SoberSwag::Struct, &block)
         @path_params_class = make_struct!(base, &block)
         action_module.const_set('PathParams', @path_params_class)
       end
@@ -129,7 +129,11 @@ module SoberSwag
       end
 
       def make_struct!(base, &block)
-        Class.new(base, &block).tap { |e| e.transform_keys(&:to_sym) if base == Dry::Struct }
+        Class.new(base, &block).tap do |e|
+          if [SoberSwag::Struct, Dry::Struct].include?(base)
+            e.transform_keys(&:to_sym)
+          end
+        end
       end
     end
   end

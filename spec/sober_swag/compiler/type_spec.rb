@@ -5,12 +5,8 @@ RSpec.describe SoberSwag::Compiler::Type do
     include Dry::Types()
   end
 
-  def create_class(&block)
-    Class.new(Dry::Struct, &block)
-  end
-
   def self.compiling(&block)
-    let(:klass) { create_class(&block) }
+    let(:klass) { SoberSwag.struct(&block) }
     let(:compiler) { described_class.new(klass) }
     subject { compiler }
   end
