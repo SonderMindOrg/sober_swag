@@ -71,7 +71,7 @@ class PeopleController < ApplicationController
       attribute? :age, Types::Params::Integer
     end
     path_params { attribute :id, Types::Params::Integer }
-    response(:ok, 'the updated person', PersonBlueprint.new)
+    response(:ok, 'the updated person', PersonBlueprint)
   end
   def update
     person = Person.find(parsed_path.id)
