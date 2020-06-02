@@ -19,6 +19,14 @@ module SoberSwag
 
       attr_reader :name, :fields
 
+      def serialize(obj, opts = {})
+        serializer.serialize(obj, opts)
+      end
+
+      def type
+        serializer.type
+      end
+
       def except!(name)
         @fields.select! { |f| f.name != name }
       end

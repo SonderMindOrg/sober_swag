@@ -12,7 +12,7 @@ module SoberSwag
       # The name to use for this type in external documentation.
       def sober_name(arg = nil)
         @sober_name = arg if arg
-        @sober_name || self.name.gsub('::', '.')
+        @sober_name || self.name.to_s.gsub('::', '.')
       end
     end
 

@@ -8,6 +8,7 @@ module SoberSwag
   # Under the hood, this is actually all based on {SoberSwag::Serialzier::Base}.
   class Blueprint
     autoload(:Field, 'sober_swag/blueprint/field')
+    autoload(:Definition, 'sober_swag/blueprint/definition')
     autoload(:FieldSyntax, 'sober_swag/blueprint/field_syntax')
     autoload(:View, 'sober_swag/blueprint/view')
 
@@ -35,51 +36,62 @@ module SoberSwag
     # can simply return an *instance* of SoberSwag::Serializer that does
     # the correct thing, with the name you give it. This works for now, though.
     def self.define(&block)
-      self.new.tap { |o|
+      d = Definition.new.tap { |o|
         o.instance_eval(&block)
-      }.serializer
+      }
+      self.new(d.fields, d.views, d.sober_name)
     end
 
-    def initialize(base_fields = [])
-      @fields = base_fields.dup
-      @views = []
+    def initialize(fields, views, sober_name)
+      @fields = fields
+      @views = views
+      @sober_name = sober_name
     end
 
-    attr_reader :fields, :views
+    attr_reader :fields, :views, :sober_name
 
-    include FieldSyntax
-
-    def add_field!(field)
-      @fields << field
+    def serialize(obj, opts = {})
+      serializer.serialize(obj, opts)
     end
 
-    def view(name, &block)
-      @views << View.define(name, fields, &block)
+    def type
+      serializer.type
     end
 
-    def sober_name(arg = nil)
-      @sober_name = arg if arg
-      @sober_name
+    def view(name)
+      return base_serializer if name == :base
+
+      @views.find { |v| v.name == name }
+    end
+
+    def base
+      base_serializer
     end
 
     def serializer
-      base_serializer = SoberSwag::Serializer::FieldList.new(fields).tap do |s|
+      @serializer ||=
+        begin
+          views.reduce(base_serializer) do |base, view|
+            view_serializer = view.serializer
+            view_serializer.sober_name("#{sober_name}.#{view.name.to_s.classify}") if sober_name
+            SoberSwag::Serializer::Conditional.new(
+              proc do |object, options|
+                if options[:view].to_s == view.name.to_s
+                  [:left, object]
+                else
+                  [:right, object]
+                end
+              end,
+              view_serializer,
+              base
+            )
+          end
+        end
+    end
+
+    def base_serializer
+      @base_serializer ||= SoberSwag::Serializer::FieldList.new(fields).tap do |s|
         s.sober_name(sober_name)
-      end
-      views.reduce(base_serializer) do |base, view|
-        view_serializer = view.serializer
-        view_serializer.sober_name("#{sober_name}.#{view.name.to_s.classify}") if sober_name
-        SoberSwag::Serializer::Conditional.new(
-          proc do |object, options|
-            if options[:view].to_s == view.name.to_s
-              [:left, object]
-            else
-              [:right, object]
-            end
-          end,
-          view_serializer,
-          base
-        )
       end
     end
 

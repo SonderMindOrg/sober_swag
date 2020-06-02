@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 RSpec.describe 'a nested SoberSwag::Blueprint' do
+  let(:target) { { id: 1, ceo: { id: 1, name: 'Mark' } } }
+
   let(:person_blueprint) do
     SoberSwag::Blueprint.define do
       sober_name 'Person'
@@ -20,12 +22,12 @@ RSpec.describe 'a nested SoberSwag::Blueprint' do
 
   describe 'the returned serializer' do
     subject { company_blueprint }
-    it { should respond_to(:serialize) & respond_to(:type) }
+    it { should respond_to(:serialize) }
+    it { should respond_to(:type) }
+    it { should respond_to(:base) }
   end
 
   describe 'serializing' do
-    let(:target) { { id: 1, ceo: { id: 1, name: 'Mark' } } }
-
     it 'does so without error' do
       expect { company_blueprint.serialize(target) }.to_not raise_error
     end

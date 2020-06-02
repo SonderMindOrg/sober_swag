@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 RSpec.describe 'A SoberSwag::Blueprint with a view that uses except' do
+  let(:target) { { id: 1, name: 'Anthony' } }
   let(:blueprint) do
     SoberSwag::Blueprint.define do
       sober_name 'Base'
@@ -20,7 +21,6 @@ RSpec.describe 'A SoberSwag::Blueprint with a view that uses except' do
   end
 
   describe 'serializing' do
-    let(:target) { { id: 1, name: 'Anthony' } }
     context 'with the view' do
       subject { blueprint.serialize(target, { view: :only_name }) }
       it { should be_a(Hash) }
@@ -28,6 +28,7 @@ RSpec.describe 'A SoberSwag::Blueprint with a view that uses except' do
       it { should_not have_key(:id) }
       it 'roundtrips' do
         expect { blueprint.type.call(subject) }.to_not raise_error
+        expect(blueprint.type.call(subject)).to be_a(blueprint.view(:only_name).type)
       end
     end
 
@@ -38,6 +39,7 @@ RSpec.describe 'A SoberSwag::Blueprint with a view that uses except' do
       it { should_not have_key(:name) }
       it 'roundtrips' do
         expect { blueprint.type.call(subject) }.to_not raise_error
+        expect(blueprint.type.call(subject)).to be_a(blueprint.base.type)
       end
     end
   end

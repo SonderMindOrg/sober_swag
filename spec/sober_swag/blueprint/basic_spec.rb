@@ -27,9 +27,17 @@ RSpec.describe 'a basic SoberSwag::Blueprint' do
     expect(blueprint.serialize({id: 1, name: 'Anthony'})).to eq(id: 1, name: 'Anthony')
   end
 
-  it 'roundtrips' do
-    expect {
+  describe 'roundtripping' do
+    let(:roundtripped) do
       blueprint.type.new(blueprint.serialize({id: 1, name: 'Anthony'}))
-    }.to_not raise_error
+    end
+
+    it 'works' do
+      expect { roundtripped }.to_not raise_error
+    end
+
+    it 'is the right type' do
+      expect(roundtripped).to be_a(blueprint.base.type)
+    end
   end
 end
