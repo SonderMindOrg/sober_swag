@@ -6,7 +6,7 @@ module SoberSwag
   # This allows you to make "views" and such inside.
   #
   # Under the hood, this is actually all based on {SoberSwag::Serialzier::Base}.
-  class Blueprint
+  class Blueprint < SoberSwag::Serializer::Base
     autoload(:Field, 'sober_swag/blueprint/field')
     autoload(:Definition, 'sober_swag/blueprint/definition')
     autoload(:FieldSyntax, 'sober_swag/blueprint/field_syntax')
