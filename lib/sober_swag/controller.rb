@@ -124,11 +124,11 @@ module SoberSwag
     # @todo figure out how to specify views and other options for the serializer here
     # @param status [Symbol] the HTTP status symbol to use for the status code
     # @param entity the thing to serialize
-    def respond!(status, entity)
+    def respond!(status, entity, opts = {})
       r = current_action_def
       serializer = r.response_serializers[Rack::Utils.status_code(status)]
       serializer ||= serializer.new if serializer.respond_to?(:new)
-      render json: serializer.serialize(entity)
+      render json: serializer.serialize(entity, opts)
     end
 
     ##
