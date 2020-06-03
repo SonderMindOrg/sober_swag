@@ -44,15 +44,15 @@ class PeopleController < ApplicationController
     query_params do
       attribute? :first_name, Types::String
       attribute? :last_name, Types::String
+      attribute? :view, Types::String.enum('base', 'detail')
     end
     response(:ok, 'all the people', PersonBlueprint.array)
   end
-
   def index
     @people = Person.all
     @people = @people.where('first_name ILIKE ?', "%#{parsed_query.first_name}%") if parsed_query.first_name
     @people = @people.where('last_name ILIKE ?', "%#{parsed_query.last_name}%") if parsed_query.last_name
-    respond!(:ok, @people)
+    respond!(:ok, @people.includes(:posts), serializer_opts: { view: parsed_query.view })
   end
 
   define :get, :show, '/people/{id}' do

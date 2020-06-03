@@ -43,7 +43,7 @@ class PostsController < ApplicationController
   def index
     @posts = Post.all
 
-    respond!(:ok, @posts, serializer_opts: { view: parsed_query.view })
+    respond!(:ok, @posts.includes(:person), serializer_opts: { view: parsed_query.view })
   end
 
   define :get, :show, '/posts/{id}' do

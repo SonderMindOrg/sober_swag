@@ -19,13 +19,39 @@ module SoberSwag
     #
     # @param controller_proc [Proc] a proc that, when called, gives a list of {SoberSwag::Controller}s to document
     # @param cache [Bool | Proc] if we should cache our defintions (default false)
-    def initialize(controller_proc: RAILS_CONTROLLER_PROC, cache: false)
+    def initialize(
+      controller_proc: RAILS_CONTROLLER_PROC,
+      cache: false
+    )
       @controller_proc = controller_proc
       @cache = cache
     end
 
-    def call(*)
-      [200, { 'Content-Type' => 'application/json' }, [generate_json_string]]
+    EFFECT_HTML = <<~HTML
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Swagger-UI</title>
+          <script src="https://unpkg.com/swagger-ui-dist@3/swagger-ui-bundle.js"></script>
+          <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@3.23.4/swagger-ui.css"></link>
+        </head>
+        <body>
+          <div id="swagger">
+          </div>
+          <script>
+            SwaggerUIBundle({url: 'SCRIPT_NAME', dom_id: '#swagger'})
+          </script>
+        </body>
+      </html>
+    HTML
+
+    def call(env)
+      req = Rack::Request.new(env)
+      if req.path_info&.match?(/json/si) || req.get_header('Accept')&.match?(/json/si)
+        [200, { 'Content-Type' => 'application/json' }, [generate_json_string]]
+      else
+        [200, { 'Content-Type' => 'text/html' }, [EFFECT_HTML.gsub(/SCRIPT_NAME/, env['SCRIPT_NAME'] + '.json')]]
+      end
     end
 
     def generate_json_string
