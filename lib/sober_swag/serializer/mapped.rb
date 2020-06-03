@@ -13,6 +13,18 @@ module SoberSwag
         @base.serialize(@map_f.call(object), options)
       end
 
+      def lazy_type?
+        @base.lazy_type?
+      end
+
+      def lazy_type
+        @base.lazy_type
+      end
+
+      def finalize_lazy_type!
+        @base.finalize_lazy_type!
+      end
+
       def type
         @base.type
       end

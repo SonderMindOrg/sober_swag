@@ -7,6 +7,8 @@ module SoberSwag
   # Please see the documentation for that class to see how it works.
   class Struct < Dry::Struct
 
+    transform_keys(&:to_sym)
+
     class << self
       ##
       # The name to use for this type in external documentation.

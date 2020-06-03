@@ -44,6 +44,19 @@ module SoberSwag
           left.type | right.type
         end
       end
+
+      def lazy_type
+        left.lazy_type | right.lazy_type
+      end
+
+      def lazy_type?
+        left.lazy_type? || right.lazy_type?
+      end
+
+      def finalize_lazy_type!
+        [left, right].each(&:finalize_lazy_type!)
+      end
+
     end
   end
 end

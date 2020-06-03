@@ -8,6 +8,18 @@ module SoberSwag
 
       attr_reader :inner
 
+      def lazy_type?
+        @inner.lazy_type?
+      end
+
+      def lazy_type
+        @inner.lazy_type
+      end
+
+      def finalize_lazy_type!
+        @inner.finalize_lazy_type!
+      end
+
       def serialize(object, options = {})
         if object.nil?
           object

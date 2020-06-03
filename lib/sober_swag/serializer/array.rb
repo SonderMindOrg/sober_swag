@@ -7,6 +7,18 @@ module SoberSwag
         @element_serializer = element_serializer
       end
 
+      def lazy_type?
+        @element_serializer.lazy_type?
+      end
+
+      def lazy_type
+        @element_serializer.lazy_type
+      end
+
+      def finalize_lazy_type!
+        @element_serializer.finalize_lazy_type!
+      end
+
       attr_reader :element_serializer
 
       def serialize(object, options = {})

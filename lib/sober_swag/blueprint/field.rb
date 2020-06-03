@@ -11,7 +11,15 @@ module SoberSwag
       attr_reader :name
 
       def serializer
-        @serializer ||= @root_serializer.serializer.via_map(&transform_proc)
+        @serializer ||= resolved_serializer.serializer.via_map(&transform_proc)
+      end
+
+      def resolved_serializer
+        if @root_serializer.is_a?(Proc)
+          @root_serializer.call
+        else
+          @root_serializer
+        end
       end
 
       private
