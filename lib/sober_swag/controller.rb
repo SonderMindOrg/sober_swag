@@ -124,11 +124,11 @@ module SoberSwag
     # @todo figure out how to specify views and other options for the serializer here
     # @param status [Symbol] the HTTP status symbol to use for the status code
     # @param entity the thing to serialize
-    def respond!(status, entity, opts = {})
+    def respond!(status, entity, serializer_opts: {}, rails_opts: {})
       r = current_action_def
       serializer = r.response_serializers[Rack::Utils.status_code(status)]
       serializer ||= serializer.new if serializer.respond_to?(:new)
-      render json: serializer.serialize(entity, opts)
+      render json: serializer.serialize(entity, serializer_opts), **rails_opts
     end
 
     ##
@@ -138,10 +138,7 @@ module SoberSwag
     # but it keeps the docs honest: parameters sent in the body *must* be
     # in the body.
     def body_params
-      bparams = params.reject do |k, _|
-        request.query_parameters.key?(k) || request.path_parameters.key?(k)
-      end
-      bparams.permit(bparams.keys)
+      request.request_parameters
     end
 
     ##

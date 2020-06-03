@@ -15,56 +15,86 @@ class PostsController < ApplicationController
     attribute :post, PostCreateParamsBody
   end
 
+  PostUpdateParamsBody = SoberSwag.struct do
+    sober_name 'PostUpdateParamsBody'
+    attribute? :person_id, SoberSwag::Types::Params::Integer
+    attribute? :title, SoberSwag::Types::String
+    attribute? :body, SoberSwag::Types::String
+  end
+
+  PostUpdate = SoberSwag.struct do
+    sober_name 'PostUpdate'
+    attribute :post, PostUpdateParamsBody
+  end
+
+  ViewTypes = SoberSwag::Types::String.enum('base', 'detail')
+
+  ShowPath = SoberSwag.struct do
+    sober_name 'ShowPersonPathParams'
+    attribute :id, Types::Params::Integer
+  end
+
   define :get, :index, '/posts/' do
     query_params do
-      attribute? :view, SoberSwag::Types::String.enum('base', 'detail')
+      attribute? :view, ViewTypes
     end
     response(:ok, 'all the posts', PostBlueprint.array)
   end
   def index
     @posts = Post.all
 
-    respond!(:ok, @posts, { view: parsed_query.view })
+    respond!(:ok, @posts, serializer_opts: { view: parsed_query.view })
   end
 
-  # GET /posts/1
+  define :get, :show, '/posts/{id}' do
+    path_params(ShowPath)
+    query_params { attribute? :view, ViewTypes }
+    response(:ok, 'the requested post', PostBlueprint)
+  end
   def show
-    render json: @post
+    respond!(:ok, @post, serializer_opts: { view: parsed_query.view })
   end
 
-  # POST /posts
+  define :post, :create, '/posts/' do
+    request_body(PostCreate)
+    response(:created, 'the created post', PostBlueprint)
+  end
   def create
-    @post = Post.new(post_params)
+    @post = Post.new(parsed_body.post.to_h)
 
     if @post.save
-      render json: @post, status: :created, location: @post
+      respond! :created, @post, rails_opts: { location: @post }
     else
       render json: @post.errors, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /posts/1
+  define :patch, :update, '/posts/{id}' do
+    path_params(ShowPath)
+    request_body(PostUpdate)
+    response(:ok, 'the post updated', PostBlueprint.view(:base))
+  end
   def update
-    if @post.update(post_params)
-      render json: @post
+    if @post.update(parsed_body.post.to_h)
+      respond!(:ok, @post)
     else
       render json: @post.errors, status: :unprocessable_entity
     end
   end
 
-  # DELETE /posts/1
+  define :delete, :destroy, '/posts/{id}' do
+    path_params(ShowPath)
+    response(:ok, 'the post deleted', PostBlueprint.view(:base))
+  end
   def destroy
     @post.destroy
+    respond!(:ok, @post)
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_post
-      @post = Post.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_post
+    @post = Post.find(parsed_path.id)
+  end
 
-    # Only allow a trusted parameter "white list" through.
-    def post_params
-      params.require(:post).permit(:person_id, :title, :body)
-    end
 end
