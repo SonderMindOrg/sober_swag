@@ -128,7 +128,7 @@ module SoberSwag
       r = current_action_def
       serializer = r.response_serializers[Rack::Utils.status_code(status)]
       serializer ||= serializer.new if serializer.respond_to?(:new)
-      render json: serializer.serialize(entity, serializer_opts), **rails_opts
+      render json: serializer.serialize(entity, serializer_opts), status: status, **rails_opts
     end
 
     ##
