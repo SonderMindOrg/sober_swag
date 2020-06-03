@@ -32,6 +32,11 @@ class PersonSearch < Dry::Struct
   attribute? :age, Types::Integer
 end
 
+class LinkedList < Dry::Struct
+  attribute :value, Types::String
+  attribute? :next, LinkedList
+end
+
 
 # (If you use this, don't forget to add pry to your Gemfile!)
 require "pry"

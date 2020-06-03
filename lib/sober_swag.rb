@@ -20,6 +20,7 @@ module SoberSwag
   autoload :Compiler, 'sober_swag/compiler'
   autoload :Controller, 'sober_swag/controller'
   autoload :Struct, 'sober_swag/struct'
+  autoload :Server, 'sober_swag/server'
 
   ##
   # Define a struct of something.

@@ -124,6 +124,8 @@ module SoberSwag
           self.class.new(type.type).schema_stub
         when Dry::Types::Array::Member
           { type: :array, items: self.class.new(type.member).schema_stub }
+        when Dry::Types::Sum
+          { oneOf: normalize(parsed_type).elements.map { |t| self.class.new(t.value).schema_stub } }
         else
           raise ArgumentError, "Cannot generate a schema stub for #{type} (#{type.class})"
         end

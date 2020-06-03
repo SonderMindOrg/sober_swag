@@ -28,17 +28,41 @@ module SoberSwag
         @type ||= make_struct_type!
       end
 
+      def lazy_type?
+        true
+      end
+
+      def lazy_type
+        struct_class
+      end
+
+      def finalize_lazy_type!
+        make_struct_type!
+      end
+
       private
 
       def make_struct_type!
+        # mutual recursion makes this really, really annoying.
+        return struct_class if @made_struct_type
+
         f = field_list
         s = sober_name
-        Class.new(SoberSwag::Struct) do
+        struct_class.instance_eval do
           sober_name(s)
           f.each do |field|
-            attribute field.name, field.serializer.type
+            attribute field.name, field.serializer.lazy_type
           end
         end
+        @made_struct_type = true
+
+        field_list.map(&:serializer).each(&:finalize_lazy_type!)
+
+        struct_class
+      end
+
+      def struct_class
+        @struct_class ||= Class.new(SoberSwag::Struct)
       end
 
     end

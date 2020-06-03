@@ -15,6 +15,28 @@ module SoberSwag
       end
 
       ##
+      # Is this type lazily defined?
+      #
+      # Used for mutual recursion.
+      def lazy_type?
+        false
+      end
+
+      ##
+      # The lazy version of this type, for mutual recursion.
+      def lazy_type
+        type
+      end
+
+      ##
+      # Finalize a lazy type.
+      #
+      # Should be idempotent: call it once, and it does nothing on subsequent calls (but returns the type).
+      def finalize_lazy_type!
+        type
+      end
+
+      ##
       # If I am a serializer for type 'a', and you give me a way to turn 'a's into 'b's,
       # I can give you a serializer for type 'b' by running the funciton you gave.
       # For example, if I am a serializer for {String}, and you know how to turn
