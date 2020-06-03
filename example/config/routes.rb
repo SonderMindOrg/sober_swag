@@ -4,6 +4,6 @@ Rails.application.routes.draw do
     get :swagger, on: :collection
   end
 
-  mount SoberSwag::Server.new, at: '/swagger'
+  mount SoberSwag::Server.new(cache: -> { Rails.env.production? }), at: '/swagger'
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
