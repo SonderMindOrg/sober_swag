@@ -12,7 +12,7 @@ module SoberSwag
       end
 
       def lazy_type
-        @element_serializer.lazy_type
+        SoberSwag::Types::Array.of(@element_serializer.lazy_type)
       end
 
       def finalize_lazy_type!

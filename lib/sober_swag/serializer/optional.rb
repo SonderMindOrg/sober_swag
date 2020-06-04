@@ -13,7 +13,7 @@ module SoberSwag
       end
 
       def lazy_type
-        @inner.lazy_type
+        @inner.lazy_type.optional
       end
 
       def finalize_lazy_type!

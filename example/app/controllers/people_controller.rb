@@ -13,30 +13,49 @@ class PeopleController < ApplicationController
     attribute? :date_of_birth, SoberSwag::Types::Params::DateTime.optional
   end
 
+  PersonBodyPatchParams = SoberSwag.struct(PersonBodyParams) do
+    sober_name 'PersonBodyPatchParams'
+
+    attribute? :first_name, SoberSwag::Types::String
+    attribute? :last_name, SoberSwag::Types::String
+    attribute? :date_of_birth, SoberSwag::Types::Params::DateTime.optional
+  end
+
   PersonParams = SoberSwag.struct do
     sober_name 'PersonParams'
     attribute :person, PersonBodyParams
   end
 
+  PersonPatchParams = SoberSwag.struct do
+    sober_name 'PersonPatchParams'
+    attribute :person, PersonBodyPatchParams
+  end
+
   define :post, :create, '/people/' do
     request_body(PersonParams)
     response(:ok, 'the person created', PersonBlueprint)
+    response(:unprocessable_entity, 'the validation errors', PersonErrorsBlueprint)
   end
   def create
-    p = Person.create!(parsed_body.to_h)
-    respond!(:ok, p)
+    p = Person.new(parsed_body.person.to_h)
+    if p.save
+      respond!(:ok, p)
+    else
+      respond!(:unprocessable_entity, p.errors)
+    end
   end
 
   define :patch, :update, '/people/{id}' do
-    request_body(PersonParams)
+    request_body(PersonPatchParams)
     path_params { attribute :id, Types::Params::Integer }
     response(:ok, 'the person updated', PersonBlueprint)
+    response(:unprocessable_entity, 'the validation errors', PersonErrorsBlueprint)
   end
   def update
-    if @person.update(parsed_body.to_h)
+    if @person.update(parsed_body.person.to_h)
       respond!(:ok, @person)
     else
-      render json: @person.errors, status: :unprocessable_entity
+      respond!(:unprocessable_entity, @person.errors)
     end
   end
 
