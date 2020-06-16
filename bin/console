@@ -11,20 +11,14 @@ module Types
   include Dry.Types()
 end
 
-class Bio < Dry::Struct
-  attribute :name, Types::String
+Bio = SoberSwag.struct do
+  attribute :name, primitive(:String).meta(description: 'A very basic bio name')
 end
 
-class Person < Dry::Struct
-  attribute :name, Types::String
-  attribute :age, Types::Integer.constrained(gt: 0).optional | Types::String.optional
+Person = SoberSwag.struct do
+  attribute :name, param(:String)
+  attribute :age, param(:Integer).constrained(gt: 0).optional
   attribute? :mood, Types::String
-  attribute :bio, Bio
-
-  attribute :foo do
-    attribute :bar, Types::String
-    attribute :baz, Types::String.optional
-  end
 end
 
 class PersonSearch < Dry::Struct

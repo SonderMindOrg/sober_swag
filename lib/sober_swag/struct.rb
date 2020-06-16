@@ -16,6 +16,14 @@ module SoberSwag
         @sober_name = arg if arg
         @sober_name || self.name.to_s.gsub('::', '.')
       end
+
+      def primitive(sym)
+        SoberSwag::Types.const_get(sym)
+      end
+
+      def param(sym)
+        SoberSwag::Types::Params.const_get(sym)
+      end
     end
 
   end
