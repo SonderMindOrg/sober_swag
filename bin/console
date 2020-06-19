@@ -16,8 +16,8 @@ Bio = SoberSwag.struct do
 end
 
 Person = SoberSwag.struct do
-  attribute :name, param(:String)
-  attribute :age, param(:Integer).constrained(gt: 0).optional
+  attribute :name, primitive(:String).meta(description: 'The full name description')
+  attribute :age, param(:Integer).constrained(gt: 0).optional.meta(description: 'My cool age')
   attribute? :mood, Types::String
 end
 

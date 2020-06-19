@@ -37,6 +37,12 @@ module SoberSwag
       end
 
       ##
+      # Add metadata onto the *type* of a serializer.
+      def meta(hash)
+        SoberSwag::Serializer::Meta.new(self, hash)
+      end
+
+      ##
       # If I am a serializer for type 'a', and you give me a way to turn 'a's into 'b's,
       # I can give you a serializer for type 'b' by running the funciton you gave.
       # For example, if I am a serializer for {String}, and you know how to turn

@@ -7,6 +7,7 @@ module SoberSwag
     autoload(:Mapped, 'sober_swag/serializer/mapped')
     autoload(:Optional, 'sober_swag/serializer/optional')
     autoload(:FieldList, 'sober_swag/serializer/field_list')
+    autoload(:Meta, 'sober_swag/serializer/meta')
 
     class << self
       ##

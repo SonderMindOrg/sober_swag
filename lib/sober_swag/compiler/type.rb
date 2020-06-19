@@ -46,6 +46,8 @@ module SoberSwag
       class TooComplicatedForPathError < TooComplicatedError; end
       class TooComplicatedForQueryError < TooComplicatedError; end
 
+      METADATA_KEYS = %i[description deprecated].freeze
+
       def initialize(type)
         @type = type
       end
@@ -207,8 +209,11 @@ module SoberSwag
         # can't match on value directly as ruby uses `===` to match,
         # and classes use `===` to mean `is an instance of`, as
         # opposed to direct equality lmao
-        in Nodes::Primitive[value:] if self.class.primitive?(value)
-        self.class.primitive_def(value)
+        in Nodes::Primitive[value:, metadata:] if self.class.primitive?(value)
+        md = self.class.primitive_def(value)
+        METADATA_KEYS.select(&metadata.method(:key?)).reduce(md) do |definition, key|
+          definition.merge(key => metadata[key])
+        end
         in Nodes::Primitive[value:]
         { '$ref': self.class.get_ref(value) }
         else

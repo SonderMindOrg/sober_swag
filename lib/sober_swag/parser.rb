@@ -41,7 +41,7 @@ module SoberSwag
         bind(Parser.new(@node.type))
       when Dry::Types::Nominal
         # start off with the moral equivalent of NodeTree[String]
-        Nodes::Primitive.new(@node.primitive)
+        Nodes::Primitive.new(@node.primitive, @node.meta)
       else
         # Inside of this case we have a class that is some user-defined type
         # We put it in our array of found types, and consider it a primitive

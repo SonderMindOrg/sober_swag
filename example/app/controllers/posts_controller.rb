@@ -5,9 +5,9 @@ class PostsController < ApplicationController
 
   PostCreateParamsBody = SoberSwag.struct do
     sober_name 'PostCreateParamsBody'
-    attribute :person_id, SoberSwag::Types::Params::Integer
-    attribute :title, SoberSwag::Types::String
-    attribute :body, SoberSwag::Types::String
+    attribute :person_id, SoberSwag::Types::Params::Integer.meta(description: 'Unique ID obtained from a person')
+    attribute :title, SoberSwag::Types::String.meta(description: 'Short title of a post')
+    attribute :body, SoberSwag::Types::String.meta(description: 'Post body in markdown format')
   end
 
   PostCreate = SoberSwag.struct do
