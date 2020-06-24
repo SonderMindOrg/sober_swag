@@ -9,6 +9,10 @@ module SoberSwag
 
       attr_reader :base, :meta
 
+      def serialize(args, opts = {})
+        base.serialize(args, opts)
+      end
+
       def lazy_type
         @base.lazy_type.meta(**meta)
       end
