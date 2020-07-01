@@ -37,6 +37,18 @@ module SoberSwag
       end
 
       ##
+      # Serialize an object.
+      def serialize(object, options = {})
+        raise ArgumentError, 'not implemented!'
+      end
+
+      ##
+      # Get the type that we serialize to.
+      def type
+        raise ArgumentError, 'not implemented!'
+      end
+
+      ##
       # Add metadata onto the *type* of a serializer.
       def meta(hash)
         SoberSwag::Serializer::Meta.new(self, hash)
