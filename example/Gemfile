@@ -30,6 +30,8 @@ group :development, :test do
 
   gem 'dry-types-rails'
 
+  gem 'rspec-rails'
+
   gem 'pry'
 end
 
