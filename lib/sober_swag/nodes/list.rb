@@ -34,7 +34,6 @@ module SoberSwag
           element.map(&block)
         )
       end
-
     end
   end
 end

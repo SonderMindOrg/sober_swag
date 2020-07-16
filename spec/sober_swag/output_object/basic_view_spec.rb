@@ -14,27 +14,31 @@ RSpec.describe 'a basic SoberSwag::OutputObject with a basic view' do
 
   describe 'the returned class' do
     subject { output_object }
+
     it { should respond_to(:serialize) }
     it { should respond_to(:type) }
   end
 
   describe 'serializing' do
     context 'with the view' do
-      subject {
+      subject do
         output_object.serialize(target, { view: :complex })
-      }
-      it 'raises no error' do
-        expect { subject }.to_not raise_error
       end
+
+      it 'raises no error' do
+        expect { subject }.not_to raise_error
+      end
+
       it { should have_key(:id) }
       it { should have_key(:name) }
       it { should eq(target) }
     end
 
     context 'without the view' do
-      subject {
+      subject do
         output_object.serialize(target, {})
-      }
+      end
+
       it { should have_key(:id) }
       it { should_not have_key(:name) }
       it { should eq({ id: 1 }) }
@@ -42,27 +46,31 @@ RSpec.describe 'a basic SoberSwag::OutputObject with a basic view' do
   end
 
   describe 'roundtripping' do
-    let(:roundtripped) { output_object.type.call(serialized) }
     subject { roundtripped }
+
+    let(:roundtripped) { output_object.type.call(serialized) }
+
     context 'with the view' do
       let(:serialized) { output_object.serialize(target, { view: :complex }) }
+
       it 'works' do
-        expect { roundtripped }.to_not raise_error
+        expect { roundtripped }.not_to raise_error
       end
 
       it 'is the complex view type' do
-        should be_a(output_object.view(:complex).type)
+        expect(subject).to be_a(output_object.view(:complex).type)
       end
     end
 
     context 'without the view' do
       let(:serialized) { output_object.serialize(target) }
+
       it 'works' do
-        expect { roundtripped }.to_not raise_error
+        expect { roundtripped }.not_to raise_error
       end
 
       it 'is the base view type' do
-        should be_a(output_object.view(:base).type)
+        expect(subject).to be_a(output_object.view(:base).type)
       end
     end
   end

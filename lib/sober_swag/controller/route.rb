@@ -1,7 +1,8 @@
 module SoberSwag
   module Controller
+    ##
+    # Describe a single controller endpoint.
     class Route
-
       def initialize(method, action_name, path)
         @method = method
         @path = path
@@ -10,12 +11,8 @@ module SoberSwag
         @response_descriptions = {}
       end
 
-      attr_reader :response_serializers
-      attr_reader :response_descriptions
-      attr_reader :controller
-      attr_reader :method
-      attr_reader :path
-      attr_reader :action_name
+      attr_reader :response_serializers, :response_descriptions, :controller, :method, :path, :action_name
+
       ##
       # What to parse the request body in to.
       attr_reader :request_body_class
@@ -128,9 +125,7 @@ module SoberSwag
 
       def make_input_object!(base, &block)
         Class.new(base, &block).tap do |e|
-          if [SoberSwag::InputObject, Dry::Struct].include?(base)
-            e.transform_keys(&:to_sym)
-          end
+          e.transform_keys(&:to_sym) if [SoberSwag::InputObject, Dry::Struct].include?(base)
         end
       end
     end

@@ -7,6 +7,7 @@ RSpec.describe 'Getting a person' do
 
     describe 'the response' do
       subject { request && response }
+
       it { should be_successful }
       it { should_not be_server_error }
     end
@@ -24,9 +25,10 @@ RSpec.describe 'Getting a person' do
 
     describe 'the response' do
       subject { request && response }
+
       it { should_not be_successful }
       it { should_not be_server_error }
-      it { should have_http_status(400) }
+      it { should have_http_status(:bad_request) }
       it { should be_bad_request }
     end
   end

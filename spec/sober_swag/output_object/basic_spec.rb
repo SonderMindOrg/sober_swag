@@ -19,21 +19,21 @@ RSpec.describe 'a basic SoberSwag::OutputObject' do
 
   it 'serializes without error' do
     expect {
-      output_object.serialize({id: 1, name: 'Anthony'})
-    }.to_not raise_error
+      output_object.serialize({ id: 1, name: 'Anthony' })
+    }.not_to raise_error
   end
 
   it 'serializes properly' do
-    expect(output_object.serialize({id: 1, name: 'Anthony'})).to eq(id: 1, name: 'Anthony')
+    expect(output_object.serialize({ id: 1, name: 'Anthony' })).to eq(id: 1, name: 'Anthony')
   end
 
   describe 'roundtripping' do
     let(:roundtripped) do
-      output_object.type.new(output_object.serialize({id: 1, name: 'Anthony'}))
+      output_object.type.new(output_object.serialize({ id: 1, name: 'Anthony' }))
     end
 
     it 'works' do
-      expect { roundtripped }.to_not raise_error
+      expect { roundtripped }.not_to raise_error
     end
 
     it 'is the right type' do

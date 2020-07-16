@@ -20,17 +20,20 @@ Person = SoberSwag.input_object do
   attribute? :mood, Types::String
 end
 
+##
+# Demonstration of subclass-style.
 class PersonSearch < SoberSwag::InputObject
   attribute? :name, Types::String
   attribute? :age, Types::Integer
 end
 
+##
+# Demonstration of subclass-style *and* recursion in structs.
 class LinkedList < SoberSwag::InputObject
   attribute :value, Types::String
   attribute? :next, LinkedList
 end
 
-
 # (If you use this, don't forget to add pry to your Gemfile!)
-require "pry"
+require 'pry'
 Pry.start

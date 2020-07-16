@@ -1,7 +1,9 @@
 module SoberSwag
   module Nodes
+    ##
+    # Compiler node to represent an enum value.
+    # Enums are special enough to have their own node.
     class Enum < Base
-
       def initialize(values)
         @values = values
       end
@@ -16,7 +18,7 @@ module SoberSwag
         [values]
       end
 
-      def deconstruct_keys(keys)
+      def deconstruct_keys(_keys)
         { values: values }
       end
 

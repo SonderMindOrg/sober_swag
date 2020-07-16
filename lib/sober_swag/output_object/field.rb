@@ -1,5 +1,8 @@
 module SoberSwag
   class OutputObject
+    ##
+    # A single field in an output object.
+    # Later used to make an actual serializer from this.
     class Field
       def initialize(name, serializer, from: nil, &block)
         @name = name
@@ -24,7 +27,7 @@ module SoberSwag
 
       private
 
-      def transform_proc
+      def transform_proc # rubocop:disable Metrics/MethodLength
         if @block
           @block
         else
@@ -38,7 +41,6 @@ module SoberSwag
           end
         end
       end
-
     end
   end
 end

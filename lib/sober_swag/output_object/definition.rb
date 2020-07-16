@@ -1,7 +1,9 @@
 module SoberSwag
   class OutputObject
+    ##
+    # Container to define a single output object.
+    # This is the DSL used in the base of {SoberSwag::OutputObject.define}.
     class Definition
-
       def initialize
         @fields = []
         @views = []
@@ -23,7 +25,6 @@ module SoberSwag
         @identifier = arg if arg
         @identifier
       end
-
     end
   end
 end

@@ -36,10 +36,10 @@ module SoberSwag
     # can simply return an *instance* of SoberSwag::Serializer that does
     # the correct thing, with the name you give it. This works for now, though.
     def self.define(&block)
-      d = Definition.new.tap { |o|
+      d = Definition.new.tap do |o|
         o.instance_eval(&block)
-      }
-      self.new(d.fields, d.views, d.identifier)
+      end
+      new(d.fields, d.views, d.identifier)
     end
 
     def initialize(fields, views, identifier)
@@ -68,7 +68,11 @@ module SoberSwag
       base_serializer
     end
 
-    def serializer
+    ##
+    # Compile down this to an appropriate serializer.
+    # It uses {SoberSwag::Serializer::Conditional} to do view-parsing,
+    # and {SoberSwag::Serializer::FieldList} to do the actual serialization.
+    def serializer # rubocop:disable Metrics/MethodLength
       @serializer ||=
         begin
           views.reduce(base_serializer) do |base, view|
@@ -94,6 +98,5 @@ module SoberSwag
         s.identifier(identifier)
       end
     end
-
   end
 end

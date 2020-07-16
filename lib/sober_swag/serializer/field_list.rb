@@ -4,7 +4,6 @@ module SoberSwag
     # Extract out a hash from a list of
     # name/serializer pairs.
     class FieldList < Base
-
       def initialize(field_list)
         @field_list = field_list
       end
@@ -16,7 +15,6 @@ module SoberSwag
       def primitive(symbol)
         SoberSwag::Serializer.Primitive(SoberSwag::Types.const_get(symbol))
       end
-
 
       def serialize(object, options = {})
         field_list.map { |field|
@@ -42,7 +40,7 @@ module SoberSwag
 
       private
 
-      def make_struct_type!
+      def make_struct_type! # rubocop:disable Metrics/MethodLength
         # mutual recursion makes this really, really annoying.
         return struct_class if @made_struct_type
 
@@ -64,7 +62,6 @@ module SoberSwag
       def struct_class
         @struct_class ||= Class.new(SoberSwag::InputObject)
       end
-
     end
   end
 end

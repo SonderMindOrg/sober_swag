@@ -1,8 +1,9 @@
-require "rails_helper"
+require 'rails_helper'
 
 RSpec.describe 'Index action for people' do
   let(:parsed_body) { request && response && JSON.parse(response.body) }
-  context "with no people" do
+
+  context 'with no people' do
     let(:request) { get '/people' }
 
     it 'is successful' do
@@ -25,7 +26,7 @@ RSpec.describe 'Index action for people' do
       end
 
       it 'has people' do
-        expect(parsed_body).to_not be_blank
+        expect(parsed_body).not_to be_blank
       end
 
       it 'has the right person' do
@@ -47,6 +48,7 @@ RSpec.describe 'Index action for people' do
 
     context 'with a valid view' do
       let(:request) { get '/people', params: { view: 'detail' } }
+
       it_behaves_like 'a request with the person'
     end
 
@@ -55,7 +57,7 @@ RSpec.describe 'Index action for people' do
 
       it 'is not successful' do
         request
-        expect(response).to_not be_successful
+        expect(response).not_to be_successful
       end
 
       it 'is a bad request' do

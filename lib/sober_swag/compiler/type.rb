@@ -3,7 +3,7 @@ module SoberSwag
     ##
     # A compiler for DRY-Struct data types, essentially.
     # It only consumes one type at a time.
-    class Type
+    class Type # rubocop:disable Metrics/ClassLength
       class << self
         def get_ref(klass)
           "#/components/schemas/#{safe_name(klass)}"
@@ -97,7 +97,7 @@ module SoberSwag
       def parsed_type
         @parsed_type ||=
           begin
-            (parsed, _)  = parsed_result
+            (parsed,) = parsed_result
             parsed
           end
       end
@@ -116,7 +116,7 @@ module SoberSwag
 
       private
 
-      def generate_schema_stub
+      def generate_schema_stub # rubocop:disable Metrics/MethodLength
         return self.class.primitive_def(type) if self.class.primitive?(type)
 
         case type
@@ -146,7 +146,7 @@ module SoberSwag
         object.cata { |e| rewrite_sums(e) }.cata { |e| flatten_one_ofs(e) }
       end
 
-      def rewrite_sums(object)
+      def rewrite_sums(object) # rubocop:disable Metrics/MethodLength
         case object
         in Nodes::Sum[Nodes::OneOf[*lhs], Nodes::OneOf[*rhs]]
         Nodes::OneOf.new(lhs + rhs)
@@ -165,12 +165,12 @@ module SoberSwag
         case object
           in Nodes::OneOf[*args]
           Nodes::OneOf.new(args.uniq)
-        else
+          else
           object
         end
       end
 
-      def to_object_schema(object)
+      def to_object_schema(object) # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
         case object
         in Nodes::List[element]
           {
@@ -194,11 +194,11 @@ module SoberSwag
         # openAPI requires that you give a list of required attributes
         # (which IMO is the *totally* wrong thing to do but whatever)
         # so we must do this garbage
-        required = attrs.filter {|(_, b)| b[:required] }.map(&:first)
+        required = attrs.filter { |(_, b)| b[:required] }.map(&:first)
         {
           type: :object,
-          properties: attrs.map { |(a,b)|
-            [a, b.select { |k, _| k != :required }]
+          properties: attrs.map { |(a, b)|
+            [a, b.reject { |k, _| k == :required }]
           }.to_h,
           required: required
         }
@@ -227,20 +227,22 @@ module SoberSwag
             ensure_uncomplicated(k, v)
             {
               name: k,
-              schema: v.reject { |k, _| %i[required nullable].include?(k) },
+              schema: v.reject { |key, _| %i[required nullable].include?(key) },
+              # rubocop:disable Style/DoubleNegation
               allowEmptyValue: !object_schema[:required].include?(k) || !!v[:nullable], # if it's required, no empties, but if *nullabe*, empties are okay
-              required: object_schema[:required].include?(k) || false,
+              # rubocop:enable Style/DoubleNegation
+              required: object_schema[:required].include?(k) || false
             }
           end
       end
 
       def ensure_uncomplicated(key, value)
         return if value[:type]
+
         raise TooComplicatedError, <<~ERROR
           Property #{key} has object-schema #{value}, but this type of param should be simple (IE a primitive of some kind)
         ERROR
       end
-
     end
   end
 end

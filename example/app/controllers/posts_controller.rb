@@ -1,5 +1,7 @@
+##
+# Example controller for posts.
 class PostsController < ApplicationController
-  before_action :set_post, only: [:show, :update, :destroy]
+  before_action :set_post, only: %i[show update destroy]
 
   include SoberSwag::Controller
 
@@ -92,9 +94,9 @@ class PostsController < ApplicationController
   end
 
   private
+
   # Use callbacks to share common setup or constraints between actions.
   def set_post
     @post = Post.find(parsed_path.id)
   end
-
 end

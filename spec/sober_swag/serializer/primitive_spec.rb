@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 RSpec.describe SoberSwag::Serializer::Primitive do
-  context 'of a String' do
+  context 'with a string' do
     let(:serializer) { described_class.new(SoberSwag::Types::String) }
 
     it 'serializes' do
@@ -13,11 +13,11 @@ RSpec.describe SoberSwag::Serializer::Primitive do
     end
   end
 
-  context 'chained with array' do
+  context 'when chained with .array' do
     let(:serializer) { described_class.new(SoberSwag::Types::String).array }
 
     it 'serializes' do
-      expect(serializer.serialize(['foo', 'bar'])).to eq(['foo', 'bar'])
+      expect(serializer.serialize(%w[foo bar])).to eq(%w[foo bar])
     end
   end
 end

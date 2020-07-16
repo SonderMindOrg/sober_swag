@@ -9,7 +9,6 @@ module SoberSwag
     # - #deconstruct_keys, which returns a hash of *everything needed to identify the node*.
     #   We use this later.
     class Base
-
       include Comparable
 
       ##
@@ -38,14 +37,13 @@ module SoberSwag
       #
       # When working with these definition nodes, we very often want to transform something recursively.
       # This method allows us to do so by focusing on a single level at a time, keeping the actual recursion *abstract*.
-      def cata(&block)
+      def cata
         raise ArgumentError, 'Base is abstract'
       end
 
-      def map(&block)
+      def map
         raise ArgumentError, 'Base is abstract'
       end
-
     end
   end
 end

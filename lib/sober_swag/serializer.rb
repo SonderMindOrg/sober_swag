@@ -1,4 +1,7 @@
 module SoberSwag
+  ##
+  # Container module for serializers.
+  # The interface for these is described in {SoberSwag::Serializer::Base}.
   module Serializer
     autoload(:Base, 'sober_swag/serializer/base')
     autoload(:Primitive, 'sober_swag/serializer/primitive')
@@ -15,10 +18,9 @@ module SoberSwag
       # in values raw.
       #
       # @param contained {Class} Dry::Type to use
-      def Primitive(contained)
+      def Primitive(contained) # rubocop:disable Naming/MethodName
         SoberSwag::Serializer::Primitive.new(contained)
       end
     end
-
   end
 end

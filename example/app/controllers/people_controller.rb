@@ -1,9 +1,9 @@
+##
+# Demonstration controller that involves people.
 class PeopleController < ApplicationController
-
   include SoberSwag::Controller
 
   before_action :load_person, only: %i[show update]
-
 
   PersonBodyParams = SoberSwag.input_object do
     identifier 'PersonBodyParams'

@@ -6,7 +6,6 @@ module SoberSwag
   # This otherwise behaves exactly like a Dry::Struct.
   # Please see the documentation for that class to see how it works.
   class InputObject < Dry::Struct
-
     transform_keys(&:to_sym)
 
     class << self
@@ -14,7 +13,7 @@ module SoberSwag
       # The name to use for this type in external documentation.
       def identifier(arg = nil)
         @identifier = arg if arg
-        @identifier || self.name.to_s.gsub('::', '.')
+        @identifier || name.to_s.gsub('::', '.')
       end
 
       def primitive(sym)
@@ -25,6 +24,5 @@ module SoberSwag
         SoberSwag::Types::Params.const_get(sym)
       end
     end
-
   end
 end

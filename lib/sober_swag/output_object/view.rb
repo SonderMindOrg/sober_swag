@@ -1,14 +1,16 @@
 module SoberSwag
   class OutputObject
+    ##
+    # DSL for defining a view.
+    # Used in `view` blocks within {SoberSwag::OutputObject.define}.
     class View
-
       def self.define(name, base_fields, &block)
-        self.new(name, base_fields).tap do |view|
+        new(name, base_fields).tap do |view|
           view.instance_eval(&block)
         end
       end
 
-      class NestingError < Error; end;
+      class NestingError < Error; end
 
       include FieldSyntax
 
@@ -28,7 +30,7 @@ module SoberSwag
       end
 
       def except!(name)
-        @fields.select! { |f| f.name != name }
+        @fields.reject! { |f| f.name == name }
       end
 
       def view(*)
@@ -46,7 +48,6 @@ module SoberSwag
         @serializer ||=
           SoberSwag::Serializer::FieldList.new(fields)
       end
-
     end
   end
 end
