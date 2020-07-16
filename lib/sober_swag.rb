@@ -19,14 +19,14 @@ module SoberSwag
   autoload :Nodes, 'sober_swag/nodes'
   autoload :Compiler, 'sober_swag/compiler'
   autoload :Controller, 'sober_swag/controller'
-  autoload :Struct, 'sober_swag/struct'
+  autoload :InputObject, 'sober_swag/input_object'
   autoload :Server, 'sober_swag/server'
 
   ##
   # Define a struct of something.
   # Useful to prevent weirdness from autoloading.
   # @param parent [Class] the base class for the struct (default of {SoberSwag::Struct})
-  def self.struct(parent = nil, &block)
-    Class.new(parent || SoberSwag::Struct, &block)
+  def self.input_object(parent = nil, &block)
+    Class.new(parent || SoberSwag::InputObject, &block)
   end
 end

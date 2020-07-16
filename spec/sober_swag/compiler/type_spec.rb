@@ -6,7 +6,7 @@ RSpec.describe SoberSwag::Compiler::Type do
   end
 
   def self.compiling(&block)
-    let(:klass) { SoberSwag.struct(&block) }
+    let(:klass) { SoberSwag.input_object(&block) }
     let(:compiler) { described_class.new(klass) }
     subject { compiler }
   end

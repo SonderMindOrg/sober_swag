@@ -5,7 +5,7 @@ module SoberSwag
   #
   # This otherwise behaves exactly like a Dry::Struct.
   # Please see the documentation for that class to see how it works.
-  class Struct < Dry::Struct
+  class InputObject < Dry::Struct
 
     transform_keys(&:to_sym)
 

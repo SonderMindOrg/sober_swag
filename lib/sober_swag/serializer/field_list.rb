@@ -62,7 +62,7 @@ module SoberSwag
       end
 
       def struct_class
-        @struct_class ||= Class.new(SoberSwag::Struct)
+        @struct_class ||= Class.new(SoberSwag::InputObject)
       end
 
     end

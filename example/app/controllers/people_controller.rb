@@ -5,7 +5,7 @@ class PeopleController < ApplicationController
   before_action :load_person, only: %i[show update]
 
 
-  PersonBodyParams = SoberSwag.struct do
+  PersonBodyParams = SoberSwag.input_object do
     identifier 'PersonBodyParams'
 
     attribute :first_name, SoberSwag::Types::String
@@ -13,7 +13,7 @@ class PeopleController < ApplicationController
     attribute? :date_of_birth, SoberSwag::Types::Params::DateTime.optional
   end
 
-  PersonBodyPatchParams = SoberSwag.struct(PersonBodyParams) do
+  PersonBodyPatchParams = SoberSwag.input_object(PersonBodyParams) do
     identifier 'PersonBodyPatchParams'
 
     attribute? :first_name, SoberSwag::Types::String
@@ -21,12 +21,12 @@ class PeopleController < ApplicationController
     attribute? :date_of_birth, SoberSwag::Types::Params::DateTime.optional
   end
 
-  PersonParams = SoberSwag.struct do
+  PersonParams = SoberSwag.input_object do
     identifier 'PersonParams'
     attribute :person, PersonBodyParams
   end
 
-  PersonPatchParams = SoberSwag.struct do
+  PersonPatchParams = SoberSwag.input_object do
     identifier 'PersonPatchParams'
     attribute :person, PersonBodyPatchParams
   end

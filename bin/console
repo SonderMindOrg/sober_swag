@@ -3,7 +3,6 @@
 
 require 'bundler/setup'
 require 'sober_swag'
-require 'dry-struct'
 
 # You can add fixtures and/or initialization code here to make experimenting
 # with your gem easier. You can also use a different console, if you like.
@@ -11,22 +10,22 @@ module Types
   include Dry.Types()
 end
 
-Bio = SoberSwag.struct do
+Bio = SoberSwag.input_object do
   attribute :name, primitive(:String).meta(description: 'A very basic bio name')
 end
 
-Person = SoberSwag.struct do
+Person = SoberSwag.input_object do
   attribute :name, primitive(:String).meta(description: 'The full name description')
   attribute :age, param(:Integer).constrained(gt: 0).optional.meta(description: 'My cool age')
   attribute? :mood, Types::String
 end
 
-class PersonSearch < Dry::Struct
+class PersonSearch < SoberSwag::InputObject
   attribute? :name, Types::String
   attribute? :age, Types::Integer
 end
 
-class LinkedList < Dry::Struct
+class LinkedList < SoberSwag::InputObject
   attribute :value, Types::String
   attribute? :next, LinkedList
 end
