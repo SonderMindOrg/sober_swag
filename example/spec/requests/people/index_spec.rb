@@ -44,5 +44,24 @@ RSpec.describe 'Index action for people' do
 
       it_behaves_like 'a request with the person'
     end
+
+    context 'with a valid view' do
+      let(:request) { get '/people', params: { view: 'detail' } }
+      it_behaves_like 'a request with the person'
+    end
+
+    context 'with an invalid view' do
+      let(:request) { get '/people', params: { view: 'not-a-thing-lol' } }
+
+      it 'is not successful' do
+        request
+        expect(response).to_not be_successful
+      end
+
+      it 'is a bad request' do
+        request
+        expect(response).to be_bad_request
+      end
+    end
   end
 end

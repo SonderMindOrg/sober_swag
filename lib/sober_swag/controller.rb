@@ -14,6 +14,12 @@ module SoberSwag
       include ::Dry::Types()
     end
 
+    included do
+      rescue_from Dry::Struct::Error do
+        head :bad_request
+      end
+    end
+
     class_methods do
       ##
       # Define a new action with the given HTTP method, action name, and path.
