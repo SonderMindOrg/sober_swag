@@ -1,5 +1,5 @@
 PersonBlueprint = SoberSwag::Blueprint.define do
-  sober_name 'Person'
+  identifier 'Person'
   field :id, primitive(:Integer).meta(description: 'Unique ID')
   field :first_name, primitive(:String).meta(description: <<~MARKDOWN)
     This is the first name of a person.

@@ -63,9 +63,9 @@ module SoberSwag
 
       ##
       # Get the type name of this to be used externally, or set it if an argument is provided
-      def sober_name(arg = nil)
-        @sober_name = arg if arg
-        @sober_name
+      def identifier(arg = nil)
+        @identifier = arg if arg
+        @identifier
       end
 
     end

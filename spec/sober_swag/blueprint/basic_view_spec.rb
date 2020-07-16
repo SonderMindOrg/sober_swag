@@ -4,7 +4,7 @@ RSpec.describe 'a basic SoberSwag::Blueprint with a basic view' do
   let(:target) { { id: 1, name: 'Anthony' } }
   let(:blueprint) do
     SoberSwag::Blueprint.define do
-      sober_name 'Base'
+      identifier 'Base'
       field :id, primitive(:Integer)
       view :complex do
         field :name, primitive(:String)

@@ -19,9 +19,9 @@ module SoberSwag
         @views << View.define(name, fields, &block)
       end
 
-      def sober_name(arg = nil)
-        @sober_name = arg if arg
-        @sober_name
+      def identifier(arg = nil)
+        @identifier = arg if arg
+        @identifier
       end
 
     end

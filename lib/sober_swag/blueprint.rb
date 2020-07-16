@@ -39,16 +39,16 @@ module SoberSwag
       d = Definition.new.tap { |o|
         o.instance_eval(&block)
       }
-      self.new(d.fields, d.views, d.sober_name)
+      self.new(d.fields, d.views, d.identifier)
     end
 
-    def initialize(fields, views, sober_name)
+    def initialize(fields, views, identifier)
       @fields = fields
       @views = views
-      @sober_name = sober_name
+      @identifier = identifier
     end
 
-    attr_reader :fields, :views, :sober_name
+    attr_reader :fields, :views, :identifier
 
     def serialize(obj, opts = {})
       serializer.serialize(obj, opts)
@@ -73,7 +73,7 @@ module SoberSwag
         begin
           views.reduce(base_serializer) do |base, view|
             view_serializer = view.serializer
-            view_serializer.sober_name("#{sober_name}.#{view.name.to_s.classify}") if sober_name
+            view_serializer.identifier("#{identifier}.#{view.name.to_s.classify}") if identifier
             SoberSwag::Serializer::Conditional.new(
               proc do |object, options|
                 if options[:view].to_s == view.name.to_s
@@ -91,7 +91,7 @@ module SoberSwag
 
     def base_serializer
       @base_serializer ||= SoberSwag::Serializer::FieldList.new(fields).tap do |s|
-        s.sober_name(sober_name)
+        s.identifier(identifier)
       end
     end
 

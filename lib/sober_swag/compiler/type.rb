@@ -10,8 +10,8 @@ module SoberSwag
         end
 
         def safe_name(klass)
-          if klass.respond_to?(:sober_name)
-            klass.sober_name
+          if klass.respond_to?(:identifier)
+            klass.identifier
           else
             klass.to_s.gsub('::', '.')
           end

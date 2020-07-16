@@ -12,9 +12,9 @@ module SoberSwag
     class << self
       ##
       # The name to use for this type in external documentation.
-      def sober_name(arg = nil)
-        @sober_name = arg if arg
-        @sober_name || self.name.to_s.gsub('::', '.')
+      def identifier(arg = nil)
+        @identifier = arg if arg
+        @identifier || self.name.to_s.gsub('::', '.')
       end
 
       def primitive(sym)

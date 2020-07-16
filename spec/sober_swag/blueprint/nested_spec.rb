@@ -5,7 +5,7 @@ RSpec.describe 'a nested SoberSwag::Blueprint' do
 
   let(:person_blueprint) do
     SoberSwag::Blueprint.define do
-      sober_name 'Person'
+      identifier 'Person'
       field :id, primitive(:Integer)
       field :name, primitive(:String)
     end
@@ -14,7 +14,7 @@ RSpec.describe 'a nested SoberSwag::Blueprint' do
   let(:company_blueprint) do
     pb = person_blueprint
     SoberSwag::Blueprint.define do
-      sober_name 'Company'
+      identifier 'Company'
       field :id, primitive(:Integer)
       field :ceo, pb
     end

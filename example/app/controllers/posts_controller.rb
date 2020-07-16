@@ -4,33 +4,33 @@ class PostsController < ApplicationController
   include SoberSwag::Controller
 
   PostCreateParamsBody = SoberSwag.struct do
-    sober_name 'PostCreateParamsBody'
+    identifier 'PostCreateParamsBody'
     attribute :person_id, SoberSwag::Types::Params::Integer.meta(description: 'Unique ID obtained from a person')
     attribute :title, SoberSwag::Types::String.meta(description: 'Short title of a post')
     attribute :body, SoberSwag::Types::String.meta(description: 'Post body in markdown format')
   end
 
   PostCreate = SoberSwag.struct do
-    sober_name 'PostCreate'
+    identifier 'PostCreate'
     attribute :post, PostCreateParamsBody
   end
 
   PostUpdateParamsBody = SoberSwag.struct do
-    sober_name 'PostUpdateParamsBody'
+    identifier 'PostUpdateParamsBody'
     attribute? :person_id, SoberSwag::Types::Params::Integer
     attribute? :title, SoberSwag::Types::String
     attribute? :body, SoberSwag::Types::String
   end
 
   PostUpdate = SoberSwag.struct do
-    sober_name 'PostUpdate'
+    identifier 'PostUpdate'
     attribute :post, PostUpdateParamsBody
   end
 
   ViewTypes = SoberSwag::Types::String.enum('base', 'detail')
 
   ShowPath = SoberSwag.struct do
-    sober_name 'ShowPersonPathParams'
+    identifier 'ShowPersonPathParams'
     attribute :id, Types::Params::Integer
   end
 

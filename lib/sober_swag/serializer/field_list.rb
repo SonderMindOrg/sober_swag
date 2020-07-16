@@ -47,9 +47,9 @@ module SoberSwag
         return struct_class if @made_struct_type
 
         f = field_list
-        s = sober_name
+        s = identifier
         struct_class.instance_eval do
-          sober_name(s)
+          identifier(s)
           f.each do |field|
             attribute field.name, field.serializer.lazy_type
           end

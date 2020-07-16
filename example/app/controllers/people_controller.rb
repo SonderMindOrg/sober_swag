@@ -6,7 +6,7 @@ class PeopleController < ApplicationController
 
 
   PersonBodyParams = SoberSwag.struct do
-    sober_name 'PersonBodyParams'
+    identifier 'PersonBodyParams'
 
     attribute :first_name, SoberSwag::Types::String
     attribute :last_name, SoberSwag::Types::String
@@ -14,7 +14,7 @@ class PeopleController < ApplicationController
   end
 
   PersonBodyPatchParams = SoberSwag.struct(PersonBodyParams) do
-    sober_name 'PersonBodyPatchParams'
+    identifier 'PersonBodyPatchParams'
 
     attribute? :first_name, SoberSwag::Types::String
     attribute? :last_name, SoberSwag::Types::String
@@ -22,12 +22,12 @@ class PeopleController < ApplicationController
   end
 
   PersonParams = SoberSwag.struct do
-    sober_name 'PersonParams'
+    identifier 'PersonParams'
     attribute :person, PersonBodyParams
   end
 
   PersonPatchParams = SoberSwag.struct do
-    sober_name 'PersonPatchParams'
+    identifier 'PersonPatchParams'
     attribute :person, PersonBodyPatchParams
   end
 

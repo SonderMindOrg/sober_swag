@@ -3,7 +3,7 @@ require 'spec_helper'
 RSpec.describe 'a basic SoberSwag::Blueprint' do
   let(:blueprint) do
     SoberSwag::Blueprint.define do
-      sober_name 'BasicBlueprint'
+      identifier 'BasicBlueprint'
       field :id, primitive(:Integer)
       field :name, primitive(:String)
     end
@@ -14,7 +14,7 @@ RSpec.describe 'a basic SoberSwag::Blueprint' do
   end
 
   it 'has a Base constant defined' do
-    expect(blueprint).to have_attributes(sober_name: 'BasicBlueprint')
+    expect(blueprint).to have_attributes(identifier: 'BasicBlueprint')
   end
 
   it 'serializes without error' do

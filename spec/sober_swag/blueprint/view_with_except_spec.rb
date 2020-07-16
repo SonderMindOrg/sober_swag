@@ -4,7 +4,7 @@ RSpec.describe 'A SoberSwag::Blueprint with a view that uses except' do
   let(:target) { { id: 1, name: 'Anthony' } }
   let(:blueprint) do
     SoberSwag::Blueprint.define do
-      sober_name 'Base'
+      identifier 'Base'
       field :id, primitive(:Integer)
       view :only_name do
         except! :id
