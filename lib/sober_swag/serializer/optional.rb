@@ -1,7 +1,11 @@
 module SoberSwag
   module Serializer
+    ##
+    # Given something that serializes a type 'A',
+    # this can be used to make a serializer of type 'A | nil'.
+    #
+    # Or, put another way, makes serializers not crash on nil values.
     class Optional < Base
-
       def initialize(inner)
         @inner = inner
       end
@@ -35,7 +39,6 @@ module SoberSwag
       def optional(*)
         raise ArgumentError, 'no nesting optionals please'
       end
-
     end
   end
 end

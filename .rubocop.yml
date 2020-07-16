@@ -3,5 +3,76 @@ Style/FrozenStringLiteralComment:
 Style/BlockDelimiters:
   EnforcedStyle: braces_for_chaining
 AllCops:
-  TargetRubyVersion: 2.7.0
+  TargetRubyVersion: 2.7.1
+  Exclude:
+    - 'bin/bundle'
+    - 'example/bin/bundle'
+
+Layout/LineLength:
+  Max: 160
 require: rubocop-rspec
+RSpec/NamedSubject:
+  Enabled: false
+RSpec/DescribeClass:
+  Enabled: false
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*.rb'
+    - 'example/spec/**/*.rb'
+RSpec/ImplicitBlockExpectation:
+  Enabled: false
+RSpec/ImplicitExpect:
+  EnforcedStyle: should
+Style/MultilineBlockChain:
+  Enabled: false
+Metrics/AbcSize:
+  Enabled: false
+Style/Documentation:
+  Exclude:
+    - 'example/db/migrate/**/*'
+Layout/EmptyLinesAroundAttributeAccessor:
+  Enabled: true
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
+Lint/DeprecatedOpenSSLConstant:
+  Enabled: true
+Lint/DuplicateElsifCondition:
+  Enabled: true
+Lint/MixedRegexpCaptureTypes:
+  Enabled: true
+Lint/RaiseException:
+  Enabled: true
+Lint/StructNewOverride:
+  Enabled: true
+Style/AccessorGrouping:
+  Enabled: true
+Style/ArrayCoercion:
+  Enabled: true
+Style/BisectedAttrAccessor:
+  Enabled: true
+Style/CaseLikeIf:
+  Enabled: true
+Style/ExponentialNotation:
+  Enabled: true
+Style/HashAsLastArrayItem:
+  Enabled: true
+Style/HashEachMethods:
+  Enabled: true
+Style/HashLikeCase:
+  Enabled: true
+Style/HashTransformKeys:
+  Enabled: true
+Style/HashTransformValues:
+  Enabled: true
+Style/RedundantAssignment:
+  Enabled: true
+Style/RedundantFetchBlock:
+  Enabled: true
+Style/RedundantFileExtensionInRequire:
+  Enabled: true
+Style/RedundantRegexpCharacterClass:
+  Enabled: true
+Style/RedundantRegexpEscape:
+  Enabled: true
+Style/SlicingWithRange:
+  Enabled: true

@@ -48,7 +48,6 @@ module SoberSwag
       def compile_route(route, compiler)
         SoberSwag::Compiler::Path.new(route, compiler).schema
       end
-
     end
   end
 end

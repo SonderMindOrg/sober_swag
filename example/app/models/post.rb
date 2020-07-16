@@ -1,3 +1,6 @@
+##
+# Extremely basic post example record.
+# This is a blog post! Wow.
 class Post < ApplicationRecord
   belongs_to :person
 

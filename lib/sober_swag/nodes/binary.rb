@@ -11,6 +11,7 @@ module SoberSwag
       end
 
       attr_reader :lhs, :rhs
+
       ##
       # Map the root values of the node.
       # This just calls map on the lhs and the rhs
@@ -25,7 +26,7 @@ module SoberSwag
         [lhs, rhs]
       end
 
-      def deconstruct_keys(keys)
+      def deconstruct_keys(_keys)
         { lhs: lhs, rhs: rhs }
       end
 

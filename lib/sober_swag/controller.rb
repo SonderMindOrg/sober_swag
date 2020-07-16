@@ -10,6 +10,9 @@ module SoberSwag
     autoload :UndefinedPathError, 'sober_swag/controller/undefined_path_error'
     autoload :UndefinedQueryError, 'sober_swag/controller/undefined_query_error'
 
+    ##
+    # Types module, so you can more easily access Types::Whatever
+    # without having to type SoberSwag::Types::Whatever.
     module Types
       include ::Dry::Types()
     end
@@ -71,10 +74,7 @@ module SoberSwag
             res = defined_routes.reduce(SoberSwag::Compiler.new) { |c, r| c.add_route(r) }
             {
               openapi: '3.0.0',
-              info: {
-                version: '1',
-                title: self.name
-              }
+              info: { version: '1', title: name }
             }.merge(res.to_swagger)
           end
       end
@@ -95,6 +95,7 @@ module SoberSwag
         begin
           r = current_action_def
           raise UndefinedPathError unless r&.path_params_class
+
           r.path_params_class.new(request.path_parameters)
         end
     end
@@ -108,6 +109,7 @@ module SoberSwag
         begin
           r = current_action_def
           raise UndefinedBodyError unless r&.request_body_class
+
           r.request_body_class.new(body_params)
         end
     end
@@ -121,6 +123,7 @@ module SoberSwag
         begin
           r = current_action_def
           raise UndefinedQueryError unless r&.query_params_class
+
           r.query_params_class.new(request.query_parameters)
         end
     end
@@ -153,7 +156,6 @@ module SoberSwag
     def current_action_def
       self.class.find_route(params[:action])
     end
-
   end
 end
 

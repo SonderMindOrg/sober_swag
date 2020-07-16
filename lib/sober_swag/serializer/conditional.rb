@@ -25,9 +25,10 @@ module SoberSwag
 
       def serialize(object, options = {})
         tag, val = chooser.call(object, options)
-        if tag == :left
+        case tag
+        when :left
           left.serialize(val, options)
-        elsif tag == :right
+        when :right
           right.serialize(val, options)
         else
           raise BadChoiceError, "result of chooser proc was not a left or right, but a #{val.class}"
@@ -56,7 +57,6 @@ module SoberSwag
       def finalize_lazy_type!
         [left, right].each(&:finalize_lazy_type!)
       end
-
     end
   end
 end

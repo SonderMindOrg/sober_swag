@@ -5,7 +5,7 @@ RSpec.describe SoberSwag::Serializer::Conditional do
     let(:left) { SoberSwag::Serializer.Primitive(SoberSwag::Types::Integer) }
     let(:right) { SoberSwag::Serializer.Primitive(SoberSwag::Types::String).via_map(&:to_s) }
     let(:chooser_proc) do
-      proc { |val, opt| val.even? ? [:left, val] : [:right, val] }
+      proc { |val, _opt| val.even? ? [:left, val] : [:right, val] }
     end
     let(:serializer) { described_class.new(chooser_proc, left, right) }
 
@@ -18,8 +18,10 @@ RSpec.describe SoberSwag::Serializer::Conditional do
     end
 
     context 'with an invalid chooser' do
-      let(:chooser_proc) { proc { |val, _| [:foo, val] } }
       subject { proc { described_class.new(chooser_proc, left, right).serialize(10) } }
+
+      let(:chooser_proc) { proc { |val, _| [:foo, val] } }
+
       it { should raise_error(SoberSwag::Error) }
       it { should raise_error(described_class::BadChoiceError) }
     end

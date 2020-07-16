@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/SonderMindOrg/sober_swag'
   spec.license       = 'MIT'
 
-  spec.metadata['allowed_push_host'] = "https://rubygems.org"
+  spec.metadata['allowed_push_host'] = 'https://rubygems.org'
 
   spec.metadata['homepage_uri'] = spec.homepage
 
@@ -28,13 +28,13 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
+  spec.add_dependency 'activesupport'
   spec.add_dependency 'dry-struct', '~> 1.0'
   spec.add_dependency 'dry-types', '~> 1.2'
-  spec.add_dependency 'activesupport'
 
-  spec.add_development_dependency 'pry'
-  spec.add_development_dependency 'simplecov'
   spec.add_development_dependency 'bundler', '~> 2.0'
+  spec.add_development_dependency 'pry'
   spec.add_development_dependency 'rake', '~> 13.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
+  spec.add_development_dependency 'simplecov'
 end

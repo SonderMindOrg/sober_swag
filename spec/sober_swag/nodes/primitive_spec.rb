@@ -8,9 +8,11 @@ RSpec.describe SoberSwag::Nodes::Primitive do
   end
 
   describe 'mapping' do
+    subject { node.map(&block) }
+
     let(:node) { described_class.new(1) }
     let(:block) { proc { |x| x + 1 } }
-    subject { node.map(&block) }
+
     it { should be_a(described_class) }
     it { should_not equal(node) }
     it { should have_attributes(value: 2) }

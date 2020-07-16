@@ -5,7 +5,6 @@ module SoberSwag
   # A basic, rack-only server to serve up swagger definitions.
   # By default it is configured to work with rails, but you can pass stuff to initialize.
   class Server
-
     RAILS_CONTROLLER_PROC = proc do
       Rails.application.routes.routes.map { |route|
         route.defaults[:controller]
@@ -27,7 +26,7 @@ module SoberSwag
       @cache = cache
     end
 
-    EFFECT_HTML = <<~HTML
+    EFFECT_HTML = <<~HTML.freeze
       <!DOCTYPE html>
       <html>
         <head>
@@ -80,6 +79,5 @@ module SoberSwag
     def sober_controllers
       @controller_proc.call
     end
-
   end
 end

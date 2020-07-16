@@ -10,24 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_03_172347) do
-
-  create_table "people", force: :cascade do |t|
-    t.text "first_name", null: false
-    t.text "last_name", null: false
-    t.datetime "date_of_birth"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+ActiveRecord::Schema.define(version: 20_200_603_172_347) do
+  create_table 'people', force: :cascade do |t|
+    t.text 'first_name', null: false
+    t.text 'last_name', null: false
+    t.datetime 'date_of_birth'
+    t.datetime 'created_at', precision: 6, null: false
+    t.datetime 'updated_at', precision: 6, null: false
   end
 
-  create_table "posts", force: :cascade do |t|
-    t.integer "person_id", null: false
-    t.text "title", null: false
-    t.text "body", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["person_id"], name: "index_posts_on_person_id"
+  create_table 'posts', force: :cascade do |t|
+    t.integer 'person_id', null: false
+    t.text 'title', null: false
+    t.text 'body', null: false
+    t.datetime 'created_at', precision: 6, null: false
+    t.datetime 'updated_at', precision: 6, null: false
+    t.index ['person_id'], name: 'index_posts_on_person_id'
   end
 
-  add_foreign_key "posts", "people"
+  add_foreign_key 'posts', 'people'
 end

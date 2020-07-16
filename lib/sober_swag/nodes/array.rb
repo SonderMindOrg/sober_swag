@@ -22,7 +22,7 @@ module SoberSwag
         @elements
       end
 
-      def deconstruct_keys(keys)
+      def deconstruct_keys(_keys)
         { elements: @elements }
       end
     end

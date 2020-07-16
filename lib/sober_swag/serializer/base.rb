@@ -1,7 +1,10 @@
 module SoberSwag
   module Serializer
+    ##
+    # Base interface class that all other serializers are subclasses of.
+    # This also defines methods as stubs, which is sort of bad ruby style, but makes documentation
+    # easier to generate.
     class Base
-
       ##
       # Return a new serializer that is an *array* of elements of this serializer.
       def array
@@ -38,7 +41,7 @@ module SoberSwag
 
       ##
       # Serialize an object.
-      def serialize(object, options = {})
+      def serialize(_object, _options = {})
         raise ArgumentError, 'not implemented!'
       end
 
@@ -79,7 +82,6 @@ module SoberSwag
         @identifier = arg if arg
         @identifier
       end
-
     end
   end
 end

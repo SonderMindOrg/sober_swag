@@ -1,7 +1,9 @@
 module SoberSwag
   module Serializer
+    ##
+    # Provides metadata on a serializer.
+    # All actions delegate to the base.
     class Meta < Base
-
       def initialize(base, meta)
         @base = base
         @meta = meta
@@ -28,7 +30,6 @@ module SoberSwag
       def lazy_type?
         @base.lazy_type?
       end
-
     end
   end
 end

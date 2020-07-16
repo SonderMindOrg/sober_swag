@@ -1,11 +1,14 @@
 module SoberSwag
+  ##
+  # Parses a *Dry-Types Schema* into a set of nodes we can use to compile.
+  # This is mostly because the vistior pattern sucks and catamorphisms are nice.
   class Parser
     def initialize(node)
       @node = node
       @found = Set.new
     end
 
-    def to_syntax
+    def to_syntax # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
       case @node
       when Dry::Types::Array::Member
         Nodes::List.new(bind(Parser.new(@node.member)))
@@ -68,6 +71,5 @@ module SoberSwag
       @found += other.found
       result
     end
-
   end
 end

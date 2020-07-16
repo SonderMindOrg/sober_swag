@@ -10,7 +10,7 @@ RSpec.describe 'people controller create', type: :request do
       subject { proc { request } }
 
       it { should change(Person, :count).by(1) }
-      it { should change(Person.where(first_name: 'Anthony'), :count).by(1)  }
+      it { should change(Person.where(first_name: 'Anthony'), :count).by(1) }
     end
 
     describe 'the response' do
@@ -31,6 +31,7 @@ RSpec.describe 'people controller create', type: :request do
 
     describe 'the response' do
       subject { request && response }
+
       it { should_not be_successful }
       it { should_not be_server_error }
       it { should be_unprocessable }

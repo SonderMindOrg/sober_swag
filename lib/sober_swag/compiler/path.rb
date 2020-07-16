@@ -24,7 +24,7 @@ module SoberSwag
         base
       end
 
-      def responses
+      def responses # rubocop:disable Metrics/MethodLength
         route.response_serializers.map { |status, serializer|
           [
             status.to_s,
@@ -72,7 +72,6 @@ module SoberSwag
           }
         }
       end
-
     end
   end
 end

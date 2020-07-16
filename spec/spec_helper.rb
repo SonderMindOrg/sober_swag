@@ -6,7 +6,6 @@ if ENV['COVERAGE']
   SimpleCov.start
 end
 
-
 require 'sober_swag'
 
 RSpec.configure do |config|

@@ -8,8 +8,7 @@ module SoberSwag
         @metadata = metadata
       end
 
-      attr_reader :value
-      attr_reader :metadata
+      attr_reader :value, :metadata
 
       def map(&block)
         self.class.new(block.call(value))
