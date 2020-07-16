@@ -1,0 +1,5 @@
+check_name: 'Rubocop Lint'
+versions:
+  rubocop: 'latest'
+  rubocop-rspec: 'latest'
+
