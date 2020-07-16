@@ -27,7 +27,29 @@ jobs:
       uses: ruby/setup-ruby@ec106b438a1ff6ff109590de34ddc62c540232e0
       with:
         ruby-version: 2.7
+    - uses: actions/cache@v2
+      with:
+        path: vendor/bundle
+        key: ${{ runner.os }}-gem-deps-${{ hashFiles('**/Gemfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-gem-deps-
     - name: Install dependencies
-      run: bundle install
+      run: |
+        bundle config path vendor/bundle
+        bundle install
     - name: Run tests
       run: bundle exec rake
+    - uses: actions/cache@v2
+      with:
+        path: example/vendor/bundle
+        key: ${{ runner.os }}-example-deps-${{ hashFiles('example/**/Gemfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-example-deps-
+    - name: Install example dependencies for example
+      working-directory: example
+      run: |
+        bundle config path vendor/bundle
+        bundle install
+    - name: Run specs for example
+      working-directory: example
+      run: rake
