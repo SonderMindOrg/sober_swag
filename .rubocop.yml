@@ -18,6 +18,7 @@ RSpec/DescribeClass:
 Metrics/BlockLength:
   Exclude:
     - 'spec/**/*.rb'
+    - 'sober_swag.gemspec'
     - 'example/spec/**/*.rb'
 RSpec/ImplicitBlockExpectation:
   Enabled: false
