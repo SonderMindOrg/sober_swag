@@ -69,8 +69,8 @@ class PeopleController < ApplicationController
   end
   def index
     @people = Person.all
-    @people = @people.where('first_name ILIKE ?', "%#{parsed_query.first_name}%") if parsed_query.first_name
-    @people = @people.where('last_name ILIKE ?', "%#{parsed_query.last_name}%") if parsed_query.last_name
+    @people = @people.where('UPPER(first_name) LIKE UPPER(?)', "%#{parsed_query.first_name}%") if parsed_query.first_name
+    @people = @people.where('UPPER(last_name) LIKE UPPER(?)', "%#{parsed_query.last_name}%") if parsed_query.last_name
     respond!(:ok, @people.includes(:posts), serializer_opts: { view: parsed_query.view })
   end
 
