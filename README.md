@@ -1,6 +1,7 @@
 # SoberSwag
 
 ![Ruby Test Status](https://github.com/SonderMindOrg/sober_swag/workflows/Ruby/badge.svg?branch=master)
+![Linters Status](https://github.com/SonderMindOrg/sober_swag/workflows/Linters/badge.svg?branch=master)
 
 ***NOTE: THIS GEM IS HIGHLY EXPERIMENTAL AND PROBABLY SHOULD NOT YET BE USED IN PRODUCTION***.
 
