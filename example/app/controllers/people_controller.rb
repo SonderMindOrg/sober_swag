@@ -33,8 +33,8 @@ class PeopleController < ApplicationController
 
   define :post, :create, '/people/' do
     request_body(PersonParams)
-    response(:ok, 'the person created', PersonBlueprint)
-    response(:unprocessable_entity, 'the validation errors', PersonErrorsBlueprint)
+    response(:ok, 'the person created', PersonOutputObject)
+    response(:unprocessable_entity, 'the validation errors', PersonErrorsOutputObject)
   end
   def create
     p = Person.new(parsed_body.person.to_h)
@@ -48,8 +48,8 @@ class PeopleController < ApplicationController
   define :patch, :update, '/people/{id}' do
     request_body(PersonPatchParams)
     path_params { attribute :id, Types::Params::Integer }
-    response(:ok, 'the person updated', PersonBlueprint)
-    response(:unprocessable_entity, 'the validation errors', PersonErrorsBlueprint)
+    response(:ok, 'the person updated', PersonOutputObject)
+    response(:unprocessable_entity, 'the validation errors', PersonErrorsOutputObject)
   end
   def update
     if @person.update(parsed_body.person.to_h)
@@ -65,7 +65,7 @@ class PeopleController < ApplicationController
       attribute? :last_name, Types::String
       attribute? :view, Types::String.enum('base', 'detail')
     end
-    response(:ok, 'all the people', PersonBlueprint.array)
+    response(:ok, 'all the people', PersonOutputObject.array)
   end
   def index
     @people = Person.all
@@ -78,7 +78,7 @@ class PeopleController < ApplicationController
     path_params do
       attribute :id, Types::Params::Integer
     end
-    response(:ok, 'the person requested', PersonBlueprint)
+    response(:ok, 'the person requested', PersonOutputObject)
   end
   def show
     respond!(:ok, @person)

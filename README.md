@@ -50,10 +50,10 @@ You define the type of parameters you accept, and we reject anything that doesn'
 ### Typed Responses
 
 Want to go further and type your responses too?
-Use SoberSwag blueprints, a serializer library heavily inspired by [Blueprinter](https://github.com/procore/blueprinter)
+Use SoberSwag blueprints, a serializer library heavily inspired by [OutputObjecter](https://github.com/procore/blueprinter)
 
 ```ruby
-PersonBlueprint = SoberSwag::Blueprint.define do
+PersonOutputObject = SoberSwag::OutputObject.define do
   field :id, primitive(:Integer)
   field :name, primitive(:String).optional
   field :is_registered, primitive(:Bool) do |person|
@@ -73,7 +73,7 @@ class PeopleController < ApplicationController
       attribute? :age, Types::Params::Integer
     end
     path_params { attribute :id, Types::Params::Integer }
-    response(:ok, 'the updated person', PersonBlueprint)
+    response(:ok, 'the updated person', PersonOutputObject)
   end
   def update
     person = Person.find(parsed_path.id)

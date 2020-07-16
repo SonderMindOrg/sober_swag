@@ -1,5 +1,5 @@
 module SoberSwag
-  class Blueprint
+  class OutputObject
     ##
     # Syntax for definitions that can add fields.
     module FieldSyntax

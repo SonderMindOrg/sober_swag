@@ -1,4 +1,4 @@
-PersonBlueprint = SoberSwag::Blueprint.define do
+PersonOutputObject = SoberSwag::OutputObject.define do
   identifier 'Person'
   field :id, primitive(:Integer).meta(description: 'Unique ID')
   field :first_name, primitive(:String).meta(description: <<~MARKDOWN)
@@ -10,6 +10,6 @@ PersonBlueprint = SoberSwag::Blueprint.define do
   field :last_name, primitive(:String)
 
   view :detail do
-    field :posts, -> { PostBlueprint.array }
+    field :posts, -> { PostOutputObject.array }
   end
 end

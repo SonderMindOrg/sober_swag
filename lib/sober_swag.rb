@@ -15,7 +15,7 @@ module SoberSwag
 
   autoload :Parser, 'sober_swag/parser'
   autoload :Serializer, 'sober_swag/serializer'
-  autoload :Blueprint, 'sober_swag/blueprint'
+  autoload :OutputObject, 'sober_swag/output_object'
   autoload :Nodes, 'sober_swag/nodes'
   autoload :Compiler, 'sober_swag/compiler'
   autoload :Controller, 'sober_swag/controller'

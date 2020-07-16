@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-RSpec.describe 'A SoberSwag::Blueprint with a view that uses except' do
+RSpec.describe 'A SoberSwag::OutputObject with a view that uses except' do
   let(:target) { { id: 1, name: 'Anthony' } }
-  let(:blueprint) do
-    SoberSwag::Blueprint.define do
+  let(:output_object) do
+    SoberSwag::OutputObject.define do
       identifier 'Base'
       field :id, primitive(:Integer)
       view :only_name do
@@ -13,8 +13,8 @@ RSpec.describe 'A SoberSwag::Blueprint with a view that uses except' do
     end
   end
 
-  describe 'the blueprint' do
-    subject { blueprint }
+  describe 'the output_object' do
+    subject { output_object }
     it { should respond_to(:serialize) }
     it { should respond_to(:type) }
     it { should have_attributes(type: be_a(Dry::Struct::Sum)) }
@@ -22,24 +22,24 @@ RSpec.describe 'A SoberSwag::Blueprint with a view that uses except' do
 
   describe 'serializing' do
     context 'with the view' do
-      subject { blueprint.serialize(target, { view: :only_name }) }
+      subject { output_object.serialize(target, { view: :only_name }) }
       it { should be_a(Hash) }
       it { should have_key(:name) }
       it { should_not have_key(:id) }
       it 'roundtrips' do
-        expect { blueprint.type.call(subject) }.to_not raise_error
-        expect(blueprint.type.call(subject)).to be_a(blueprint.view(:only_name).type)
+        expect { output_object.type.call(subject) }.to_not raise_error
+        expect(output_object.type.call(subject)).to be_a(output_object.view(:only_name).type)
       end
     end
 
     context 'without the view' do
-      subject { blueprint.serialize(target) }
+      subject { output_object.serialize(target) }
       it { should be_a(Hash) }
       it { should have_key(:id) }
       it { should_not have_key(:name) }
       it 'roundtrips' do
-        expect { blueprint.type.call(subject) }.to_not raise_error
-        expect(blueprint.type.call(subject)).to be_a(blueprint.base.type)
+        expect { output_object.type.call(subject) }.to_not raise_error
+        expect(output_object.type.call(subject)).to be_a(output_object.base.type)
       end
     end
   end

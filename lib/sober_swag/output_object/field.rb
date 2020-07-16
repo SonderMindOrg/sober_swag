@@ -1,5 +1,5 @@
 module SoberSwag
-  class Blueprint
+  class OutputObject
     class Field
       def initialize(name, serializer, from: nil, &block)
         @name = name

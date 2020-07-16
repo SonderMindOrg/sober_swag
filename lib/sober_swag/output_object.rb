@@ -6,19 +6,19 @@ module SoberSwag
   # This allows you to make "views" and such inside.
   #
   # Under the hood, this is actually all based on {SoberSwag::Serialzier::Base}.
-  class Blueprint < SoberSwag::Serializer::Base
-    autoload(:Field, 'sober_swag/blueprint/field')
-    autoload(:Definition, 'sober_swag/blueprint/definition')
-    autoload(:FieldSyntax, 'sober_swag/blueprint/field_syntax')
-    autoload(:View, 'sober_swag/blueprint/view')
+  class OutputObject < SoberSwag::Serializer::Base
+    autoload(:Field, 'sober_swag/output_object/field')
+    autoload(:Definition, 'sober_swag/output_object/definition')
+    autoload(:FieldSyntax, 'sober_swag/output_object/field_syntax')
+    autoload(:View, 'sober_swag/output_object/view')
 
     ##
-    # Use a Blueprint to define a new serializer.
+    # Use a OutputObject to define a new serializer.
     # It will be based on {SoberSwag::Serializer::Base}.
     #
     # An example is illustrative:
     #
-    #     PersonSerializer = SoberSwag::Blueprint.define do
+    #     PersonSerializer = SoberSwag::OutputObject.define do
     #       field :id, primitive(:Integer)
     #       field :name, primtive(:String).optional
     #

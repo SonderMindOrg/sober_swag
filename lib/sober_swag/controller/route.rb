@@ -1,5 +1,3 @@
-require 'sober_swag/blueprint'
-
 module SoberSwag
   module Controller
     class Route
@@ -104,13 +102,13 @@ module SoberSwag
       ##
       # Define a serializer for a response with the given status code.
       # You may either give a serializer you defined elsewhere, or define one inline as if passed to
-      # {SoberSwag::Blueprint.define}
+      # {SoberSwag::OutputObject.define}
       def response(status_code, description, serializer = nil, &block)
         status_key = Rack::Utils.status_code(status_code)
 
         raise ArgumentError, 'Response defiend!' if @response_serializers.key?(status_key)
 
-        serializer ||= SoberSwag::Blueprint.define(&block)
+        serializer ||= SoberSwag::OutputObject.define(&block)
         response_module.const_set(status_code.to_s.classify, serializer)
         @response_serializers[status_key] = serializer
         @response_descriptions[status_key] = description

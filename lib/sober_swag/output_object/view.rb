@@ -1,5 +1,5 @@
 module SoberSwag
-  class Blueprint
+  class OutputObject
     class View
 
       def self.define(name, base_fields, &block)

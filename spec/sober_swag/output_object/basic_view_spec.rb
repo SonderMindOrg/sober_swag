@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-RSpec.describe 'a basic SoberSwag::Blueprint with a basic view' do
+RSpec.describe 'a basic SoberSwag::OutputObject with a basic view' do
   let(:target) { { id: 1, name: 'Anthony' } }
-  let(:blueprint) do
-    SoberSwag::Blueprint.define do
+  let(:output_object) do
+    SoberSwag::OutputObject.define do
       identifier 'Base'
       field :id, primitive(:Integer)
       view :complex do
@@ -13,7 +13,7 @@ RSpec.describe 'a basic SoberSwag::Blueprint with a basic view' do
   end
 
   describe 'the returned class' do
-    subject { blueprint }
+    subject { output_object }
     it { should respond_to(:serialize) }
     it { should respond_to(:type) }
   end
@@ -21,7 +21,7 @@ RSpec.describe 'a basic SoberSwag::Blueprint with a basic view' do
   describe 'serializing' do
     context 'with the view' do
       subject {
-        blueprint.serialize(target, { view: :complex })
+        output_object.serialize(target, { view: :complex })
       }
       it 'raises no error' do
         expect { subject }.to_not raise_error
@@ -33,7 +33,7 @@ RSpec.describe 'a basic SoberSwag::Blueprint with a basic view' do
 
     context 'without the view' do
       subject {
-        blueprint.serialize(target, {})
+        output_object.serialize(target, {})
       }
       it { should have_key(:id) }
       it { should_not have_key(:name) }
@@ -42,27 +42,27 @@ RSpec.describe 'a basic SoberSwag::Blueprint with a basic view' do
   end
 
   describe 'roundtripping' do
-    let(:roundtripped) { blueprint.type.call(serialized) }
+    let(:roundtripped) { output_object.type.call(serialized) }
     subject { roundtripped }
     context 'with the view' do
-      let(:serialized) { blueprint.serialize(target, { view: :complex }) }
+      let(:serialized) { output_object.serialize(target, { view: :complex }) }
       it 'works' do
         expect { roundtripped }.to_not raise_error
       end
 
       it 'is the complex view type' do
-        should be_a(blueprint.view(:complex).type)
+        should be_a(output_object.view(:complex).type)
       end
     end
 
     context 'without the view' do
-      let(:serialized) { blueprint.serialize(target) }
+      let(:serialized) { output_object.serialize(target) }
       it 'works' do
         expect { roundtripped }.to_not raise_error
       end
 
       it 'is the base view type' do
-        should be_a(blueprint.view(:base).type)
+        should be_a(output_object.view(:base).type)
       end
     end
   end

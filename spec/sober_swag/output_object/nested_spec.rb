@@ -1,19 +1,19 @@
 require 'spec_helper'
 
-RSpec.describe 'a nested SoberSwag::Blueprint' do
+RSpec.describe 'a nested SoberSwag::OutputObject' do
   let(:target) { { id: 1, ceo: { id: 1, name: 'Mark' } } }
 
-  let(:person_blueprint) do
-    SoberSwag::Blueprint.define do
+  let(:person_output_object) do
+    SoberSwag::OutputObject.define do
       identifier 'Person'
       field :id, primitive(:Integer)
       field :name, primitive(:String)
     end
   end
 
-  let(:company_blueprint) do
-    pb = person_blueprint
-    SoberSwag::Blueprint.define do
+  let(:company_output_object) do
+    pb = person_output_object
+    SoberSwag::OutputObject.define do
       identifier 'Company'
       field :id, primitive(:Integer)
       field :ceo, pb
@@ -21,7 +21,7 @@ RSpec.describe 'a nested SoberSwag::Blueprint' do
   end
 
   describe 'the returned serializer' do
-    subject { company_blueprint }
+    subject { company_output_object }
     it { should respond_to(:serialize) }
     it { should respond_to(:type) }
     it { should respond_to(:base) }
@@ -29,14 +29,14 @@ RSpec.describe 'a nested SoberSwag::Blueprint' do
 
   describe 'serializing' do
     it 'does so without error' do
-      expect { company_blueprint.serialize(target) }.to_not raise_error
+      expect { company_output_object.serialize(target) }.to_not raise_error
     end
     it 'serializes properly' do
-      expect(company_blueprint.serialize(target)).to eq(target)
+      expect(company_output_object.serialize(target)).to eq(target)
     end
     it 'roundtrips' do
       expect {
-        company_blueprint.type.new(company_blueprint.serialize(target))
+        company_output_object.type.new(company_output_object.serialize(target))
       }.to_not raise_error
     end
   end

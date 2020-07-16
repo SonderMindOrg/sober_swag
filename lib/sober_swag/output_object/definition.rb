@@ -1,5 +1,5 @@
 module SoberSwag
-  class Blueprint
+  class OutputObject
     class Definition
 
       def initialize

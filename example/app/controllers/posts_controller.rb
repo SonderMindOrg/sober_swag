@@ -38,7 +38,7 @@ class PostsController < ApplicationController
     query_params do
       attribute? :view, ViewTypes
     end
-    response(:ok, 'all the posts', PostBlueprint.array)
+    response(:ok, 'all the posts', PostOutputObject.array)
   end
   def index
     @posts = Post.all
@@ -49,7 +49,7 @@ class PostsController < ApplicationController
   define :get, :show, '/posts/{id}' do
     path_params(ShowPath)
     query_params { attribute? :view, ViewTypes }
-    response(:ok, 'the requested post', PostBlueprint)
+    response(:ok, 'the requested post', PostOutputObject)
   end
   def show
     respond!(:ok, @post, serializer_opts: { view: parsed_query.view })
@@ -57,7 +57,7 @@ class PostsController < ApplicationController
 
   define :post, :create, '/posts/' do
     request_body(PostCreate)
-    response(:created, 'the created post', PostBlueprint)
+    response(:created, 'the created post', PostOutputObject)
   end
   def create
     @post = Post.new(parsed_body.post.to_h)
@@ -72,7 +72,7 @@ class PostsController < ApplicationController
   define :patch, :update, '/posts/{id}' do
     path_params(ShowPath)
     request_body(PostUpdate)
-    response(:ok, 'the post updated', PostBlueprint.view(:base))
+    response(:ok, 'the post updated', PostOutputObject.view(:base))
   end
   def update
     if @post.update(parsed_body.post.to_h)
@@ -84,7 +84,7 @@ class PostsController < ApplicationController
 
   define :delete, :destroy, '/posts/{id}' do
     path_params(ShowPath)
-    response(:ok, 'the post deleted', PostBlueprint.view(:base))
+    response(:ok, 'the post deleted', PostOutputObject.view(:base))
   end
   def destroy
     @post.destroy
