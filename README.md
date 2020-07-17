@@ -49,7 +49,7 @@ You define the type of parameters you accept, and we reject anything that doesn'
 ### Typed Responses
 
 Want to go further and type your responses too?
-Use SoberSwag blueprints, a serializer library heavily inspired by [OutputObjecter](https://github.com/procore/blueprinter)
+Use SoberSwag output objects, a serializer library heavily inspired by [Blueprinter](https://github.com/procore/blueprinter)
 
 ```ruby
 PersonOutputObject = SoberSwag::OutputObject.define do
