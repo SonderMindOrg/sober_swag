@@ -8,7 +8,9 @@ module SoberSwag
         @map_f = map_f
       end
 
-      def serialize(object, options)
+      attr_reader :base, :map_f
+
+      def serialize(object, options = {})
         @base.serialize(@map_f.call(object), options)
       end
 

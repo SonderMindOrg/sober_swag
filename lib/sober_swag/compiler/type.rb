@@ -22,6 +22,8 @@ module SoberSwag
         end
 
         def primitive_def(value)
+          value = value.primitive if value.is_a?(Dry::Types::Nominal)
+
           return nil unless value.is_a?(Class)
 
           if (name = primitive_name(value))
@@ -129,7 +131,7 @@ module SoberSwag
         when Dry::Types::Sum
           { oneOf: normalize(parsed_type).elements.map { |t| self.class.new(t.value).schema_stub } }
         else
-          raise ArgumentError, "Cannot generate a schema stub for #{type} (#{type.class})"
+          raise SoberSwag::Compiler::Error, "Cannot generate a schema stub for #{type} (#{type.class})"
         end
       end
 
@@ -238,6 +240,8 @@ module SoberSwag
 
       def ensure_uncomplicated(key, value)
         return if value[:type]
+
+        return value[:oneOf].each { |member| ensure_uncomplicated(key, member) } if value[:oneOf]
 
         raise TooComplicatedError, <<~ERROR
           Property #{key} has object-schema #{value}, but this type of param should be simple (IE a primitive of some kind)

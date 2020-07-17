@@ -38,7 +38,13 @@ jobs:
         bundle config path vendor/bundle
         bundle install
     - name: Run tests
-      run: bundle exec rake
+      run: COVERAGE=1 bundle exec rake
+    - name: Upload Coverage
+      uses: actions/upload-artifact@master
+      if: always()
+      with:
+        name: coverage-report
+        path: coverage
     - uses: actions/cache@v2
       with:
         path: example/vendor/bundle

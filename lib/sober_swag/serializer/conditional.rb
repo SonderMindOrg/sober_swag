@@ -47,7 +47,11 @@ module SoberSwag
       end
 
       def lazy_type
-        left.lazy_type | right.lazy_type
+        if left.lazy_type == right.lazy_type
+          left.lazy_type
+        else
+          left.lazy_type | right.lazy_type
+        end
       end
 
       def lazy_type?
