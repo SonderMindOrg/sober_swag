@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    sober_swag (0.3.0)
+    sober_swag (0.4.0)
       activesupport
       dry-struct (~> 1.0)
       dry-types (~> 1.2)
@@ -224,9 +224,6 @@ DEPENDENCIES
   spring-watcher-listen (~> 2.0.0)
   sqlite3 (~> 1.4)
   tzinfo-data
-
-RUBY VERSION
-   ruby 2.7.1p83
 
 BUNDLED WITH
    2.1.4
