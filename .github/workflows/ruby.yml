@@ -61,4 +61,4 @@ jobs:
         bundle install
     - name: Run specs for example
       working-directory: example
-      wrun: bundle exec rake
+      run: bundle exec rake
