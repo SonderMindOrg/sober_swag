@@ -17,6 +17,9 @@ jobs:
   test:
 
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby: [ '2.5', '2.6', '2.7' ]
 
     steps:
     - uses: actions/checkout@v2
@@ -30,9 +33,9 @@ jobs:
     - uses: actions/cache@v2
       with:
         path: vendor/bundle
-        key: ${{ runner.os }}-gem-deps-${{ hashFiles('**/Gemfile.lock') }}
+        key: ${{ runner.os }}-${{ matrix.ruby }}-gem-deps-${{ hashFiles('**/Gemfile.lock') }}
         restore-keys: |
-          ${{ runner.os }}-gem-deps-
+          ${{ runner.os }}-${{ matrix.ruby }}-gem-deps-
     - name: Install dependencies
       run: |
         bundle config path vendor/bundle
@@ -48,9 +51,9 @@ jobs:
     - uses: actions/cache@v2
       with:
         path: example/vendor/bundle
-        key: ${{ runner.os }}-example-deps-${{ hashFiles('example/**/Gemfile.lock') }}
+        key: ${{ runner.os }}-${{ matrix.ruby }}-example-deps-${{ hashFiles('example/**/Gemfile.lock') }}
         restore-keys: |
-          ${{ runner.os }}-example-deps-
+          ${{ runner.os }}-${{ matrix.ruby }}-example-deps-
     - name: Install example dependencies for example
       working-directory: example
       run: |

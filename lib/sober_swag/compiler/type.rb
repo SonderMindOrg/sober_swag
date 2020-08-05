@@ -150,14 +150,17 @@ module SoberSwag
 
       def rewrite_sums(object) # rubocop:disable Metrics/MethodLength
         case object
-        in Nodes::Sum[Nodes::OneOf[*lhs], Nodes::OneOf[*rhs]]
-        Nodes::OneOf.new(lhs + rhs)
-        in Nodes::Sum[Nodes::OneOf[*args], rhs]
-        Nodes::OneOf.new(args + [rhs])
-        in Nodes::Sum[lhs, Nodes::OneOf[*args]]
-        Nodes::OneOf.new([lhs] + args)
-        in Nodes::Sum[lhs, rhs]
-        Nodes::OneOf.new([lhs, rhs])
+        when Nodes::Sum
+          lhs, rhs = object.deconstruct
+          if lhs.is_a?(Nodes::OneOf) && rhs.is_a?(Nodes::OneOf)
+            Nodes::OneOf.new(lhs.deconstruct + rhs.deconstruct)
+          elsif lhs.is_a?(Nodes::OneOf)
+            Nodes::OneOf.new([*lhs.deconstruct, rhs])
+          elsif rhs.is_a?(Nodes::OneOf)
+            Nodes::OneOf.new([lhs, *rhs.deconstruct])
+          else
+            Nodes::OneOf.new([lhs, rhs])
+          end
         else
           object
         end
@@ -165,59 +168,69 @@ module SoberSwag
 
       def flatten_one_ofs(object)
         case object
-          in Nodes::OneOf[*args]
-          Nodes::OneOf.new(args.uniq)
-          else
+        when Nodes::OneOf
+          Nodes::OneOf.new(object.deconstruct.uniq)
+        else
           object
         end
       end
 
-      def to_object_schema(object) # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
+      def to_object_schema(object) # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         case object
-        in Nodes::List[element]
+        when Nodes::List
           {
             type: :array,
-            items: element
+            items: object.deconstruct.first
           }
-        in Nodes::Enum[values]
+        when Nodes::Enum
           {
             type: :string,
-            enum: values
+            enum: object.deconstruct.first
           }
-        in Nodes::OneOf[{ type: 'null' }, b]
-        b.merge(nullable: true)
-        in Nodes::OneOf[a, { type: 'null' }]
-        a.merge(nullable: true)
-        in Nodes::OneOf[*attrs] if attrs.include?(type: 'null')
-        { oneOf: attrs.reject { |e| e[:type] == 'null' }, nullable: true }
-        in Nodes::OneOf[*cases]
-        { oneOf: cases }
-        in Nodes::Object[*attrs]
-        # openAPI requires that you give a list of required attributes
-        # (which IMO is the *totally* wrong thing to do but whatever)
-        # so we must do this garbage
-        required = attrs.filter { |(_, b)| b[:required] }.map(&:first)
-        {
-          type: :object,
-          properties: attrs.map { |(a, b)|
-            [a, b.reject { |k, _| k == :required }]
-          }.to_h,
-          required: required
-        }
-        in Nodes::Attribute[name, true, value]
-        [name, value.merge(required: true)]
-        in Nodes::Attribute[name, false, value]
-        [name, value]
+        when Nodes::OneOf
+          if object.deconstruct.include?({ type: 'null' })
+            rejected = object.deconstruct.reject { |e| e[:type] == 'null' }
+            if rejected.length == 1
+              rejected.first.merge(nullable: true)
+            else
+              { oneOf: rejected, nullable: true }
+            end
+          else
+            { oneOf: object.deconstruct }
+          end
+        when Nodes::Object
+          # openAPI requires that you give a list of required attributes
+          # (which IMO is the *totally* wrong thing to do but whatever)
+          # so we must do this garbage
+          required = object.deconstruct.filter { |(_, b)| b[:required] }.map(&:first)
+          {
+            type: :object,
+            properties: object.deconstruct.map { |(a, b)|
+              [a, b.reject { |k, _| k == :required }]
+            }.to_h,
+            required: required
+          }
+        when Nodes::Attribute
+          name, req, value = object.deconstruct
+          if req
+            [name, value.merge(required: true)]
+          else
+            [name, value]
+          end
         # can't match on value directly as ruby uses `===` to match,
         # and classes use `===` to mean `is an instance of`, as
         # opposed to direct equality lmao
-        in Nodes::Primitive[value:, metadata:] if self.class.primitive?(value)
-        md = self.class.primitive_def(value)
-        METADATA_KEYS.select(&metadata.method(:key?)).reduce(md) do |definition, key|
-          definition.merge(key => metadata[key])
-        end
-        in Nodes::Primitive[value:]
-        { '$ref': self.class.get_ref(value) }
+        when Nodes::Primitive
+          value = object.value
+          metadata = object.metadata
+          if self.class.primitive?(value)
+            md = self.class.primitive_def(value)
+            METADATA_KEYS.select(&metadata.method(:key?)).reduce(md) do |definition, key|
+              definition.merge(key => metadata[key])
+            end
+          else
+            { '$ref': self.class.get_ref(value) }
+          end
         else
           raise ArgumentError, "Got confusing node #{object} (#{object.class})"
         end
