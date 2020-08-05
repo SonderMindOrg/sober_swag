@@ -178,7 +178,7 @@ module SoberSwag
         end
       end
 
-      def to_object_schema(object) # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+      def to_object_schema(object) # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
         case object
         when Nodes::List
           {
