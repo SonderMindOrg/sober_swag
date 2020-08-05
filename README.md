@@ -103,6 +103,26 @@ end
 Under the hood, this literally just generates a subclass of `Dry::Struct`.
 We use the DSL-like method just to make working with Rails' reloading less annoying.
 
+#### Adding additional documentation
+
+You can use the `.meta` attribute on a type to add additional documentation.
+Some keys are considered "well-known" and will be present on the swagger output.
+For example:
+
+
+```ruby
+User = SoberSwag.struct do
+  attribute :name, SoberSwag::Types::String.meta(description: <<~MARKDOWN, deprecated: true)
+    The given name of the students.
+    For historical reasons, we replace all non-ascii characters with their closest equivalents.
+    For our legacy COBOL system this is sadly required.
+  MARKDOWN
+  end
+end
+```
+
+This will output the swagger you expect, with a description and a deprecated flag.
+
 ## Special Thanks
 
 This gem is a mismatch of ideas from various sources.
