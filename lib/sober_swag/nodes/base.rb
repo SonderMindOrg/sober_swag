@@ -44,6 +44,10 @@ module SoberSwag
       def map
         raise ArgumentError, 'Base is abstract'
       end
+
+      def flatten_one_ofs
+        raise ArgumentError, 'Base is abstract'
+      end
     end
   end
 end
