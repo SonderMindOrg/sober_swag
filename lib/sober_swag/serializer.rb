@@ -18,7 +18,7 @@ module SoberSwag
       # in values raw.
       #
       # @param contained {Class} Dry::Type to use
-      def primitive(contained) # rubocop:disable Naming/MethodName
+      def primitive(contained)
         SoberSwag::Serializer::Primitive.new(contained)
       end
     end

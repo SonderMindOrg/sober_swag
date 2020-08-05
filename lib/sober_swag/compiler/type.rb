@@ -243,7 +243,7 @@ module SoberSwag
             {
               name: k,
               schema: v.reject { |key, _| %i[required nullable].include?(key) },
-              # rubocop:enable Style/DoubleNegation
+
               required: object_schema[:required].include?(k) || false
             }
           end
