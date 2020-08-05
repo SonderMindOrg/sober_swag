@@ -63,7 +63,7 @@ class PeopleController < ApplicationController
     query_params do
       attribute? :first_name, Types::String
       attribute? :last_name, Types::String
-      attribute? :view, Types::String.enum('base', 'detail')
+      attribute :view, Types::String.default('base'.freeze).enum('base', 'detail')
     end
     response(:ok, 'all the people', PersonOutputObject.array)
   end

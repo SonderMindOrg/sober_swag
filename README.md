@@ -85,13 +85,13 @@ end
 
 Support for easily typing "render the activerecord errors for me please" is (unfortunately) under development.
 
-### SoberSwag Structs
+### SoberSwag Input Objects
 
 Input parameters (including path, query, and request body) are typed using [dry-struct](https://dry-rb.org/gems/dry-struct/1.0/).
 You don't have to do them inline: you can define them in another file, like so:
 
 ```ruby
-User = SoberSwag.struct do
+User = SoberSwag.input_object do
   attribute :name, SoberSwag::Types::String
   # use ? if attributes are not required
   attribute? :favorite_movie, SoberSwag::Types::String
@@ -111,17 +111,28 @@ For example:
 
 
 ```ruby
-User = SoberSwag.struct do
-  attribute :name, SoberSwag::Types::String.meta(description: <<~MARKDOWN, deprecated: true)
-    The given name of the students.
-    For historical reasons, we replace all non-ascii characters with their closest equivalents.
-    For our legacy COBOL system this is sadly required.
+User = SoberSwag.input_object do
+  attribute? :name, SoberSwag::Types::String.meta(description: <<~MARKDOWN, deprecated: true)
+    The given name of the students, with strings encoded as escaped-ASCII.
+    This is used by an internal Cobol microservice from 1968.
+    Please use unicode_name instead unless you are that microservice.
   MARKDOWN
-  end
+  attribute? :unicode-name, SoberSwag::Types::String
 end
 ```
 
 This will output the swagger you expect, with a description and a deprecated flag.
+
+#### Adding Default Values
+
+Sometimes it makes sense to specify a default value.
+Don't worry, we've got you covered:
+
+```ruby
+QueryInput = SoberSwag.input_object do
+  attribute :allow_first, SoberSwag::Types::Params::Bool.default(false) # smartly alters type-definition to establish that passing this is not required.
+end
+```
 
 ## Special Thanks
 

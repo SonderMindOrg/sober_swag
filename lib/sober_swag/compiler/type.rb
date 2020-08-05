@@ -243,8 +243,6 @@ module SoberSwag
             {
               name: k,
               schema: v.reject { |key, _| %i[required nullable].include?(key) },
-              # rubocop:disable Style/DoubleNegation
-              allowEmptyValue: !object_schema[:required].include?(k) || !!v[:nullable], # if it's required, no empties, but if *nullabe*, empties are okay
               # rubocop:enable Style/DoubleNegation
               required: object_schema[:required].include?(k) || false
             }

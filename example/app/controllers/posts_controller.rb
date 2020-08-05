@@ -39,11 +39,19 @@ class PostsController < ApplicationController
   define :get, :index, '/posts/' do
     query_params do
       attribute? :view, ViewTypes
+      attribute :include_first, SoberSwag::Types::Params::Bool.default(false).meta(description: <<~MARKDOWN)
+        For historical reasons the first-ever post is the entire text of *Finnegan's Wake.*
+        Unfortunately, our contractors wound up depending on this quirk to complete dark arcane ceremonies,
+        so we can't remove it. Thus, by default, we don't include the first post unless you explicitly ask us to
+        (maybe you feel like some classic literature?).
+      MARKDOWN
     end
     response(:ok, 'all the posts', PostOutputObject.array)
   end
   def index
     @posts = Post.all
+
+    @posts = @posts.where('id > 1') unless parsed_query.include_first
 
     respond!(:ok, @posts.includes(:person), serializer_opts: { view: parsed_query.view })
   end
