@@ -26,7 +26,7 @@ RSpec.describe SoberSwag::Compiler::Type do
     compiling do
       attribute? :foo, SoberSwag::Types::String
       attribute? :bar, SoberSwag::Types::Integer
-      attribute :baz, SoberSwag::Types::Bool.optional # optional bool, allows empty value
+      attribute :baz, SoberSwag::Types::Bool
       attribute :mike, SoberSwag::Types::Bool
     end
 
@@ -41,13 +41,7 @@ RSpec.describe SoberSwag::Compiler::Type do
 
       it do
         expect(subject).to include(
-          include(schema: { type: 'boolean' }, allowEmptyValue: false)
-        )
-      end
-
-      it do
-        expect(subject).to include(
-          include(schema: { type: 'boolean' }, allowEmptyValue: true)
+          include(schema: { type: 'boolean' })
         )
       end
     end
@@ -65,6 +59,21 @@ RSpec.describe SoberSwag::Compiler::Type do
 
       it { should all(include(in: :path)) }
       it { should include(include(schema: { type: :string, enum: %w[foo bar baz] })) }
+    end
+  end
+
+  context 'with a class that has default-value enums' do
+    compiling do
+      attribute :foo, SoberSwag::Types::String.default('foo'.freeze).enum('foo', 'bar', 'baz')
+    end
+
+    it_behaves_like 'a universal type'
+
+    describe 'as a path schema' do
+      subject { compiler.path_schema }
+
+      it { should all(include(in: :path)) }
+      it { should include(include(schema: { type: :string, enum: %w[foo bar baz] }, required: false)) }
     end
   end
 
@@ -126,8 +135,8 @@ RSpec.describe SoberSwag::Compiler::Type do
       expect { subject.path_schema }.to raise_error(SoberSwag::Compiler::Type::TooComplicatedError)
     end
 
-    it 'cannot compile to a query' do
-      expect { subject.query_schema }.to raise_error(SoberSwag::Compiler::Type::TooComplicatedError)
+    it 'can compile to a query' do
+      expect { subject.query_schema }.not_to raise_error
     end
 
     it 'compiles to an object schema' do

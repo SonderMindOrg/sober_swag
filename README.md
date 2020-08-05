@@ -9,8 +9,6 @@ This generates documentation from *types*, which (conveniently) also lets you ge
 
 An introductory presentation is available [here](https://www.icloud.com/keynote/0bxP3Dn8ETNO0lpsSQSVfEL6Q#SoberSwagPresentation).
 
-This gem uses pattern matching, and is thus only compatible with Ruby 2.7 or later.
-
 ## Types for a fully-automated API
 
 SoberSwag lets you type your API using describe blocks.
@@ -87,13 +85,13 @@ end
 
 Support for easily typing "render the activerecord errors for me please" is (unfortunately) under development.
 
-### SoberSwag Structs
+### SoberSwag Input Objects
 
 Input parameters (including path, query, and request body) are typed using [dry-struct](https://dry-rb.org/gems/dry-struct/1.0/).
 You don't have to do them inline. You can define them in another file, like so:
 
 ```ruby
-User = SoberSwag.struct do
+User = SoberSwag.input_object do
   attribute :name, SoberSwag::Types::String
   # use ? if attributes are not required
   attribute? :favorite_movie, SoberSwag::Types::String
@@ -102,8 +100,56 @@ User = SoberSwag.struct do
 end
 ```
 
+Then, in your controller, just do:
+
+```ruby
+class PeopleController < ApplicationController
+  include SoberSwag::Controller
+
+  define :path, :update, '/people/{id}' do
+    request_body(User)
+    path_params { attribute :id, Types::Params::Integer }
+    response(:ok, 'the updated person', PersonOutputObject)
+  end
+  def update
+    # same as above!
+  end
+end
+```
+
 Under the hood, this literally just generates a subclass of `Dry::Struct`.
 We use the DSL-like method just to make working with Rails' reloading less annoying.
+
+#### Adding additional documentation
+
+You can use the `.meta` attribute on a type to add additional documentation.
+Some keys are considered "well-known" and will be present on the swagger output.
+For example:
+
+
+```ruby
+User = SoberSwag.input_object do
+  attribute? :name, SoberSwag::Types::String.meta(description: <<~MARKDOWN, deprecated: true)
+    The given name of the students, with strings encoded as escaped-ASCII.
+    This is used by an internal Cobol microservice from 1968.
+    Please use unicode_name instead unless you are that microservice.
+  MARKDOWN
+  attribute? :unicode_name, SoberSwag::Types::String
+end
+```
+
+This will output the swagger you expect, with a description and a deprecated flag.
+
+#### Adding Default Values
+
+Sometimes it makes sense to specify a default value.
+Don't worry, we've got you covered:
+
+```ruby
+QueryInput = SoberSwag.input_object do
+  attribute :allow_first, SoberSwag::Types::Params::Bool.default(false) # smartly alters type-definition to establish that passing this is not required.
+end
+```
 
 ## Special Thanks
 

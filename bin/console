@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby -W:no-experimental
+#!/usr/bin/env ruby
 # frozen_string_literal: true
 
 require 'bundler/setup'

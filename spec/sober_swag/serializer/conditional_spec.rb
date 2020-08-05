@@ -2,8 +2,8 @@ require 'spec_helper'
 
 RSpec.describe SoberSwag::Serializer::Conditional do
   context 'with a basic case' do
-    let(:left) { SoberSwag::Serializer.Primitive(SoberSwag::Types::Integer) }
-    let(:right) { SoberSwag::Serializer.Primitive(SoberSwag::Types::String).via_map(&:to_s) }
+    let(:left) { SoberSwag::Serializer.primitive(SoberSwag::Types::Integer) }
+    let(:right) { SoberSwag::Serializer.primitive(SoberSwag::Types::String).via_map(&:to_s) }
     let(:chooser_proc) do
       proc { |val, _opt| val.even? ? [:left, val] : [:right, val] }
     end

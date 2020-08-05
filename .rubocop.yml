@@ -31,6 +31,8 @@ Metrics/AbcSize:
 Style/Documentation:
   Exclude:
     - 'example/db/migrate/**/*'
+Metrics/PerceivedComplexity:
+  Enabled: false
 Layout/EmptyLinesAroundAttributeAccessor:
   Enabled: true
 Layout/SpaceAroundMethodCallOperator:

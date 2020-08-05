@@ -10,6 +10,9 @@ module SoberSwag
 
     def to_syntax # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
       case @node
+      when Dry::Types::Default
+        # we handle this elsewhere, so
+        bind(Parser.new(@node.type))
       when Dry::Types::Array::Member
         Nodes::List.new(bind(Parser.new(@node.member)))
       when Dry::Types::Enum
@@ -21,7 +24,7 @@ module SoberSwag
       when Dry::Types::Schema::Key
         Nodes::Attribute.new(
           @node.name,
-          @node.required?,
+          @node.required? && !@node.type.default?,
           bind(Parser.new(@node.type))
         )
       when Dry::Types::Sum

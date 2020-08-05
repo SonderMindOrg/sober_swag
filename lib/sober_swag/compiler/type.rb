@@ -73,13 +73,16 @@ module SoberSwag
       end
 
       def path_schema
-        path_schema_stub.map { |e| e.merge(in: :path) }
+        path_schema_stub.map do |e|
+          ensure_uncomplicated(e[:name], e[:schema])
+          e.merge(in: :path)
+        end
       rescue TooComplicatedError => e
         raise TooComplicatedForPathError, e.message
       end
 
       def query_schema
-        path_schema_stub.map { |e| e.merge(in: :query) }
+        path_schema_stub.map { |e| e.merge(in: :query, style: :deepObject, explode: true) }
       rescue TooComplicatedError => e
         raise TooComplicatedForQueryError, e.message
       end
@@ -175,7 +178,7 @@ module SoberSwag
         end
       end
 
-      def to_object_schema(object) # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+      def to_object_schema(object) # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
         case object
         when Nodes::List
           {
@@ -239,13 +242,10 @@ module SoberSwag
       def path_schema_stub
         @path_schema_stub ||=
           object_schema[:properties].map do |k, v|
-            ensure_uncomplicated(k, v)
+            # ensure_uncomplicated(k, v)
             {
               name: k,
               schema: v.reject { |key, _| %i[required nullable].include?(key) },
-              # rubocop:disable Style/DoubleNegation
-              allowEmptyValue: !object_schema[:required].include?(k) || !!v[:nullable], # if it's required, no empties, but if *nullabe*, empties are okay
-              # rubocop:enable Style/DoubleNegation
               required: object_schema[:required].include?(k) || false
             }
           end

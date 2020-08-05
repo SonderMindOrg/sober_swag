@@ -4,7 +4,7 @@ RSpec.describe SoberSwag::Serializer::Mapped do
   describe '.via_map' do
     subject { mapped.via_map { |e| e + 3 } }
 
-    let(:initial) { SoberSwag::Serializer.Primitive(:Integer) }
+    let(:initial) { SoberSwag::Serializer.primitive(:Integer) }
     let(:mapped) { initial.via_map { |e| e * 2 } }
 
     it 'removes a layer of indirection via proc composition' do
