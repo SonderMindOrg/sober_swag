@@ -35,13 +35,13 @@ RSpec.describe 'Index action for people' do
     end
 
     context 'with a good first-name search' do
-      let(:request) { get '/people', params: { first_name: 'A' } }
+      let(:request) { get '/people', params: { filters: { first_name: 'A' } } }
 
       it_behaves_like 'a request with the person'
     end
 
     context 'with a good last-name search' do
-      let(:request) { get '/people', params: { last_name: 'G' } }
+      let(:request) { get '/people', params: { filters: { last_name: 'G' } } }
 
       it_behaves_like 'a request with the person'
     end

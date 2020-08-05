@@ -61,16 +61,18 @@ class PeopleController < ApplicationController
 
   define :get, :index, '/people/' do
     query_params do
-      attribute? :first_name, Types::String
-      attribute? :last_name, Types::String
+      attribute? :filters do
+        attribute? :first_name, Types::String
+        attribute? :last_name, Types::String
+      end
       attribute :view, Types::String.default('base'.freeze).enum('base', 'detail')
     end
     response(:ok, 'all the people', PersonOutputObject.array)
   end
   def index
     @people = Person.all
-    @people = @people.where('UPPER(first_name) LIKE UPPER(?)', "%#{parsed_query.first_name}%") if parsed_query.first_name
-    @people = @people.where('UPPER(last_name) LIKE UPPER(?)', "%#{parsed_query.last_name}%") if parsed_query.last_name
+    @people = @people.where('UPPER(first_name) LIKE UPPER(?)', "%#{parsed_query.filters.first_name}%") if parsed_query.filters&.first_name
+    @people = @people.where('UPPER(last_name) LIKE UPPER(?)', "%#{parsed_query.filters.last_name}%") if parsed_query.filters&.last_name
     respond!(:ok, @people.includes(:posts), serializer_opts: { view: parsed_query.view })
   end
 

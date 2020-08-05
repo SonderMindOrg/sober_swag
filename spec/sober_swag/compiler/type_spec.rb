@@ -135,8 +135,8 @@ RSpec.describe SoberSwag::Compiler::Type do
       expect { subject.path_schema }.to raise_error(SoberSwag::Compiler::Type::TooComplicatedError)
     end
 
-    it 'cannot compile to a query' do
-      expect { subject.query_schema }.to raise_error(SoberSwag::Compiler::Type::TooComplicatedError)
+    it 'can compile to a query' do
+      expect { subject.query_schema }.not_to raise_error
     end
 
     it 'compiles to an object schema' do

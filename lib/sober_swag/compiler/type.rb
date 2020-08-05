@@ -73,13 +73,16 @@ module SoberSwag
       end
 
       def path_schema
-        path_schema_stub.map { |e| e.merge(in: :path) }
+        path_schema_stub.map do |e|
+          ensure_uncomplicated(e[:name], e[:schema])
+          e.merge(in: :path)
+        end
       rescue TooComplicatedError => e
         raise TooComplicatedForPathError, e.message
       end
 
       def query_schema
-        path_schema_stub.map { |e| e.merge(in: :query) }
+        path_schema_stub.map { |e| e.merge(in: :query, style: :deepObject, explode: true) }
       rescue TooComplicatedError => e
         raise TooComplicatedForQueryError, e.message
       end
@@ -239,11 +242,10 @@ module SoberSwag
       def path_schema_stub
         @path_schema_stub ||=
           object_schema[:properties].map do |k, v|
-            ensure_uncomplicated(k, v)
+            # ensure_uncomplicated(k, v)
             {
               name: k,
               schema: v.reject { |key, _| %i[required nullable].include?(key) },
-
               required: object_schema[:required].include?(k) || false
             }
           end
