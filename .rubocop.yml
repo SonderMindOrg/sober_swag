@@ -3,7 +3,7 @@ Style/FrozenStringLiteralComment:
 Style/BlockDelimiters:
   EnforcedStyle: braces_for_chaining
 AllCops:
-  TargetRubyVersion: 2.7.1
+  TargetRubyVersion: 2.6.0
   Exclude:
     - 'bin/bundle'
     - 'example/bin/bundle'
