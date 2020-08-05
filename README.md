@@ -134,7 +134,7 @@ User = SoberSwag.input_object do
     This is used by an internal Cobol microservice from 1968.
     Please use unicode_name instead unless you are that microservice.
   MARKDOWN
-  attribute? :unicode-name, SoberSwag::Types::String
+  attribute? :unicode_name, SoberSwag::Types::String
 end
 ```
 
