@@ -60,7 +60,7 @@ For example, let's say that I want a serializer that takes a `Date` and returns 
 I can do this:
 
 ```ruby
-date_string = SoberSwag::Serializer.Primitive(:String).via_map { |d| d.to_s }
+date_string = SoberSwag::Serializer.primitive(:String).via_map { |d| d.to_s }
 ```
 
 This is implemented via [`SoberSwag::Serializer::Mapped`](../lib/sober_swag/serializer/mapped.rb).
@@ -121,9 +121,9 @@ Let's define an output object:
 
 ```ruby
 StudentOutputObject = SoberSwag::OutputObject.define do
-  field :first_name, Primitive(:String)
-  field :last_name, Primitive(:String)
-  field :recent_grades, Primitive(:Integer).array do |student|
+  field :first_name, primitive(:String)
+  field :last_name, primitive(:String)
+  field :recent_grades, primitive(:Integer).array do |student|
     student.graded_assignments.limit(100).pluck(:grade)
   end
 end
@@ -143,10 +143,10 @@ Let's take a look at their use:
 
 ```ruby
 StudentOutputObject = SoberSwag::OutputObject.define do
-  field :first_name, Primitive(:String)
-  field :last_name, Primitive(:String)
+  field :first_name, primitive(:String)
+  field :last_name, primitive(:String)
   view :detail do
-    field :recent_grades, Primitive(:Integer).array do |student|
+    field :recent_grades, primitive(:Integer).array do |student|
       student.graded_assignments.limit(100).pluck(:grade)
     end
   end

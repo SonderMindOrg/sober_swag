@@ -10,7 +10,7 @@ module SoberSwag
       ##
       # Given a symbol to this, we will use a primitive name
       def primitive(name)
-        SoberSwag::Serializer.Primitive(SoberSwag::Types.const_get(name))
+        SoberSwag::Serializer.primitive(SoberSwag::Types.const_get(name))
       end
     end
   end
