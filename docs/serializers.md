@@ -4,11 +4,11 @@ Serializers are a way to transform from one type to another.
 For example, you might want to change an ActiveRecord object to a JSON struct.
 You might also want to change an internal date-interval into a two-element array of dates, or some custom text format.
 You can do all of these things with SoberSwag serializers.
-Furthermore, Serializers document the *type* that they serialize, so you can use it to degenerate documentation.
+Furthermore, Serializers document the *type* that they serialize, so you can use it to generate documentation.
 
 ## The Basics
 
-All serializers are inherted from [`SoberSwag::Serializer::Base`](../lib/sober_swag/serializer/base.rb).
+All serializers are inherited from [`SoberSwag::Serializer::Base`](../lib/sober_swag/serializer/base.rb).
 This is an abstract class that implements several methods, most of which will be documented later.
 The two that are most interesting, however, are `#type` and `#serialize`.
 
@@ -55,7 +55,7 @@ In the future, we might add some "debug mode" sorta thing that will do type-chec
 
 ### Mapped
 
-Sometimes, you can create a serilaizer via a *proc*.
+Sometimes, you can create a serializer via a *proc*.
 For example, let's say that I want a serializer that takes a `Date` and returns a string.
 I can do this:
 
@@ -87,7 +87,7 @@ my_serializer.optional.serialize(nil) # => nil
 # ^ nils become nil
 ```
 
-This properly changes the `type` to be a nillable type, as well.
+This properly changes the `type` to be a nilable type, as well.
 
 ### Array
 
@@ -189,7 +189,7 @@ StudentOutputObject = SoberSwag::OutputObject.define do
 end
 ```
 
-This can cause a circular dependecy.
+This can cause a circular dependency.
 To break this, you can use a lambda:
 
 ```ruby
@@ -200,4 +200,4 @@ StudentOutputObject = SoberSwag::OutputObject.define do
 end
 ```
 
-For clarity (and to prevent infinitely-looping serializers on accident, we reccomend you *always* use an explicit view for dependent output objects.
+For clarity (and to prevent infinitely-looping serializers on accident, we recommend you *always* use an explicit view for dependent output objects.

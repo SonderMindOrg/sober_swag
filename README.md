@@ -4,7 +4,7 @@
 ![Linters Status](https://github.com/SonderMindOrg/sober_swag/workflows/Linters/badge.svg?branch=master)
 
 SoberSwag is a combination of [Dry-Types](https://dry-rb.org/gems/dry-types/1.2/) and [Swagger](https://swagger.io/) that makes your Rails APIs more awesome.
-Other tools generate documenation from a DSL.
+Other tools generate documentation from a DSL.
 This generates documentation from *types*, which (conveniently) also lets you get supercharged strong-params-on-steroids.
 
 An introductory presentation is available [here](https://www.icloud.com/keynote/0bxP3Dn8ETNO0lpsSQSVfEL6Q#SoberSwagPresentation).
@@ -18,22 +18,22 @@ In any controller that includes `SoberSwag::Controller`, you get access to the s
 This lets you type your API endpoint:
 
 ```ruby
-  class PeopleController < ApplicationController
-    include SoberSwag::Controller
-    define :patch, :update, '/people/{id}' do
-      query_params do
-        attribute? :include_extra_info, Types::Params::Bool
-      end
-      request_body do
-        attribute? :name, Types::Params::String
-        attribute? :age, Types::Params::Integer
-      end
-      path_params { attribute :id, Types::Params::Integer }
+class PeopleController < ApplicationController
+  include SoberSwag::Controller
+  define :patch, :update, '/people/{id}' do
+    query_params do
+      attribute? :include_extra_info, Types::Params::Bool
     end
+    request_body do
+      attribute? :name, Types::Params::String
+      attribute? :age, Types::Params::Integer
+    end
+    path_params { attribute :id, Types::Params::Integer }
   end
+end
 ```
 
-We can now us this information to generate swagger documentation, available at the `swagger` action on this controller.
+We can now use this information to generate swagger documentation, available at the `swagger` action on this controller.
 More than that, we can use this information *inside* our controller methods:
 
 ```ruby
@@ -90,7 +90,7 @@ Support for easily typing "render the activerecord errors for me please" is (unf
 ### SoberSwag Structs
 
 Input parameters (including path, query, and request body) are typed using [dry-struct](https://dry-rb.org/gems/dry-struct/1.0/).
-You don't have to do them inline: you can define them in another file, like so:
+You don't have to do them inline. You can define them in another file, like so:
 
 ```ruby
 User = SoberSwag.struct do
@@ -98,7 +98,7 @@ User = SoberSwag.struct do
   # use ? if attributes are not required
   attribute? :favorite_movie, SoberSwag::Types::String
   # use .optional if attributes may be null
-  attribute :age, SoberSwag::Types::Params::::Integer.optional
+  attribute :age, SoberSwag::Types::Params::Integer.optional
 end
 ```
 
@@ -107,7 +107,7 @@ We use the DSL-like method just to make working with Rails' reloading less annoy
 
 ## Special Thanks
 
-This gem is a mismatch of ideas from various sources.
+This gem is a mishmash of ideas from various sources.
 The biggest thanks is owed to the [dry-rb](https://github.com/dry-rb) project, upon which the typing of SoberSwag is based.
 On an API design level, much is owed to [blueprinter](https://github.com/procore/blueprinter) for the serializers.
 The idea of a strongly-typed API came from the Haskell framework [servant](https://www.servant.dev/).
