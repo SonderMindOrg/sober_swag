@@ -100,6 +100,23 @@ User = SoberSwag.input_object do
 end
 ```
 
+Then, in your controller, just do:
+
+```ruby
+class PeopleController < ApplicationController
+  include SoberSwag::Controller
+
+  define :path, :update, '/people/{id}' do
+    request_body(User)
+    path_params { attribute :id, Types::Params::Integer }
+    response(:ok, 'the updated person', PersonOutputObject)
+  end
+  def update
+    # same as above!
+  end
+end
+```
+
 Under the hood, this literally just generates a subclass of `Dry::Struct`.
 We use the DSL-like method just to make working with Rails' reloading less annoying.
 
