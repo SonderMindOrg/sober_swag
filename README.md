@@ -9,8 +9,6 @@ This generates documentation from *types*, which (conveniently) also lets you ge
 
 An introductory presentation is available [here](https://www.icloud.com/keynote/0bxP3Dn8ETNO0lpsSQSVfEL6Q#SoberSwagPresentation).
 
-This gem uses pattern matching, and is thus only compatible with Ruby 2.7 or later.
-
 ## Types for a fully-automated API
 
 SoberSwag lets you type your API using describe blocks.
