@@ -9,8 +9,12 @@ module SoberSwag
       Rails.application.routes.routes.map { |route|
         route.defaults[:controller]
       }.to_set.reject(&:nil?).map { |controller|
-        "#{controller}_controller".classify.constantize
-      }.filter { |controller| controller.ancestors.include?(SoberSwag::Controller) }
+        begin
+          "#{controller}_controller".classify.constantize
+        rescue StandardError
+          nil
+        end
+      }.compact.filter { |controller| controller.ancestors.include?(SoberSwag::Controller) }
     end
 
     ##

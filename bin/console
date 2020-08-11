@@ -34,6 +34,15 @@ class LinkedList < SoberSwag::InputObject
   attribute? :next, LinkedList
 end
 
+Foo = SoberSwag::OutputObject.define do
+  field :name, primitive(:String)
+  field :age, primitive(:String)
+
+  view :foo do
+    field :bar, primitive(:String).optional
+  end
+end
+
 # (If you use this, don't forget to add pry to your Gemfile!)
 require 'pry'
 Pry.start
