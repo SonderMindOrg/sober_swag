@@ -56,12 +56,6 @@ RSpec.describe SoberSwag::Compiler::Type do
 
   context 'with a class that has an optional mapped type' do
     compiling_output do
-      ut = primitive(:String).via_map do |t|
-        Time.at(t).iso8601
-      end
-      field :created_at, ut do |r|
-        r.internal_data['created_at']
-      end
     end
 
     describe 'as object schema' do
