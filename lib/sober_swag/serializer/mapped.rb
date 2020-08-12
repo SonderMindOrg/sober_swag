@@ -29,13 +29,6 @@ module SoberSwag
       def type
         @base.type
       end
-
-      ##
-      # I have no freaking clue if ruby optimizes proc composition,
-      # but we at least save some node traversals here
-      def via_map(&block)
-        SoberSwag::Serializer::Mapped.new(@base, @map_f >> block)
-      end
     end
   end
 end

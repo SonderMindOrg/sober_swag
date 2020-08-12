@@ -7,12 +7,8 @@ RSpec.describe SoberSwag::Serializer::Mapped do
     let(:initial) { SoberSwag::Serializer.primitive(:Integer) }
     let(:mapped) { initial.via_map { |e| e * 2 } }
 
-    it 'removes a layer of indirection via proc composition' do
-      expect(subject).to have_attributes(base: initial)
-    end
-
     it 'composes in the right order' do
-      expect(subject.serialize(3)).to eq(9)
+      expect(subject.serialize(3)).to eq(12)
     end
 
     it { should have_attributes(lazy_type: initial.lazy_type) }

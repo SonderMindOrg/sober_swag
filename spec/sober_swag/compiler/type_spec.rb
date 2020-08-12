@@ -2,10 +2,17 @@ require 'spec_helper'
 
 RSpec.describe SoberSwag::Compiler::Type do
   def self.compiling(&block)
-    subject { compiler }
+    subject { compiler } # rubocop:disable RSpec/MultipleSubjects
 
     let(:klass) { SoberSwag.input_object(&block) }
     let(:compiler) { described_class.new(klass) }
+  end
+
+  def self.compiling_output(&block)
+    subject { compiler }
+
+    let(:output) { SoberSwag::OutputObject.define(&block) }
+    let(:compiler) { described_class.new(output.type) }
   end
 
   shared_examples 'a universal type' do
@@ -44,6 +51,23 @@ RSpec.describe SoberSwag::Compiler::Type do
           include(schema: { type: 'boolean' })
         )
       end
+    end
+  end
+
+  context 'with a class that has an optional mapped type' do
+    compiling_output do
+      ut = primitive(:String).via_map do |t|
+        Time.at(t).iso8601
+      end
+      field :created_at, ut do |r|
+        r.internal_data['created_at']
+      end
+    end
+
+    describe 'as object schema' do
+      subject { compiler.object_schema }
+
+      specify { expect { subject }.not_to raise_error }
     end
   end
 
