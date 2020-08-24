@@ -17,6 +17,6 @@ RSpec.describe SoberSwag::Serializer::Base do
     subject { described_class.new.meta({ foo: :bar }) }
 
     it { should be_a(SoberSwag::Serializer::Meta) }
-    it { should have_attributes(meta: { foo: :bar }) }
+    it { should have_attributes(metadata: { foo: :bar }) }
   end
 end

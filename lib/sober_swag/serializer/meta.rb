@@ -6,21 +6,26 @@ module SoberSwag
     class Meta < Base
       def initialize(base, meta)
         @base = base
-        @meta = meta
+        @metadata = meta
+        @identifier = @base.identifier
       end
 
-      attr_reader :base, :meta
+      attr_reader :base, :metadata
 
       def serialize(args, opts = {})
         base.serialize(args, opts)
       end
 
+      def meta(hash)
+        self.class.new(base, metadata.merge(hash))
+      end
+
       def lazy_type
-        @base.lazy_type.meta(**meta)
+        @base.lazy_type.meta(**metadata)
       end
 
       def type
-        @base.type.meta(**meta)
+        @base.type.meta(**metadata)
       end
 
       def finalize_lazy_type!
