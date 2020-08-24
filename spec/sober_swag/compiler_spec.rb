@@ -47,11 +47,23 @@ RSpec.describe SoberSwag::Compiler do
     let(:compiler) { described_class.new.add_type(output_b.type) }
 
     describe 'object schemas' do
-      subject { swagger.dig(:components, :schemas) }
+      subject(:schemas) { swagger.dig(:components, :schemas) }
 
       it { should have_key('Student') }
       it { should have_key('Classroom') }
       it { should_not have_key('') }
+
+      describe 'Classroom schema' do # rubocop:disable RSpec/NestedGroups
+        subject { schemas['Classroom'] }
+
+        it { should_not be_nil }
+        it { should have_key(:properties) }
+        it { should include(properties: have_key(:students)) }
+
+        it 'has the right dug thing' do
+          expect(subject.dig(:properties, :students, :description)).to eq('All the students in class')
+        end
+      end
     end
   end
 end

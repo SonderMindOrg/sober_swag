@@ -126,7 +126,9 @@ module SoberSwag
 
         case type
         when Class
-          { :$ref => self.class.get_ref(type) }
+          # refs have to be standalone
+          # so to not interefere with our other stuff, do this horrible garbage
+          { oneOf: [{ '$ref'.to_sym => self.class.get_ref(type) }] }
         when Dry::Types::Constrained
           self.class.new(type.type).schema_stub
         when Dry::Types::Array::Member
@@ -220,19 +222,20 @@ module SoberSwag
           else
             [name, value]
           end
-        # can't match on value directly as ruby uses `===` to match,
-        # and classes use `===` to mean `is an instance of`, as
-        # opposed to direct equality lmao
         when Nodes::Primitive
           value = object.value
           metadata = object.metadata
-          if self.class.primitive?(value)
-            md = self.class.primitive_def(value)
-            METADATA_KEYS.select(&metadata.method(:key?)).reduce(md) do |definition, key|
-              definition.merge(key => metadata[key])
+          type_def =
+            if self.class.primitive?(value)
+              self.class.primitive_def(value)
+            else
+              metadata.merge!(value.meta)
+              # refs have to be on their own, this is the stupid workaround
+              # so you can add descriptions and stuff
+              { oneOf: [{ '$ref'.to_sym => self.class.get_ref(value) }] }
             end
-          else
-            { '$ref': self.class.get_ref(value) }
+          METADATA_KEYS.select(&metadata.method(:key?)).reduce(type_def) do |definition, key|
+            definition.merge(key => metadata[key])
           end
         else
           raise ArgumentError, "Got confusing node #{object} (#{object.class})"

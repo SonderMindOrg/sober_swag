@@ -46,8 +46,9 @@ module SoberSwag
       when Dry::Types::Constrained
         bind(Parser.new(@node.type))
       when Dry::Types::Nominal
+        old_meta = @node.primitive.respond_to?(:meta) ? @node.primitive.meta : {}
         # start off with the moral equivalent of NodeTree[String]
-        Nodes::Primitive.new(@node.primitive, @node.meta)
+        Nodes::Primitive.new(@node.primitive, old_meta.merge(@node.meta))
       else
         # Inside of this case we have a class that is some user-defined type
         # We put it in our array of found types, and consider it a primitive
