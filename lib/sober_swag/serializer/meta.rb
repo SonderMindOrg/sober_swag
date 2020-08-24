@@ -33,8 +33,9 @@ module SoberSwag
         # Using .meta on dry-struct returns a *new type* that wraps the old one.
         # As such, we need to be a bit clever about when we tack on the identifier
         # for this type.
-        lazy_type.identifier(@base.lazy_type.identifier)
-        type.identifier(@base.type.identifier)
+        %i[lazy_type type].each do |sym|
+          public_send(sym).identifier(@base.public_send(sym).identifier) if @base.public_send(sym).respond_to?(:identifier)
+        end
       end
 
       def lazy_type?
