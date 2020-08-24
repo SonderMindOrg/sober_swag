@@ -41,6 +41,10 @@ module SoberSwag
         @fields << field
       end
 
+      def to_s
+        "<SoberSwag::OutputObject::View(#{identifier})>"
+      end
+
       ##
       # Get the serializer defined by this view.
       # WARNING: Don't add more fields after you call this.

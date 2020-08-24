@@ -92,6 +92,10 @@ module SoberSwag
         end
     end
 
+    def to_s
+      "<SoberSwag::OutputObject(#{identifier})>"
+    end
+
     def base_serializer
       @base_serializer ||= SoberSwag::Serializer::FieldList.new(fields).tap do |s|
         s.identifier(identifier)
