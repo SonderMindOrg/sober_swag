@@ -229,7 +229,7 @@ module SoberSwag
             if self.class.primitive?(value)
               self.class.primitive_def(value)
             else
-              metadata.merge!(value.meta)
+              metadata.merge!(value.meta) if value.respond_to?(:meta)
               # refs have to be on their own, this is the stupid workaround
               # so you can add descriptions and stuff
               { oneOf: [{ '$ref'.to_sym => self.class.get_ref(value) }] }
