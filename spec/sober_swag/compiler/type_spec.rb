@@ -213,7 +213,7 @@ RSpec.describe SoberSwag::Compiler::Type do
         end
       end
 
-      it { should include(oneOf: [{:$ref => '#/components/schemas/Test'}]) }
+      it { should include(oneOf: [{ :$ref => '#/components/schemas/Test' }]) }
     end
 
     describe 'with an array type' do
