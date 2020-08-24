@@ -20,12 +20,16 @@ module SoberSwag
         self.class.new(base, metadata.merge(hash))
       end
 
+      ##
+      # Delegates to `base`, adds metadata, pumbs identifiers
       def lazy_type
-        @base.lazy_type.meta(**metadata)
+        @base.lazy_type.meta(**metadata).tap { |t| t.identifier(@base.identifier) }
       end
 
+      ##
+      # Delegates to `base`, adds metadata, plumbs identifiers
       def type
-        @base.type.meta(**metadata)
+        @base.type.meta(**metadata).tap { |t| t.identifier(@base.identifier) }
       end
 
       def finalize_lazy_type!
