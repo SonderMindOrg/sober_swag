@@ -13,7 +13,14 @@ module SoberSwag
       # The name to use for this type in external documentation.
       def identifier(arg = nil)
         @identifier = arg if arg
+
         @identifier || name.to_s.gsub('::', '.')
+      end
+
+      def meta(*args)
+        super(*args).tap do |result|
+          result.identifier(identifier) if result.is_a?(Class) # pass on identifier
+        end
       end
 
       def primitive(sym)

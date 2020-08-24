@@ -20,20 +20,21 @@ module SoberSwag
         self.class.new(base, metadata.merge(hash))
       end
 
-      ##
-      # Delegates to `base`, adds metadata, pumbs identifiers
       def lazy_type
-        @base.lazy_type.meta(**metadata).tap { |t| t.identifier(@base.identifier) }
+        @lazy_type ||= @base.lazy_type.meta(**metadata)
       end
 
-      ##
-      # Delegates to `base`, adds metadata, plumbs identifiers
       def type
-        @base.type.meta(**metadata).tap { |t| t.identifier(@base.identifier) }
+        @type ||= @base.type.meta(**metadata)
       end
 
       def finalize_lazy_type!
         @base.finalize_lazy_type!
+        # Using .meta on dry-struct returns a *new type* that wraps the old one.
+        # As such, we need to be a bit clever about when we tack on the identifier
+        # for this type.
+        lazy_type.identifier(@base.lazy_type.identifier)
+        type.identifier(@base.type.identifier)
       end
 
       def lazy_type?

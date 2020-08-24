@@ -22,4 +22,36 @@ RSpec.describe SoberSwag::Compiler do
       }.not_to raise_error
     end
   end
+
+  context 'with a metadata output type' do
+    subject(:swagger) { compiler.to_swagger }
+
+    let(:output_a) do
+      SoberSwag::OutputObject.define do
+        identifier 'Student'
+
+        field :name, primitive(:String)
+        field :id, primitive(:String)
+      end
+    end
+
+    let(:output_b) do
+      ob = output_a
+      SoberSwag::OutputObject.define do
+        identifier 'Classroom'
+
+        field :students, ob.view(:base).meta(description: 'All the students in class')
+        field :name, primitive(:String)
+      end
+    end
+    let(:compiler) { described_class.new.add_type(output_b.type) }
+
+    describe 'object schemas' do
+      subject { swagger.dig(:components, :schemas) }
+
+      it { should have_key('Student') }
+      it { should have_key('Classroom') }
+      it { should_not have_key('') }
+    end
+  end
 end
