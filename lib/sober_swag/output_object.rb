@@ -77,7 +77,6 @@ module SoberSwag
         begin
           views.reduce(base_serializer) do |base, view|
             view_serializer = view.serializer
-            view_serializer.identifier("#{identifier}.#{view.name.to_s.classify}") if identifier
             SoberSwag::Serializer::Conditional.new(
               proc do |object, options|
                 if options[:view].to_s == view.name.to_s

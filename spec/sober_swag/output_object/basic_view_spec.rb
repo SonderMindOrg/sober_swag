@@ -17,6 +17,13 @@ RSpec.describe 'a basic SoberSwag::OutputObject with a basic view' do
 
     it { should respond_to(:serialize) }
     it { should respond_to(:type) }
+
+    describe 'the actual view' do
+      subject { output_object.view(:complex) }
+
+      it { should respond_to(:serialize) }
+      it { should have_attributes(identifier: 'Base.Complex') }
+    end
   end
 
   describe 'serializing' do

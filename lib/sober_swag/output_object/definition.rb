@@ -18,7 +18,11 @@ module SoberSwag
       end
 
       def view(name, &block)
-        @views << View.define(name, fields, &block)
+        view = View.define(name, fields, &block)
+
+        view.identifier("#{@identifier}.#{name.to_s.classify}") if identifier
+
+        @views << view
       end
 
       def identifier(arg = nil)

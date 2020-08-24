@@ -10,6 +10,9 @@ RSpec.describe SoberSwag::Compiler do
         field :created_at, ut do |r|
           r.internal_data['created_at']
         end
+        field :updated_at, ut.optional do |r|
+          r.internal_data['updated_at']
+        end
       end
     end
 

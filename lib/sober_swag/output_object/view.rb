@@ -3,7 +3,7 @@ module SoberSwag
     ##
     # DSL for defining a view.
     # Used in `view` blocks within {SoberSwag::OutputObject.define}.
-    class View
+    class View < SoberSwag::Serializer::Base
       def self.define(name, base_fields, &block)
         new(name, base_fields).tap do |view|
           view.instance_eval(&block)
@@ -46,7 +46,7 @@ module SoberSwag
       # WARNING: Don't add more fields after you call this.
       def serializer
         @serializer ||=
-          SoberSwag::Serializer::FieldList.new(fields)
+          SoberSwag::Serializer::FieldList.new(fields).tap { |s| s.identifier(identifier) }
       end
     end
   end
