@@ -17,6 +17,8 @@ module SoberSwag
         SoberSwag::Serializer::Optional.new(self)
       end
 
+      alias nilable optional
+
       ##
       # Is this type lazily defined?
       #
