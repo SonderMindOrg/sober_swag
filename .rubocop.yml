@@ -24,6 +24,8 @@ RSpec/ImplicitBlockExpectation:
   Enabled: false
 RSpec/ImplicitExpect:
   EnforcedStyle: should
+RSpec/LeadingSubject:
+  Enabled: false
 Style/MultilineBlockChain:
   Enabled: false
 Metrics/AbcSize:
