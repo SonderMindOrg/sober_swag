@@ -201,3 +201,29 @@ end
 ```
 
 For clarity (and to prevent infinitely-looping serializers on accident, we recommend you *always* use an explicit view for dependent output objects.
+
+### "Inheritance"
+
+Output objects don't support inheritance.
+You can't have one output object based on another.
+You *can*, however, merge one into another!
+Consdier this case:
+
+```ruby
+GenericBioOutput = SoberSwag::OutputObject.define do
+  field :name, primitive(:String)
+  field :brief_history, primtiive(:String)
+end
+
+ExecutiveBioOutput = SoberSwag::OutputObject.define do
+  merge GenericBioOutput
+  field :company, primitive(:String)
+  field :position, primitive(:String)
+end
+```
+
+Using `#merge` lets you add in all the fields from one output object into another.
+You can even use `merge` from within a view.
+
+Note that `merge` does *not* copy anything but fields.
+Identifiers and views will not be copied over.
