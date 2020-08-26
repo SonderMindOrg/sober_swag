@@ -18,6 +18,12 @@ module SoberSwag
       end
 
       ##
+      # Alias for optional
+      def nilable
+        optional
+      end
+
+      ##
       # Is this type lazily defined?
       #
       # Used for mutual recursion.
