@@ -17,11 +17,7 @@ module SoberSwag
         SoberSwag::Serializer::Optional.new(self)
       end
 
-      ##
-      # Alias for optional
-      def nilable
-        optional
-      end
+      alias_method :nilable, :optional
 
       ##
       # Is this type lazily defined?
