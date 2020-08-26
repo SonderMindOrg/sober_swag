@@ -43,7 +43,7 @@ jobs:
         gem install rubocop
         gem install rubocop-rspec
     - name: Run Lints
-      run: rubocop
+      run: rubocop lib spec example
     - uses: actions/cache@v2
       with:
         path: example/vendor/bundle
