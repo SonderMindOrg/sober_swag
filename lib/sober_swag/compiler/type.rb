@@ -25,7 +25,7 @@ module SoberSwag
 
       def object_schema
         @object_schema ||=
-          normalize(parsed_type).map { |v| SoberSwag::Compiler::Primitive.new(v).type_hash }.cata(&method(:to_object_schema)).merge(object_schema_meta)
+          normalize(mapped_type).cata(&method(:to_object_schema)).merge(object_schema_meta)
       end
 
       def object_schema_meta
@@ -65,6 +65,10 @@ module SoberSwag
             (_, found_types) = parsed_result
             found_types
           end
+      end
+
+      def mapped_type
+        @mapped_type ||= parsed_type.map { |v| SoberSwag::Compiler::Primitive.new(v).type_hash }
       end
 
       def parsed_type
