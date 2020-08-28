@@ -181,11 +181,17 @@ module SoberSwag
           if rejected.length == 1
             rejected.first.merge(nullable: true)
           else
-            { oneOf: rejected, nullable: true }
+            { oneOf: flatten_oneofs_hash(rejected), nullable: true }
           end
         else
-          { oneOf: object.deconstruct }
+          { oneOf: flatten_oneofs_hash(object.deconstruct) }
         end
+      end
+
+      def flatten_oneofs_hash(object)
+        object.map { |h|
+          h[:oneOf] || h
+        }.flatten
       end
 
       def path_schema_stub

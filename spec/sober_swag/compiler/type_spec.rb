@@ -54,6 +54,41 @@ RSpec.describe SoberSwag::Compiler::Type do
     end
   end
 
+  context 'with sum type of named attributes' do
+    let(:lhs) do
+      SoberSwag.input_object do
+        identifier 'LHS'
+        attribute :lhs, SoberSwag::Types::String
+      end
+    end
+    let(:rhs) do
+      SoberSwag.input_object do
+        identifier 'RHS'
+        attribute :rhs, SoberSwag::Types::Integer
+      end
+    end
+    let(:klass) do
+      lhs = self.lhs
+      rhs = self.rhs
+      SoberSwag.input_object do
+        identifier 'Bar'
+        attribute :baz, lhs | rhs
+      end
+    end
+
+    subject(:compiler) { described_class.new(klass) }
+
+    specify { expect { subject.object_schema }.not_to raise_error }
+
+    describe 'schema for the baz attribute' do
+      subject { compiler.object_schema[:properties][:baz] }
+
+      it { should have_key(:oneOf) }
+      it { should_not include(oneOf: include(have_key(:oneOf))) }
+      it { should include(oneOf: all(have_key(:$ref))) }
+    end
+  end
+
   context 'with a class that has an optional mapped type' do
     compiling_output do
     end
