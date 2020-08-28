@@ -6,6 +6,7 @@ module SoberSwag
   class Compiler
     autoload(:Type, 'sober_swag/compiler/type')
     autoload(:Error, 'sober_swag/compiler/error')
+    autoload(:Primitive, 'sober_swag/compiler/primitive')
     autoload(:Path, 'sober_swag/compiler/path')
     autoload(:Paths, 'sober_swag/compiler/paths')
 

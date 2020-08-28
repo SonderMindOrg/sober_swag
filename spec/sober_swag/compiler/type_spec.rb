@@ -43,12 +43,12 @@ RSpec.describe SoberSwag::Compiler::Type do
       subject { compiler.path_schema }
 
       it { should all(include(in: :path)) }
-      it { should include(include(schema: { type: 'integer' })) }
-      it { should include(include(schema: { type: 'string' })) }
+      it { should include(include(schema: { type: :integer })) }
+      it { should include(include(schema: { type: :string })) }
 
       it do
         expect(subject).to include(
-          include(schema: { type: 'boolean' })
+          include(schema: { type: :boolean })
         )
       end
     end
@@ -179,8 +179,8 @@ RSpec.describe SoberSwag::Compiler::Type do
 
       it { should be_key(:oneOf) }
       it { should include(oneOf: be_a(Array) & have_attributes(length: 3)) }
-      it { should include(oneOf: include(type: 'integer')) }
-      it { should include(oneOf: include(type: 'string')) }
+      it { should include(oneOf: include(type: :integer)) }
+      it { should include(oneOf: include(type: :string)) }
     end
   end
 
@@ -198,7 +198,7 @@ RSpec.describe SoberSwag::Compiler::Type do
 
       it { should be_key(:oneOf) }
       it { should include(oneOf: be_a(Array) & have_attributes(length: 2)) }
-      it { should include(oneOf: include(type: 'string') & include(type: 'integer')) }
+      it { should include(oneOf: include(type: :string) & include(type: :integer)) }
     end
   end
 
@@ -220,13 +220,13 @@ RSpec.describe SoberSwag::Compiler::Type do
       let(:type) { SoberSwag::Types::Array.of(SoberSwag::Types::String) }
 
       it { should include(type: :array) }
-      it { should include(items: { type: 'string' }) }
+      it { should include(items: { type: :string }) }
     end
 
     describe 'with a primitive type' do
       let(:type) { SoberSwag::Types::String }
 
-      it { should include(type: 'string') }
+      it { should include(type: :string) }
     end
 
     describe 'with a sum type' do
@@ -234,8 +234,8 @@ RSpec.describe SoberSwag::Compiler::Type do
 
       it { should be_key(:oneOf) }
       it { should include(oneOf: be_a(Array)) }
-      it { should include(oneOf: include(type: 'string')) }
-      it { should include(oneOf: include(type: 'integer')) }
+      it { should include(oneOf: include(type: :string)) }
+      it { should include(oneOf: include(type: :integer)) }
     end
 
     describe 'with a bad argument' do

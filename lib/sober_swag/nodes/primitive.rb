@@ -11,7 +11,7 @@ module SoberSwag
       attr_reader :value, :metadata
 
       def map(&block)
-        self.class.new(block.call(value))
+        self.class.new(block.call(value), metadata.dup)
       end
 
       def deconstruct

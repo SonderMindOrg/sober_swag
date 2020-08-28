@@ -53,7 +53,7 @@ module SoberSwag
         # Inside of this case we have a class that is some user-defined type
         # We put it in our array of found types, and consider it a primitive
         @found.add(@node)
-        Nodes::Primitive.new(@node)
+        Nodes::Primitive.new(@node, @node.respond_to?(:meta) ? @node.meta : {})
       end
     end
 
