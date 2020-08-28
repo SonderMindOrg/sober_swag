@@ -2,7 +2,7 @@ module SoberSwag
   module Nodes
     ##
     # One attribute of an object.
-    class Attribute
+    class Attribute < Base
       def initialize(key, required, value)
         @key = key
         @required = required

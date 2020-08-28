@@ -10,8 +10,8 @@ module SoberSwag
 
       attr_reader :values
 
-      def map(&block)
-        self.class.new(@values.map(&block))
+      def map
+        dup
       end
 
       def deconstruct

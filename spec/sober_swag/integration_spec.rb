@@ -23,7 +23,7 @@ RSpec.describe 'compilation integration round-tripping' do
     result(
       properties: {
         foo: {
-          type: 'string'
+          type: :string
         }
       },
       required: [:foo],
@@ -38,7 +38,7 @@ RSpec.describe 'compilation integration round-tripping' do
 
     result(
       properties: {
-        foo: { type: 'string' }
+        foo: { type: :string }
       },
       required: [],
       type: :object
@@ -52,7 +52,7 @@ RSpec.describe 'compilation integration round-tripping' do
     result(
       properties: {
         foo: {
-          oneOf: [{ type: 'string' }, { type: 'integer' }]
+          oneOf: [{ type: :string }, { type: :integer }]
         }
       },
       required: [:foo],

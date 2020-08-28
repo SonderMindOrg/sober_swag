@@ -43,14 +43,49 @@ RSpec.describe SoberSwag::Compiler::Type do
       subject { compiler.path_schema }
 
       it { should all(include(in: :path)) }
-      it { should include(include(schema: { type: 'integer' })) }
-      it { should include(include(schema: { type: 'string' })) }
+      it { should include(include(schema: { type: :integer })) }
+      it { should include(include(schema: { type: :string })) }
 
       it do
         expect(subject).to include(
-          include(schema: { type: 'boolean' })
+          include(schema: { type: :boolean })
         )
       end
+    end
+  end
+
+  context 'with sum type of named attributes' do
+    let(:lhs) do
+      SoberSwag.input_object do
+        identifier 'LHS'
+        attribute :lhs, SoberSwag::Types::String
+      end
+    end
+    let(:rhs) do
+      SoberSwag.input_object do
+        identifier 'RHS'
+        attribute :rhs, SoberSwag::Types::Integer
+      end
+    end
+    let(:klass) do
+      lhs = self.lhs
+      rhs = self.rhs
+      SoberSwag.input_object do
+        identifier 'Bar'
+        attribute :baz, lhs | rhs
+      end
+    end
+
+    subject(:compiler) { described_class.new(klass) }
+
+    specify { expect { subject.object_schema }.not_to raise_error }
+
+    describe 'schema for the baz attribute' do
+      subject { compiler.object_schema[:properties][:baz] }
+
+      it { should have_key(:oneOf) }
+      it { should_not include(oneOf: include(have_key(:oneOf))) }
+      it { should include(oneOf: all(have_key(:$ref))) }
     end
   end
 
@@ -137,6 +172,14 @@ RSpec.describe SoberSwag::Compiler::Type do
     end
 
     it_behaves_like 'a universal type'
+
+    describe 'the :other_thing property' do
+      subject { compiler.object_schema[:properties][:other_thing] }
+
+      it { should_not be_nil }
+      it { should include(nullable: true) }
+      it { should_not have_key(:oneOf) }
+    end
   end
 
   context 'with a class that has nested things' do
@@ -179,8 +222,8 @@ RSpec.describe SoberSwag::Compiler::Type do
 
       it { should be_key(:oneOf) }
       it { should include(oneOf: be_a(Array) & have_attributes(length: 3)) }
-      it { should include(oneOf: include(type: 'integer')) }
-      it { should include(oneOf: include(type: 'string')) }
+      it { should include(oneOf: include(type: :integer)) }
+      it { should include(oneOf: include(type: :string)) }
     end
   end
 
@@ -198,7 +241,7 @@ RSpec.describe SoberSwag::Compiler::Type do
 
       it { should be_key(:oneOf) }
       it { should include(oneOf: be_a(Array) & have_attributes(length: 2)) }
-      it { should include(oneOf: include(type: 'string') & include(type: 'integer')) }
+      it { should include(oneOf: include(type: :string) & include(type: :integer)) }
     end
   end
 
@@ -220,13 +263,13 @@ RSpec.describe SoberSwag::Compiler::Type do
       let(:type) { SoberSwag::Types::Array.of(SoberSwag::Types::String) }
 
       it { should include(type: :array) }
-      it { should include(items: { type: 'string' }) }
+      it { should include(items: { type: :string }) }
     end
 
     describe 'with a primitive type' do
       let(:type) { SoberSwag::Types::String }
 
-      it { should include(type: 'string') }
+      it { should include(type: :string) }
     end
 
     describe 'with a sum type' do
@@ -234,8 +277,8 @@ RSpec.describe SoberSwag::Compiler::Type do
 
       it { should be_key(:oneOf) }
       it { should include(oneOf: be_a(Array)) }
-      it { should include(oneOf: include(type: 'string')) }
-      it { should include(oneOf: include(type: 'integer')) }
+      it { should include(oneOf: include(type: :string)) }
+      it { should include(oneOf: include(type: :integer)) }
     end
 
     describe 'with a bad argument' do

@@ -7,6 +7,7 @@ module SoberSwag
   # Please see the documentation for that class to see how it works.
   class InputObject < Dry::Struct
     transform_keys(&:to_sym)
+    include SoberSwag::Type::Named
 
     class << self
       ##
@@ -18,8 +19,13 @@ module SoberSwag
       end
 
       def meta(*args)
+        original = self
+
         super(*args).tap do |result|
-          result.identifier(identifier) if result.is_a?(Class) # pass on identifier
+          return result unless result.is_a?(Class)
+
+          result.define_singleton_method(:alias?) { true }
+          result.define_singleton_method(:alias_of) { original }
         end
       end
 
