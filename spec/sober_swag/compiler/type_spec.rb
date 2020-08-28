@@ -172,6 +172,14 @@ RSpec.describe SoberSwag::Compiler::Type do
     end
 
     it_behaves_like 'a universal type'
+
+    describe 'the :other_thing property' do
+      subject { compiler.object_schema[:properties][:other_thing] }
+
+      it { should_not be_nil }
+      it { should include(nullable: true) }
+      it { should_not have_key(:oneOf) }
+    end
   end
 
   context 'with a class that has nested things' do

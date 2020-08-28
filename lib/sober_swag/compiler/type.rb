@@ -176,8 +176,8 @@ module SoberSwag
       end
 
       def one_of_to_schema(object)
-        if object.deconstruct.include?({ type: 'null' })
-          rejected = object.deconstruct.reject { |e| e[:type] == 'null' }
+        if object.deconstruct.include?({ type: :null })
+          rejected = object.deconstruct.reject { |e| e[:type] == :null }
           if rejected.length == 1
             rejected.first.merge(nullable: true)
           else
