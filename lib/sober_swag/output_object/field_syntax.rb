@@ -8,6 +8,12 @@ module SoberSwag
       end
 
       ##
+      # Similar to #field, but adds multiple at once.
+      def multi(names, serializer)
+        names.each { |name| field(name, serializer) }
+      end
+
+      ##
       # Given a symbol to this, we will use a primitive name
       def primitive(name)
         SoberSwag::Serializer.primitive(SoberSwag::Types.const_get(name))

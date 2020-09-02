@@ -135,6 +135,22 @@ We can see a few things here:
 2. You must provide types with field names
 3. You can use blocks to do data formatting, which lets you pick different fields and such.
 
+
+### Multi
+
+If you have a few fields of the same type, you can use `#multi` to define them all at once:
+
+```ruby
+StudentOutputObject = SoberSwag::OutputObject.define do
+  multi [:first_name, :last_name], primitive(:String)
+  field :recent_grades, primitive(:Integer).array do |student|
+    student.graded_assignments.limit(100).pluck(:grade)
+  end
+end
+```
+
+This saves a bit of typing, and can help with refactoring later.
+
 ### Views
 
 Sometimes, you might want to add "variant" ways to look at data.
