@@ -53,7 +53,7 @@ RSpec.describe SoberSwag::Compiler do
       it { should have_key('Classroom') }
       it { should_not have_key('') }
 
-      describe 'Classroom schema' do # rubocop:disable RSpec/NestedGroups
+      describe 'Classroom schema' do
         subject { schemas['Classroom'] }
 
         it { should_not be_nil }

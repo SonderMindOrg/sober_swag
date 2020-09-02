@@ -81,3 +81,5 @@ Style/RedundantRegexpEscape:
   Enabled: true
 Style/SlicingWithRange:
   Enabled: true
+RSpec/NestedGroups:
+  Max: 5
