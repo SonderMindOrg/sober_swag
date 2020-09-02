@@ -263,3 +263,4 @@ end
 ```
 
 `inherits` will automatically merge in all the fields of the referenced view.
+This means that the view `super_detail`  will include fields `name`, `bio`, and `age`.
