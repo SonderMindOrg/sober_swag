@@ -9,6 +9,7 @@ module SoberSwag
 
       ##
       # Similar to #field, but adds multiple at once.
+      # Named #multi because #fields was already taken.
       def multi(names, serializer)
         names.each { |name| field(name, serializer) }
       end
