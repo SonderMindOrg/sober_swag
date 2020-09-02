@@ -25,7 +25,8 @@ module SoberSwag
         Nodes::Attribute.new(
           @node.name,
           @node.required? && !@node.type.default?,
-          bind(Parser.new(@node.type))
+          bind(Parser.new(@node.type)),
+          @node.meta
         )
       when Dry::Types::Sum
         left = bind(Parser.new(@node.left))
@@ -46,9 +47,13 @@ module SoberSwag
       when Dry::Types::Constrained
         bind(Parser.new(@node.type))
       when Dry::Types::Nominal
-        old_meta = @node.primitive.respond_to?(:meta) ? @node.primitive.meta : {}
-        # start off with the moral equivalent of NodeTree[String]
-        Nodes::Primitive.new(@node.primitive, old_meta.merge(@node.meta))
+        if @node.respond_to?(:type) && @node.type.is_a?(Dry::Types::Constrained)
+          bind(Parser.new(@node.type))
+        else
+          old_meta = @node.primitive.respond_to?(:meta) ? @node.primitive.meta : {}
+          # start off with the moral equivalent of NodeTree[String]
+          Nodes::Primitive.new(@node.primitive, old_meta.merge(@node.meta))
+        end
       else
         # Inside of this case we have a class that is some user-defined type
         # We put it in our array of found types, and consider it a primitive
