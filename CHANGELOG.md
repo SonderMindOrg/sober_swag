@@ -1,7 +1,9 @@
 # Changelog
 
-## V0.15.0: 2020-09-02
+## [v0.15.0]: 2020-09-02
 
+### Added
+- Add a new `#merge` method to output objects, which will merge fields from another output object into the given output object.
 - Add `multi` to Output Objects, as a way to define more than one field of the same type at once.
 - Add an `inherits:` key to output objects, for view inheritance.
 - Add `SoberSwag::Types::CommaArray`, which parses comma-separated strings into arrays.
@@ -9,3 +11,8 @@
   This class is mostly useful for query parameters where you want a simpler format: `tag=foo,bar` instead of `tag[]=foo,tag[]=bar`.
 - Add support for using `meta` to specify alternative `style` and `explode` keys for query and path params.
   Note that this support *does not* extend to parsing: If you modify the `style` or `explode` keywords, you will need to make those input formats work with the actual type yourself.
+
+### Fixed
+- No longer swallow `Dry::Struct` errors, instead let them surface to the user.
+
+[v0.15.0]: https://github.com/SonderMindOrg/sober_swag/releases/tag/v0.15.0
