@@ -31,4 +31,6 @@ SchoolClass = SoberSwag.input_object do
   attribute :location, (SingleFloorLocation | MultiFloorLocation).meta(description: 'What building and room this is in')
 end
 
+SortDirections = SoberSwag::Types::CommaArray.of(SoberSwag::Types::String.enum('created_at', 'updated_at', '-created_at', '-updated_at'))
+
 Pry.start

@@ -3,28 +3,29 @@ module SoberSwag
     ##
     # One attribute of an object.
     class Attribute < Base
-      def initialize(key, required, value)
+      def initialize(key, required, value, meta = {})
         @key = key
         @required = required
         @value = value
+        @meta = meta
       end
 
       def deconstruct
-        [key, required, value]
+        [key, required, value, meta]
       end
 
       def deconstruct_keys
-        { key: key, required: required, value: value }
+        { key: key, required: required, value: value, meta: meta }
       end
 
-      attr_reader :key, :required, :value
+      attr_reader :key, :required, :value, :meta
 
       def map(&block)
-        self.class.new(key, required, value.map(&block))
+        self.class.new(key, required, value.map(&block), meta)
       end
 
       def cata(&block)
-        block.call(self.class.new(key, required, value.cata(&block)))
+        block.call(self.class.new(key, required, value.cata(&block), meta))
       end
     end
   end

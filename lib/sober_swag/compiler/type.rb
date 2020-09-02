@@ -25,7 +25,7 @@ module SoberSwag
 
       def object_schema
         @object_schema ||=
-          normalize(mapped_type).cata(&method(:to_object_schema)).merge(object_schema_meta)
+          make_object_schema
       end
 
       def object_schema_meta
@@ -49,8 +49,10 @@ module SoberSwag
         raise TooComplicatedForPathError, e.message
       end
 
+      DEFAULT_QUERY_SCHEMA_ATTRS = { in: :query, style: :deepObject, explode: true }.freeze
+
       def query_schema
-        path_schema_stub.map { |e| e.merge(in: :query, style: :deepObject, explode: true) }
+        path_schema_stub.map { |e| DEFAULT_QUERY_SCHEMA_ATTRS.merge(e) }
       rescue TooComplicatedError => e
         raise TooComplicatedForQueryError, e.message
       end
@@ -110,6 +112,10 @@ module SoberSwag
         end
       end
 
+      def make_object_schema(metadata_keys: METADATA_KEYS)
+        normalize(mapped_type).cata { |e| to_object_schema(e, metadata_keys) }.merge(object_schema_meta)
+      end
+
       def normalize(object)
         object.cata { |e| rewrite_sums(e) }.cata { |e| flatten_one_ofs(e) }
       end
@@ -141,7 +147,7 @@ module SoberSwag
         end
       end
 
-      def to_object_schema(object) # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
+      def to_object_schema(object, metadata_keys = METADATA_KEYS) # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
         case object
         when Nodes::List
           { type: :array, items: object.element }
@@ -162,14 +168,15 @@ module SoberSwag
             required: required
           }
         when Nodes::Attribute
-          name, req, value = object.deconstruct
+          name, req, value, meta = object.deconstruct
+          value = value.merge(meta&.select { |k, _| metadata_keys.include?(k) } || {})
           if req
             [name, value.merge(required: true)]
           else
             [name, value]
           end
         when Nodes::Primitive
-          object.value.merge(object.metadata.select { |k, _| METADATA_KEYS.include?(k) })
+          object.value.merge(object.metadata.select { |k, _| metadata_keys.include?(k) })
         else
           raise ArgumentError, "Got confusing node #{object} (#{object.class})"
         end
@@ -196,13 +203,15 @@ module SoberSwag
 
       def path_schema_stub
         @path_schema_stub ||=
-          object_schema[:properties].map do |k, v|
+          make_object_schema(metadata_keys: METADATA_KEYS | %i[style explode])[:properties].map do |k, v|
             # ensure_uncomplicated(k, v)
             {
               name: k,
-              schema: v.reject { |key, _| %i[required nullable].include?(key) },
-              required: object_schema[:required].include?(k) || false
-            }
+              schema: v.reject { |key, _| %i[required nullable explode style].include?(key) },
+              required: object_schema[:required].include?(k) || false,
+              style: v[:style],
+              explode: v[:explode]
+            }.reject { |_, v2| v2.nil? }
           end
       end
 

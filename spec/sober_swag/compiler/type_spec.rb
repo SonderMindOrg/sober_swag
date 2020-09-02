@@ -245,6 +245,31 @@ RSpec.describe SoberSwag::Compiler::Type do
     end
   end
 
+  context 'with a type containing SoberSwag::Types::CommaArray' do
+    subject(:compiler) { described_class.new(type) }
+
+    let(:type) do
+      SoberSwag.input_object do
+        identifier 'test'
+        attribute :sort, SoberSwag::Types::CommaArray.of(SoberSwag::Types::String.enum('created_at', '-created_at', 'updated_at', '-updated_at'))
+      end
+    end
+
+    describe 'query_schema' do
+      subject(:path_schema) { compiler.query_schema }
+
+      specify { expect { subject }.not_to raise_error }
+
+      describe 'for name' do
+        subject { path_schema.find { |p| p[:name] == :sort } }
+
+        it { should include(schema: include(type: :array)) }
+        it { should include(style: :form) }
+        it { should include(explode: false) }
+      end
+    end
+  end
+
   describe 'schema stub' do
     subject { described_class.new(type).schema_stub }
 
