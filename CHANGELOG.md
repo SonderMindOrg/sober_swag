@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## V0.15.0: 2020-09-02
 
 - Add `multi` to Output Objects, as a way to define more than one field of the same type at once.
 - Add an `inherits:` key to output objects, for view inheritance.
