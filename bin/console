@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'sober_swag'
+require 'pry'
+
+Bio = SoberSwag.input_object do
+  attribute :description, SoberSwag::Types::String
+  attribute :gender, SoberSwag::Types::String.enum('male', 'female') | SoberSwag::Types::String
+end
+
+Person = SoberSwag.input_object do
+  attribute :name, SoberSwag::Types::String
+  attribute? :bio, Bio.optional
+end
+
+MultiFloorLocation = SoberSwag.input_object do
+  attribute :building, SoberSwag::Types::String.enum('science', 'mathematics', 'literature')
+  attribute :floor, SoberSwag::Types::String
+  attribute :room, SoberSwag::Types::Integer
+end
+
+SingleFloorLocation = SoberSwag.input_object do
+  attribute :building, SoberSwag::Types::String.enum('philosophy', 'computer science')
+  attribute :room, SoberSwag::Types::Integer
+end
+
+SchoolClass = SoberSwag.input_object do
+  attribute :prof, Person.meta(description: 'The person who teaches this class.')
+  attribute :students, SoberSwag::Types::Array.of(Person)
+  attribute :location, (SingleFloorLocation | MultiFloorLocation).meta(description: 'What building and room this is in')
+end
+
+Pry.start

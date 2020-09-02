@@ -243,3 +243,24 @@ You can even use `merge` from within a view.
 
 Note that `merge` does *not* copy anything but fields.
 Identifiers and views will not be copied over.
+
+### View Inheritance
+
+While defining a new Output Object, you *do not* have access to the definition of that output object.
+So, how do I say that one view should be an extension of another?
+Simple: use the `inherits:` kwarg:
+
+```ruby
+BioOutput = SoberSwag::OutputObject.define do
+  field :name, primitive(:String)
+  view :detail do
+    field :bio, primitive(:String)
+  end
+  view :super_detail, inherits: :detail do
+    field :age, primitive(:Integer)
+  end
+end
+```
+
+`inherits` will automatically merge in all the fields of the referenced view.
+This means that the view `super_detail`  will include fields `name`, `bio`, and `age`.

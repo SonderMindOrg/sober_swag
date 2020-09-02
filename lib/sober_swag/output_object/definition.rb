@@ -17,8 +17,14 @@ module SoberSwag
         @fields << field
       end
 
-      def view(name, &block)
-        view = View.define(name, fields, &block)
+      def view(name, inherits: nil, &block)
+        initial_fields =
+          if inherits.nil? || inherits == :base
+            fields
+          else
+            find_view(inherits).fields
+          end
+        view = View.define(name, initial_fields, &block)
 
         view.identifier("#{@identifier}.#{name.to_s.classify}") if identifier
 
@@ -28,6 +34,12 @@ module SoberSwag
       def identifier(arg = nil)
         @identifier = arg if arg
         @identifier
+      end
+
+      private
+
+      def find_view(name)
+        @views.find { |view| view.name == name } || (raise ArgumentError, "no view #{name.inspect} defined!")
       end
     end
   end
