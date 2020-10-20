@@ -14,14 +14,13 @@ module SoberSwag
       attr_reader :response_serializers, :response_descriptions, :controller, :method, :path, :action_name
 
       ##
-      # What to parse the request body in to.
+      # What to parse the request body into.
       attr_reader :request_body_class
       ##
-      # What to parse the request query_params in to
+      # What to parse the request query_params into.
       attr_reader :query_params_class
-
       ##
-      # What to parse the path params into
+      # What to parse the path params into.
       attr_reader :path_params_class
 
       ##
@@ -30,7 +29,7 @@ module SoberSwag
       # If you want, you can also define utility methods in here
       def request_body(base = SoberSwag::InputObject, &block)
         @request_body_class = make_input_object!(base, &block)
-        action_module.const_set('ResponseBody', @request_body_class)
+        action_module.const_set('RequestBody', @request_body_class)
       end
 
       ##
@@ -103,7 +102,7 @@ module SoberSwag
       def response(status_code, description, serializer = nil, &block)
         status_key = Rack::Utils.status_code(status_code)
 
-        raise ArgumentError, 'Response defiend!' if @response_serializers.key?(status_key)
+        raise ArgumentError, 'Response defined!' if @response_serializers.key?(status_key)
 
         serializer ||= SoberSwag::OutputObject.define(&block)
         response_module.const_set(status_code.to_s.classify, serializer)
