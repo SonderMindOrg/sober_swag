@@ -22,7 +22,14 @@ This lets you type your API endpoint:
 ```ruby
 class PeopleController < ApplicationController
   include SoberSwag::Controller
+
   define :patch, :update, '/people/{id}' do
+    summary 'Update a Person record.'
+    description <<~MARKDOWN
+      You can use this endpoint to update a Person record. Note that age cannot
+      be a negative integer.
+    MARKDOWN
+
     query_params do
       attribute? :include_extra_info, Types::Params::Bool
     end
@@ -32,10 +39,13 @@ class PeopleController < ApplicationController
     end
     path_params { attribute :id, Types::Params::Integer }
   end
+  def update
+    # update action here
+  end
 end
 ```
 
-More than that, we can use this information *inside* our controller methods:
+Then we can use the information from our SoberSwag definition *inside* the controller method:
 
 ```ruby
 def update
@@ -170,6 +180,35 @@ end
 Under the hood, this literally just generates a subclass of `Dry::Struct`.
 We use the DSL-like method just to make working with Rails' reloading less annoying.
 
+#### Nested object attributes
+
+You can nest attributes using a block. They'll return as nested JSON objects.
+
+```ruby
+User = SoberSwag.input_object do
+  attribute :user_notes do
+    attribute :note, SoberSwag::Types::String
+  end
+end
+```
+
+If you want to use a specific type of object within an input object, you can
+nest them by setting the other input object as the type of an attribute. For
+example, if you had a UserGroup object with various Users, you could write
+them like this:
+
+```ruby
+User = SoberSwag.input_object do
+  attribute :name, SoberSwag::Types::String
+  attribute :age, SoberSwag::Types::Params::Integer.optional
+end
+
+UserGroup = SoberSwag.input_object do
+  attribute :name, SoberSwag::Types::String
+  attribute :users, SoberSwag::Types::Array.of(User)
+end
+```
+
 #### Input and Output Object Identifiers
 
 Both input objects and output objects accept an identifier, which is used in
@@ -229,10 +268,30 @@ QueryInput = SoberSwag.input_object do
 end
 ```
 
+## Testing the validity of output objects
+
+If you're using RSpec and want to test the validity of output objects, you can do so relatively easily.
+
+For example, assuming that you have a `UserOutputObject` class for representing a User record, and you have a `:user` factory via FactoryBot, you can validate that the serialization works without error like so:
+
+```ruby
+RSpec.describe UserOutputObject do
+  describe 'serialized result' do
+    subject do
+      described_class.type.new(described_class.serialize(create(:user)))
+    end
+
+    it 'works with an object' do
+      expect { subject }.not_to raise_error
+    end
+  end
+end
+```
+
 ## Special Thanks
 
 This gem is a mishmash of ideas from various sources.
 The biggest thanks is owed to the [dry-rb](https://github.com/dry-rb) project, upon which the typing of SoberSwag is based.
 On an API design level, much is owed to [blueprinter](https://github.com/procore/blueprinter) for the serializers.
 The idea of a strongly-typed API came from the Haskell framework [servant](https://www.servant.dev/).
-Generating the swagger documenation happens via the use of a catamorphism, which I believe I first really understood thanks to [this medium article by Jared Tobin](https://medium.com/@jaredtobin/practical-recursion-schemes-c10648ec1c29).
+Generating the swagger documentation happens via the use of a catamorphism, which I believe I first really understood thanks to [this medium article by Jared Tobin](https://medium.com/@jaredtobin/practical-recursion-schemes-c10648ec1c29).
