@@ -9,6 +9,10 @@ This generates documentation from *types*, which (conveniently) also lets you ge
 
 An introductory presentation is available [here](https://www.icloud.com/keynote/0bxP3Dn8ETNO0lpsSQSVfEL6Q#SoberSwagPresentation).
 
+Further documentation on using the gem is available in the `docs/` directory:
+
+- [Serializers](docs/serializers.md)
+
 ## Types for a fully-automated API
 
 SoberSwag lets you type your API using describe blocks.
@@ -31,7 +35,6 @@ class PeopleController < ApplicationController
 end
 ```
 
-We can now use this information to generate swagger documentation, available at the `swagger` action on this controller.
 More than that, we can use this information *inside* our controller methods:
 
 ```ruby
@@ -44,6 +47,51 @@ end
 No need for `params.require` or anything like that.
 You define the type of parameters you accept, and we reject anything that doesn't fit.
 
+### Rendering Swagger documentation from SoberSwag
+
+We can also use the information from SoberSwag objects to generate Swagger
+documentation, available at the `swagger` action on this controller.
+
+You can create the `swagger` action for a controller as follows:
+
+```ruby
+# config/routes.rb
+Rails.application.routes.draw do
+  # Add a `swagger` GET endpoint to render the Swagger documentation created
+  # by SoberSwag.
+  resources :people do
+    get :swagger, on: :collection
+  end
+
+  # Or use a concern to make it easier to enable swagger endpoints for a number
+  # of controllers at once.
+  concern :swaggerable do
+    get :swagger, on: :collection
+  end
+
+  resources :people, concerns: :swaggerable do
+    get :search, on: :collection
+  end
+
+  resources :places, only: [:index], concerns: :swaggerable
+end
+```
+
+If you don't want the API documentation to show up in certain cases, you can
+use an environment variable or a check on the current Rails environment.
+
+```ruby
+# config/routes.rb
+Rails.application.routes.draw do
+  resources :people do
+    # Enable based on environment variable.
+    get :swagger, on: :collection if ENV['ENABLE_SWAGGER']
+    # Or just disable in production.
+    get :swagger, on: :collection unless Rails.env.production?
+  end
+end
+```
+
 ### Typed Responses
 
 Want to go further and type your responses too?
@@ -53,6 +101,8 @@ Use SoberSwag output objects, a serializer library heavily inspired by [Blueprin
 PersonOutputObject = SoberSwag::OutputObject.define do
   field :id, primitive(:Integer)
   field :name, primitive(:String).optional
+  # For fields that don't map to a simple attribute on your model, you can
+  # use a block.
   field :is_registered, primitive(:Bool) do |person|
     person.registered?
   end
@@ -95,7 +145,7 @@ User = SoberSwag.input_object do
   attribute :name, SoberSwag::Types::String
   # use ? if attributes are not required
   attribute? :favorite_movie, SoberSwag::Types::String
-  # use .optional if attributes may be null
+  # use .optional if attributes may be nil
   attribute :age, SoberSwag::Types::Params::Integer.optional
 end
 ```
@@ -119,6 +169,34 @@ end
 
 Under the hood, this literally just generates a subclass of `Dry::Struct`.
 We use the DSL-like method just to make working with Rails' reloading less annoying.
+
+#### Input and Output Object Identifiers
+
+Both input objects and output objects accept an identifier, which is used in
+the Swagger Documentation to disambiguate between SoberSwag types.
+
+```ruby
+User = SoberSwag.input_object do
+  identifier 'User'
+
+  attribute? :name, SoberSwag::Types::String
+end
+```
+
+```ruby
+PersonOutputObject = SoberSwag::OutputObject.define do
+  identifier 'PersonOutput'
+
+  field :id, primitive(:Integer)
+  field :name, primitive(:String).optional
+end
+```
+
+You can use these to make your Swagger documentation a bit easier to follow,
+and it can also be useful for 'namespacing' objects if you're developing in
+a large application, e.g. if you had a pet store and for some reason users
+with cats and users with dogs were different, you could namespace it with
+`identifier 'Dogs.User'`.
 
 #### Adding additional documentation
 

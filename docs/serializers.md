@@ -25,21 +25,21 @@ For example, you might have a serializer that can return a date in two formats, 
 In this case, it might be used as:
 
 ```ruby
-serializer.new(my_record, { format: :newstyle })
+serializer.new(my_record, { format: :new_style })
 ```
 
 However, since it is *always* optional, you can also do:
 
 ```ruby
-serilaizer.new(my_record)
+serializer.new(my_record)
 ```
 
 And it *should* pick some default format.
 
 ### Primitives
 
-Primitive serializers, or "identity serializers," are serializers that do nothing.
-They are implemented as [`SoberSwag::Serializer::Primitive`](../lib/sober_swag/serializer/primitive.rb), or as the `#primitive` method on a `OutputObject`.
+Primitive serializers — or "identity serializers" — are serializers that do nothing.
+They are implemented as [`SoberSwag::Serializer::Primitive`](../lib/sober_swag/serializer/primitive.rb), or as the `#primitive` method on an `OutputObject`.
 Since they don't do anything, they can be considered the most "basic" serializer.
 
 These serializers *do not* check types.
@@ -51,12 +51,12 @@ serializer.serialize(10) # => 10
 ```
 
 Thus, care should be used when working with these serializers.
-In the future, we might add some "debug mode" sorta thing that will do type-checking and throw errors, however, the cost of doing so in production is probably not worth it.
+In the future, we might add some "debug mode" thing that will do type-checking and throw errors, however, the cost of doing so in production is probably not worth it.
 
 ### Mapped
 
 Sometimes, you can create a serializer via a *proc*.
-For example, let's say that I want a serializer that takes a `Date` and returns a string.
+For example, let's say that I want a serializer that takes a `Date` and returns a String.
 I can do this:
 
 ```ruby
@@ -74,7 +74,7 @@ In the future, we might add a debug mode.
 Oftentimes, we want to give a serializer the ability to serialize `nil` values.
 This is often useful in serializing fields.
 
-It turns out that it's pretty easy to make a serializer that can serialize `nil` values: just propogate nils.
+It turns out that it's pretty easy to make a serializer that can serialize `nil` values: just propogate `nil`s.
 For example, let's say I have the following code:
 
 ```ruby
@@ -99,7 +99,7 @@ Continuing our example from earlier:
 my_serializer.array.serialize([Foo.new(10, 11)]) #=> [{ bar: 10, baz: 11 }]
 ```
 
-This changes the type properly, too.
+This changes the type properly too.
 
 ## OutputObjects
 
@@ -132,7 +132,7 @@ end
 We can see a few things here:
 
 1. You define field names with a `field` definition, which is a way to define the serializer for a single field.
-2. You must provide types with field names
+2. You must provide types with field names.
 3. You can use blocks to do data formatting, which lets you pick different fields and such.
 
 
@@ -223,12 +223,12 @@ For clarity (and to prevent infinitely-looping serializers on accident, we recom
 Output objects don't support inheritance.
 You can't have one output object based on another.
 You *can*, however, merge one into another!
-Consdier this case:
+Consider this case:
 
 ```ruby
 GenericBioOutput = SoberSwag::OutputObject.define do
   field :name, primitive(:String)
-  field :brief_history, primtiive(:String)
+  field :brief_history, primitive(:String)
 end
 
 ExecutiveBioOutput = SoberSwag::OutputObject.define do
@@ -248,14 +248,16 @@ Identifiers and views will not be copied over.
 
 While defining a new Output Object, you *do not* have access to the definition of that output object.
 So, how do I say that one view should be an extension of another?
-Simple: use the `inherits:` kwarg:
+Simple, use the `inherits:` kwarg:
 
 ```ruby
 BioOutput = SoberSwag::OutputObject.define do
   field :name, primitive(:String)
+
   view :detail do
     field :bio, primitive(:String)
   end
+
   view :super_detail, inherits: :detail do
     field :age, primitive(:Integer)
   end
@@ -263,4 +265,4 @@ end
 ```
 
 `inherits` will automatically merge in all the fields of the referenced view.
-This means that the view `super_detail`  will include fields `name`, `bio`, and `age`.
+This means that the view `super_detail` will include fields `name`, `bio`, and `age`.
