@@ -31,7 +31,6 @@ class PeopleController < ApplicationController
 end
 ```
 
-We can now use this information to generate swagger documentation, available at the `swagger` action on this controller.
 More than that, we can use this information *inside* our controller methods:
 
 ```ruby
@@ -43,6 +42,51 @@ end
 
 No need for `params.require` or anything like that.
 You define the type of parameters you accept, and we reject anything that doesn't fit.
+
+### Rendering Swagger documentation from SoberSwag
+
+We can also use the information from SoberSwag objects to generate Swagger
+documentation, available at the `swagger` action on this controller.
+
+You can create the `swagger` action for a controller as follows:
+
+```ruby
+# config/routes.rb
+Rails.application.routes.draw do
+  # Add a `swagger` GET endpoint to render the Swagger documentation created
+  # by SoberSwag.
+  resources :people do
+    get :swagger, on: :collection
+  end
+
+  # Or use a concern to make it easier to enable swagger endpoints for a number
+  # of controllers at once.
+  concern :swaggerable do
+    get :swagger, on: :collection
+  end
+
+  resources :people, concerns: :swaggerable do
+    get :search, on: :collection
+  end
+
+  resources :places, only: [:index], concerns: :swaggerable
+end
+```
+
+If you don't want the API documentation to show up in certain cases, you can
+use an environment variable or a check on the current Rails environment.
+
+```ruby
+# config/routes.rb
+Rails.application.routes.draw do
+  resources :people do
+    # Enable based on environment variable.
+    get :swagger, on: :collection if ENV['ENABLE_SWAGGER']
+    # Or just disable in production.
+    get :swagger, on: :collection unless Rails.env.production?
+  end
+end
+```
 
 ### Typed Responses
 
