@@ -22,7 +22,14 @@ This lets you type your API endpoint:
 ```ruby
 class PeopleController < ApplicationController
   include SoberSwag::Controller
+
   define :patch, :update, '/people/{id}' do
+    summary 'Update a Person record.'
+    description <<~MARKDOWN
+      You can use this endpoint to update a Person record. Note that age cannot
+      be a negative integer.
+    MARKDOWN
+
     query_params do
       attribute? :include_extra_info, Types::Params::Bool
     end
@@ -32,10 +39,13 @@ class PeopleController < ApplicationController
     end
     path_params { attribute :id, Types::Params::Integer }
   end
+  def update
+    # update action here
+  end
 end
 ```
 
-More than that, we can use this information *inside* our controller methods:
+Then we can use the information from our SoberSwag definition *inside* the controller method:
 
 ```ruby
 def update
@@ -235,4 +245,4 @@ This gem is a mishmash of ideas from various sources.
 The biggest thanks is owed to the [dry-rb](https://github.com/dry-rb) project, upon which the typing of SoberSwag is based.
 On an API design level, much is owed to [blueprinter](https://github.com/procore/blueprinter) for the serializers.
 The idea of a strongly-typed API came from the Haskell framework [servant](https://www.servant.dev/).
-Generating the swagger documenation happens via the use of a catamorphism, which I believe I first really understood thanks to [this medium article by Jared Tobin](https://medium.com/@jaredtobin/practical-recursion-schemes-c10648ec1c29).
+Generating the swagger documentation happens via the use of a catamorphism, which I believe I first really understood thanks to [this medium article by Jared Tobin](https://medium.com/@jaredtobin/practical-recursion-schemes-c10648ec1c29).
