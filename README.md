@@ -268,6 +268,24 @@ QueryInput = SoberSwag.input_object do
 end
 ```
 
+## Testing the validity of output objects
+
+If you're using RSpec and want to test the validity of output objects, you can do so relatively easily.
+
+For example, assuming that you have a `UserOutputObject` class for representing a User record, and you have a `:user` factory via FactoryBot, you can validate that the serialization works without error like so:
+
+```ruby
+RSpec.describe UserOutputObject do
+  describe 'serialized result' do
+    subject { described_class.serialize(create(:user)) }
+
+    it 'works with an object' do
+      expect { subject }.not_to raise_error
+    end
+  end
+end
+```
+
 ## Special Thanks
 
 This gem is a mishmash of ideas from various sources.
