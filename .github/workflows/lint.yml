@@ -40,10 +40,8 @@ jobs:
       run: |
         bundle config path vendor/bundle
         bundle install
-        gem install rubocop
-        gem install rubocop-rspec
     - name: Run Lints
-      run: rubocop lib spec example
+      run: bundle exec rubocop -P
     - uses: actions/cache@v2
       with:
         path: example/vendor/bundle
