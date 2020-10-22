@@ -180,6 +180,35 @@ end
 Under the hood, this literally just generates a subclass of `Dry::Struct`.
 We use the DSL-like method just to make working with Rails' reloading less annoying.
 
+#### Nested object attributes
+
+You can nest attributes using a block. They'll return as nested JSON objects.
+
+```ruby
+User = SoberSwag.input_object do
+  attribute :user_notes do
+    attribute :note, SoberSwag::Types::String
+  end
+end
+```
+
+If you want to use a specific type of object within an input object, you can
+nest them by setting the other input object as the type of an attribute. For
+example, if you had a UserGroup object with various Users, you could write
+them like this:
+
+```ruby
+User = SoberSwag.input_object do
+  attribute :name, SoberSwag::Types::String
+  attribute :age, SoberSwag::Types::Params::Integer.optional
+end
+
+UserGroup = SoberSwag.input_object do
+  attribute :name, SoberSwag::Types::String
+  attribute :users, SoberSwag::Types::Array.of(User)
+end
+```
+
 #### Input and Output Object Identifiers
 
 Both input objects and output objects accept an identifier, which is used in
