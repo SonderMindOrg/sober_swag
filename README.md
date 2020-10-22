@@ -277,7 +277,9 @@ For example, assuming that you have a `UserOutputObject` class for representing 
 ```ruby
 RSpec.describe UserOutputObject do
   describe 'serialized result' do
-    subject { described_class.serialize(create(:user)) }
+    subject do
+      described_class.type.new(described_class.serialize(create(:user)))
+    end
 
     it 'works with an object' do
       expect { subject }.not_to raise_error
