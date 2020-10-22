@@ -18,6 +18,18 @@ module SoberSwag
         @identifier || name.to_s.gsub('::', '.')
       end
 
+      def attribute(key, parent = SoberSwag::InputObject, &block)
+        raise ArgumentError, "parent class #{parent} is not an input object type!" unless valid_field_def?(parent, block)
+
+        super(key, parent, &block)
+      end
+
+      def attribute?(key, parent = SoberSwag::InputObject, &block)
+        raise ArgumentError, "parent class #{parent} is not an input object type!" unless valid_field_def?(parent, block)
+
+        super(key, parent, &block)
+      end
+
       def meta(*args)
         original = self
 
@@ -29,12 +41,27 @@ module SoberSwag
         end
       end
 
-      def primitive(sym)
-        SoberSwag::Types.const_get(sym)
+      ##
+      # .primitive is already defined on Dry::Struct, so forward to the superclass if
+      # not called as a way to get a primitive type
+      def primitive(*args)
+        if args.length == 1
+          SoberSwag::Types.const_get(args.first)
+        else
+          super
+        end
       end
 
       def param(sym)
         SoberSwag::Types::Params.const_get(sym)
+      end
+
+      private
+
+      def valid_field_def?(parent, block)
+        return true if block.nil?
+
+        parent.is_a?(Class) && parent <= SoberSwag::InputObject
       end
     end
   end
