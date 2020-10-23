@@ -123,8 +123,22 @@ module SoberSwag
       end
 
       def make_input_object!(base, &block)
-        Class.new(base, &block).tap do |e|
-          e.transform_keys(&:to_sym) if [SoberSwag::InputObject, Dry::Struct].include?(base)
+        if base.is_a?(Class)
+          make_input_class(base, block)
+        elsif block
+          raise ArgumentError, 'passed a non-class base and a block to an input'
+        else
+          base
+        end
+      end
+
+      def make_input_class(base, block)
+        if block
+          Class.new(base, &block).tap do |e|
+            e.transform_keys(&:to_sym) if [SoberSwag::InputObject, Dry::Struct].include?(base)
+          end
+        else
+          base
         end
       end
     end
