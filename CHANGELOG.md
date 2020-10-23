@@ -1,5 +1,9 @@
 # Changelog
 
+## [Current]
+
+- Allow non-class types to be used as the inputs to controllers
+
 ## [v0.15.0]: 2020-09-02
 
 ### Added
