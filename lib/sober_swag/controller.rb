@@ -90,7 +90,7 @@ module SoberSwag
           r = current_action_def
           raise UndefinedPathError unless r&.path_params_class
 
-          r.path_params_class.new(request.path_parameters)
+          r.path_params_class.call(request.path_parameters)
         end
     end
 
@@ -104,7 +104,7 @@ module SoberSwag
           r = current_action_def
           raise UndefinedBodyError unless r&.request_body_class
 
-          r.request_body_class.new(body_params)
+          r.request_body_class.call(body_params)
         end
     end
 
@@ -118,7 +118,7 @@ module SoberSwag
           r = current_action_def
           raise UndefinedQueryError unless r&.query_params_class
 
-          r.query_params_class.new(request.query_parameters)
+          r.query_params_class.call(request.query_parameters)
         end
     end
 
