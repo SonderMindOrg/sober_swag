@@ -268,6 +268,20 @@ QueryInput = SoberSwag.input_object do
 end
 ```
 
+## Tags
+
+If you want to organize your API into sections, you can use `tags`.
+It's quite simple:
+
+```ruby
+define :patch, :update, '/people/{id}' do
+  # other cool config
+  tags 'people', 'mutations', 'incurs_cost'
+end
+```
+
+This will map to OpenAPI's `tags` field (naturally), and the UI codegen will automatically organize your endpoints by their tags.
+
 ## Testing the validity of output objects
 
 If you're using RSpec and want to test the validity of output objects, you can do so relatively easily.

@@ -35,6 +35,7 @@ class PeopleController < ApplicationController
     request_body(PersonParams)
     response(:ok, 'the person created', PersonOutputObject)
     response(:unprocessable_entity, 'the validation errors', PersonErrorsOutputObject)
+    tags 'people', 'create'
   end
   def create
     p = Person.new(parsed_body.person.to_h)
@@ -50,6 +51,7 @@ class PeopleController < ApplicationController
     path_params { attribute :id, Types::Params::Integer }
     response(:ok, 'the person updated', PersonOutputObject)
     response(:unprocessable_entity, 'the validation errors', PersonErrorsOutputObject)
+    tags 'people', 'update'
   end
   def update
     if @person.update(parsed_body.person.to_h)
@@ -68,6 +70,7 @@ class PeopleController < ApplicationController
       attribute :view, Types::String.default('base'.freeze).enum('base', 'detail')
     end
     response(:ok, 'all the people', PersonOutputObject.array)
+    tags 'people', 'list'
   end
   def index
     @people = Person.all
@@ -81,6 +84,7 @@ class PeopleController < ApplicationController
       attribute :id, Types::Params::Integer
     end
     response(:ok, 'the person requested', PersonOutputObject)
+    tags 'people', 'show'
   end
   def show
     respond!(:ok, @person)

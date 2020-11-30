@@ -47,6 +47,7 @@ class PostsController < ApplicationController
       MARKDOWN
     end
     response(:ok, 'all the posts', PostOutputObject.array)
+    tags 'posts', 'list'
   end
   def index
     @posts = Post.all
@@ -60,6 +61,7 @@ class PostsController < ApplicationController
     path_params(ShowPath)
     query_params { attribute? :view, ViewTypes }
     response(:ok, 'the requested post', PostOutputObject)
+    tags 'posts', 'show'
   end
   def show
     respond!(:ok, @post, serializer_opts: { view: parsed_query.view })
@@ -68,6 +70,7 @@ class PostsController < ApplicationController
   define :post, :create, '/posts/' do
     request_body(PostCreate)
     response(:created, 'the created post', PostOutputObject)
+    tags 'posts', 'create'
   end
   def create
     @post = Post.new(parsed_body.post.to_h)
@@ -83,6 +86,7 @@ class PostsController < ApplicationController
     path_params(ShowPath)
     request_body(PostUpdate)
     response(:ok, 'the post updated', PostOutputObject.view(:base))
+    tags 'posts', 'update'
   end
   def update
     if @post.update(parsed_body.post.to_h)
@@ -95,6 +99,7 @@ class PostsController < ApplicationController
   define :delete, :destroy, '/posts/{id}' do
     path_params(ShowPath)
     response(:ok, 'the post deleted', PostOutputObject.view(:base))
+    tags 'posts', 'delete'
   end
   def destroy
     @post.destroy
