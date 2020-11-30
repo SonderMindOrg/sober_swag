@@ -24,6 +24,8 @@ module SoberSwag
       # What to parse the path params into.
       attr_reader :path_params_class
 
+      ##
+      # Standard swagger tags.
       def tags(*args)
         return @tags if args.empty?
 
