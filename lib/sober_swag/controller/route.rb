@@ -9,6 +9,7 @@ module SoberSwag
         @action_name = action_name
         @response_serializers = {}
         @response_descriptions = {}
+        @tags = []
       end
 
       attr_reader :response_serializers, :response_descriptions, :controller, :method, :path, :action_name
@@ -22,6 +23,12 @@ module SoberSwag
       ##
       # What to parse the path params into.
       attr_reader :path_params_class
+
+      def tags(*args)
+        return @tags if args.empty?
+
+        @tags = args.flatten
+      end
 
       ##
       # Define the request body, using SoberSwag's type-definition scheme.

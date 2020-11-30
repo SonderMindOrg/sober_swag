@@ -21,6 +21,7 @@ module SoberSwag
         base[:parameters] = params if params.any?
         base[:responses] = responses
         base[:requestBody] = request_body if request_body
+        base[:tags] = tags if tags
         base
       end
 
@@ -71,6 +72,12 @@ module SoberSwag
             }
           }
         }
+      end
+
+      def tags
+        return nil unless route.tags.any?
+
+        route.tags
       end
     end
   end
