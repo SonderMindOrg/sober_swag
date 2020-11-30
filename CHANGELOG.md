@@ -1,6 +1,6 @@
 # Changelog
 
-## vNEXT
+## [v0.17.0]: 2020-11-30
 
 - Allow tagging endpoints via the new `tags` method.
 
