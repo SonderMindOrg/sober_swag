@@ -1,13 +1,18 @@
 module SoberSwag
   module Serializer
     ##
-    # Extract out a hash from a list of
-    # name/serializer pairs.
+    # Extracts a JSON hash from a list of {SoberSwag::OutputObject::Field} structs.
     class FieldList < Base
+      ##
+      # Create a new field-list serializer.
+      #
+      # @param field_list [Array<SoberSwag::OutputObject::Field>] descriptions of each field
       def initialize(field_list)
         @field_list = field_list
       end
 
+      ##
+      # @return [Array<SoberSwag::OutputObject::Field>] the list of fields to use.
       attr_reader :field_list
 
       ##
@@ -16,16 +21,24 @@ module SoberSwag
         SoberSwag::Serializer.Primitive(SoberSwag::Types.const_get(symbol))
       end
 
+      ##
+      # Serialize an object to a JSON hash by using each field in the list.
       def serialize(object, options = {})
         field_list.map { |field|
           [field.name, field.serializer.serialize(object, options)]
         }.to_h
       end
 
+      ##
+      # Construct a Dry::Struct from the fields given.
+      # This Struct will be swagger-able.
+      # @return [Dry::Struct]
       def type
         @type ||= make_struct_type!
       end
 
+      ##
+      # These types are always constructed lazily.
       def lazy_type?
         true
       end
