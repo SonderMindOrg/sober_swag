@@ -13,10 +13,20 @@ module SoberSwag
 
       include FieldSyntax
 
+      ##
+      # Adds a new field to the fields array
+      # @param field [SoberSwag::OutputObject::Field]
       def add_field!(field)
         @fields << field
       end
 
+      ##
+      # Define a new view, with the view DSL
+      # @param name [Symbol] the name of the view
+      # @param inherits: [Symbol] the name of another view this
+      #   view will "inherit" from
+      # @param block [Proc] a block which will execute in the context of
+      #   a new {SoberSwag::OutputObject::View}
       def view(name, inherits: nil, &block)
         initial_fields =
           if inherits.nil? || inherits == :base
@@ -31,6 +41,14 @@ module SoberSwag
         @views << view
       end
 
+      ##
+      # @overload identifier()
+      #   Get the identifier of this output object.
+      #   @return [String] the identifier
+      # @overload identifier(arg)
+      #   Set the identifier of this output object.
+      #   @param arg [String] the external identifier to use for this OutputObject
+      #   @return [String] `arg`
       def identifier(arg = nil)
         @identifier = arg if arg
         @identifier
