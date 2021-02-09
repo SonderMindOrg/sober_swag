@@ -3,6 +3,12 @@ module SoberSwag
     ##
     # Describe a single controller endpoint.
     class Route
+      ##
+      # @param method [Symbol] the HTTP method to get
+      # @param action_name [Symbol] the name of the rails action
+      #   (the name of the controller method, usually)
+      # @param path [String] an OpenAPI V3 path template,
+      #   which should [match this format](https://swagger.io/docs/specification/describing-parameters/#path-parameters)
       def initialize(method, action_name, path)
         @method = method
         @path = path
@@ -12,20 +18,54 @@ module SoberSwag
         @tags = []
       end
 
-      attr_reader :response_serializers, :response_descriptions, :controller, :method, :path, :action_name
+      ##
+      # A hash of response code -> response serializer
+      # @return [Hash<Symbol, SoberSwag::Serializer::Base>]
+      attr_reader :response_serializers
+
+      ##
+      # A hash of response code -> response description
+      # @return [Hash<Symbol, String>]
+      attr_reader :response_descriptions
+
+      ##
+      # The HTTP method of this route.
+      # @return [Symbol]
+      attr_reader :method
+
+      ##
+      # The swagger path specifier of this route.
+      # @return [String]
+      attr_reader :path
+
+      ##
+      # The name of the rails action (usally the controller method) of this route.
+      # @return [Symbol]
+      attr_reader :action_name
 
       ##
       # What to parse the request body into.
+      # @return [Class] a swagger-able class type for a request body.
       attr_reader :request_body_class
       ##
       # What to parse the request query_params into.
+      # @return [Class] a swagger-able class type for query parameters.
       attr_reader :query_params_class
       ##
       # What to parse the path params into.
+      # @return [Class] a swagger-able class type for path parameters.
       attr_reader :path_params_class
 
       ##
       # Standard swagger tags.
+      #
+      # @overload tags()
+      #   Get the tags for this route.
+      #   @return [Array<String,Symbol>] the tags.
+      # @overload tags(*args)
+      #   Set the tags for this route.
+      #   @param tags [Array<String,Symbol>] the tags to set
+      #   @return [Array<String,Symbol>] the tags used
       def tags(*args)
         return @tags if args.empty?
 
@@ -35,7 +75,12 @@ module SoberSwag
       ##
       # Define the request body, using SoberSwag's type-definition scheme.
       # The block passed will be used to define the body of a new sublcass of `base` (defaulted to {SoberSwag::InputObject}.)
-      # If you want, you can also define utility methods in here
+      # @overload request_body(base)
+      #   Give a Swagger-able type that will be used to parse the request body, and used in generated docs.
+      #   @param base [Class] a swagger-able class
+      # @overload request_body(base = SoberSwag::InputObject, &block)
+      #   Define a Swagger-able type inline to use to parse the request body.
+      #   @see SoberSwag.input_object
       def request_body(base = SoberSwag::InputObject, &block)
         @request_body_class = make_input_object!(base, &block)
         action_module.const_set('RequestBody', @request_body_class)
@@ -48,9 +93,12 @@ module SoberSwag
       end
 
       ##
-      # Define the shape of the query_params parameters, using SoberSwag's type-definition scheme.
-      # The block passed is the body of the newly-defined type.
-      # You can also include a base type.
+      # @overload query_params(base)
+      #   Give a Swagger-able type that will be used to parse the query params, and used in generated docs.
+      #   @param base [Class] a swagger-able class
+      # @overload query_params(base = SoberSwag::InputObject, &block)
+      #   Define a Swagger-able type inline to use to parse the query params.
+      #   @see SoberSwag.input_object
       def query_params(base = SoberSwag::InputObject, &block)
         @query_params_class = make_input_object!(base, &block)
         action_module.const_set('QueryParams', @query_params_class)
@@ -63,9 +111,12 @@ module SoberSwag
       end
 
       ##
-      # Define the shape of the *path* parameters, using SoberSwag's type-definition scheme.
-      # The block passed will be the body of a new subclass of `base` (defaulted to {SoberSwag::InputObject}).
-      # Names of this should match the names in the path template originally passed to {SoberSwag::Controller::Route.new}
+      # @overload path_params(base)
+      #   Give a Swagger-able type that will be used to parse the path params, and used in generated docs.
+      #   @param base [Class] a swagger-able class
+      # @overload path_params(base = SoberSwag::InputObject, &block)
+      #   Define a Swagger-able type inline to use to parse the path params.
+      #   @see SoberSwag.input_object
       def path_params(base = SoberSwag::InputObject, &block)
         @path_params_class = make_input_object!(base, &block)
         action_module.const_set('PathParams', @path_params_class)
@@ -78,19 +129,27 @@ module SoberSwag
       end
 
       ##
-      # Define the body of the action method in the controller.
-      def action(&body)
-        return @action if body.nil?
-
-        @action ||= body
-      end
-
+      # @overload description()
+      #   Get a description of this route object.
+      #   @return [String] markdown-formatted description
+      # @overload description(desc)
+      #   Set the description of this route object.
+      #   @param desc [String] markdown-formatted description
+      #   @return [String] `desc`.
       def description(desc = nil)
         return @description if desc.nil?
 
         @description = desc
       end
 
+      ##
+      # @overload summary()
+      #   Get the summary of this route object, a short string that identifies
+      #   what it does.
+      #   @return [String] markdown-formatted summary
+      # @overload summary(sum)
+      #   Set a short, markdown-formatted summary of what this route does.
+      #   @param sum [String] markdown-formatted summary
       def summary(sum = nil)
         return @summary if sum.nil?
 
@@ -100,14 +159,35 @@ module SoberSwag
       ##
       # The container module for all the constants this will eventually define.
       # Each class generated by this Route will be defined within this module.
+      # @return [Module] the module under which constants will be defined.
       def action_module
         @action_module ||= Module.new
       end
 
       ##
-      # Define a serializer for a response with the given status code.
-      # You may either give a serializer you defined elsewhere, or define one inline as if passed to
-      # {SoberSwag::OutputObject.define}
+      # @overload response(status_code, description, &block)
+      #   Define a new response from this route, by defining a serializer inline.
+      #   This serializer will be defined as if with {SoberSwag::OutputObject.define}
+      #
+      #   Generally, you want to define your serializers elsewhere for independent testing and such.
+      #   However, if you have a really quick thing to serialize, this works.
+      #   @param status_code [Symbol]
+      #     the name of the HTTP status of this response.
+      #   @param description [String]
+      #     a description of what this response is, markdown-formatted
+      #   @param block [Proc]
+      #     passed to {SoberSwag::OutputObject.define}
+      #
+      # @overload response(status_code, description, serializer)
+      #   Define a new response ffrom this route, with an existing serializer.
+      #   The generated swagger will document this response's format using the serializer.
+      #
+      #   @param status_code [Symbol]
+      #     the name of the HTTP status of this response
+      #   @param description [String]
+      #     a description of what this response is, markdown-formatted
+      #   @param serializer [SoberSwag::Serializer::Base] a serializer to use for the
+      #     body of this response
       def response(status_code, description, serializer = nil, &block)
         status_key = Rack::Utils.status_code(status_code)
 
@@ -120,7 +200,8 @@ module SoberSwag
       end
 
       ##
-      # What you should call the module of this action in your controller
+      # What you should call the module of this action in your controller.
+      # @return [String]
       def action_module_name
         action_name.to_s.classify
       end
