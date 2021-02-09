@@ -142,6 +142,9 @@ module SoberSwag
         other.class == self.class && other.type == type
       end
 
+      ##
+      # Standard ruby hasing method.
+      # Compilers hash to the same value if they are compiling the same type.
       def hash
         [self.class, type].hash
       end

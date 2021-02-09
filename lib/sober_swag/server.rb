@@ -48,6 +48,8 @@ module SoberSwag
       </html>
     HTML
 
+    ##
+    # Standard Rack call method.
     def call(env)
       req = Rack::Request.new(env)
       if req.path_info&.match?(/json/si) || req.get_header('Accept')&.match?(/json/si)
@@ -56,6 +58,8 @@ module SoberSwag
         [200, { 'Content-Type' => 'text/html' }, [EFFECT_HTML.gsub(/SCRIPT_NAME/, env['SCRIPT_NAME'] + '.json')]]
       end
     end
+
+    private
 
     def generate_json_string
       if cache?

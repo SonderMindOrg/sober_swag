@@ -46,9 +46,15 @@ module SoberSwag
         end
       end
 
+      ##
+      # Primitive schema used for ruby `Date` values.
       DATE_PRIMITIVE = { type: :string, format: :date }.freeze
+      ##
+      # Primitive schema used for ruby `DateTime` values.
       DATE_TIME_PRIMITIVE = { type: :string, format: :'date-time' }.freeze
 
+      ##
+      # Map of types that are considered "primitive types" in the OpenAPI V3 spec.
       SWAGGER_PRIMITIVE_DEFS =
         {
           NilClass => :null,
