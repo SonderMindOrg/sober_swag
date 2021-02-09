@@ -19,7 +19,7 @@ module SoberSwag
       # @param other [Object] the other object
       # @return [1, 0, -1] if the object is greater than, less than, or equal to the other
       def <=>(other)
-        return other.class.name <=> self.class.name unless other.class == self.class
+        return other.class.name <=> self.class.name unless other.instance_of?(self.class)
 
         deconstruct <=> other.deconstruct
       end

@@ -183,7 +183,7 @@ RSpec.describe SoberSwag::Compiler::Type do
   end
 
   context 'with a class that has nested things' do
-    ExampleInput = SoberSwag.input_object do # rubocop:disable RSpec/LeakyConstantDeclaration
+    ExampleInput = SoberSwag.input_object do # rubocop:disable RSpec/LeakyConstantDeclaration, Lint/ConstantDefinitionInBlock
       identifier 'ExampleInput'
       attribute :first_name, SoberSwag::Types::String
     end

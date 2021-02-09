@@ -55,7 +55,7 @@ module SoberSwag
       if req.path_info&.match?(/json/si) || req.get_header('Accept')&.match?(/json/si)
         [200, { 'Content-Type' => 'application/json' }, [generate_json_string]]
       else
-        [200, { 'Content-Type' => 'text/html' }, [EFFECT_HTML.gsub(/SCRIPT_NAME/, env['SCRIPT_NAME'] + '.json')]]
+        [200, { 'Content-Type' => 'text/html' }, [EFFECT_HTML.gsub(/SCRIPT_NAME/, "#{env['SCRIPT_NAME']}.json")]]
       end
     end
 
