@@ -16,4 +16,4 @@ Gemfile.lock
 
 /vendor/
 
-.yardoc/
+.yardoc
