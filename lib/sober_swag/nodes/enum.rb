@@ -29,7 +29,8 @@ module SoberSwag
       end
 
       ##
-      # @return [Hash<Symbol => Array<Symbol,String>>] the values, wrapped in a `values:` key.
+      # @return [Hash{Symbol => Array<Symbol,String>}]
+      #   the values, wrapped in a `values:` key.
       def deconstruct_keys(_keys)
         { values: values }
       end
