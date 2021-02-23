@@ -42,13 +42,15 @@ module SoberSwag
       #
       # This will define an "action module" on this class to contain the generated types.
       # In the above example, the following constants will be deifned on the controller:
-      #     PostsController::Show # the container module for everything in this action
-      #     PostsController::Show::PathParams # the dry-struct type for the path attribute.
+      #
+      # - `PostsController::Show` - the container module for everything in this action
+      # - `PostsController::Show::PathParams` - the dry-struct type for the path attribute.
+      #
       # So, in the same controller, you can refer to Show::PathParams to get the type created by the 'path_params' block above.
       #
       # The block given evaluates in the context of `SoberSwag::Controller::Route`.
       #
-      # @todo explore parsing the `path` parameter from rails routes so we can avoid forcing the duplicate boilerplate
+      # @todo Explore parsing the `path` parameter from rails routes so we can avoid forcing the duplicate boilerplate.
       #
       # @param method [Symbol] the HTTP method of this route
       # @param action [Symbol] the name of the controller method this mapes onto
@@ -62,7 +64,7 @@ module SoberSwag
 
       ##
       # All the routes that this controller knows about.
-      # @return [Array]
+      # @return [Array<SoberSwag::Controller::Route>
       def defined_routes
         @defined_routes ||= []
       end

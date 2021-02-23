@@ -16,13 +16,15 @@ module SoberSwag
     #
     # For example, with a schema like:
     #
-    #   class Bar < SoberSwag::InputObject
-    #     attribute :baz, primitive(:String)
-    #   end
+    # ```ruby
+    # class Bar < SoberSwag::InputObject
+    #   attribute :baz, primitive(:String)
+    # end
     #
-    #   class Foo < SoberSwag::InputObject
-    #     attribute :bar, Bar
-    #   end
+    # class Foo < SoberSwag::InputObject
+    #   attribute :bar, Bar
+    # end
+    # ```
     #
     # If you compile `Foo` with this class, {#found_types} will include `Bar`.
     #

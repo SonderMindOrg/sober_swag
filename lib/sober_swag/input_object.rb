@@ -26,11 +26,13 @@ module SoberSwag
       #   This block will be called as in {SoberSwag.input_object}.
       #   This might be useful in a case like the following:
       #
-      #     class Classroom < SoberSwag::InputObject do
-      #       attribute :biographical_detail do
-      #         attribute :student_name, primitive(:String)
-      #       end
+      #   ```ruby
+      #   class Classroom < SoberSwag::InputObject do
+      #     attribute :biographical_detail do
+      #       attribute :student_name, primitive(:String)
       #     end
+      #   end
+      #   ```
       #
       #   @param key [Symbol] the attribute name
       #   @param parent [Class] the parent class to use for the sub-object
@@ -86,15 +88,19 @@ module SoberSwag
       # Convenience method: you can use `.primitive` get a primitive parser for a given type.
       # This lets you write:
       #
-      #   class Foo < SoberSwag::InputObject
-      #     attribute :bar, primitive(:String)
-      #    end
+      #  ```ruby
+      #  class Foo < SoberSwag::InputObject
+      #    attribute :bar, primitive(:String)
+      #  end
+      #  ```
       #
       # instead of
       #
-      #   class Foo < SoberSwag::InputObject
-      #     attribute :bar, SoberSwag::Types::String
-      #   end
+      # ```ruby
+      # class Foo < SoberSwag::InputObject
+      #   attribute :bar, SoberSwag::Types::String
+      # end
+      # ```
       #
       # @param args [Symbol] a symbol
       # @return a primitive parser
@@ -113,15 +119,19 @@ module SoberSwag
       #
       # This method lets you write:
       #
-      #   class Foo < SoberSwag::InputObject
-      #     attribute :bar, param(:Integer)
-      #   end
+      # ```ruby
+      # class Foo < SoberSwag::InputObject
+      #   attribute :bar, param(:Integer)
+      # end
+      # ```
       #
       # instead of
       #
-      #   class Foo < SoberSwag::InputObject
-      #     attribute :bar, SoberSwag::Types::Param::Integer
-      #   end
+      # ```ruby
+      # class Foo < SoberSwag::InputObject
+      #   attribute :bar, SoberSwag::Types::Param::Integer
+      # end
+      # ```
       #
       # @param name [Symbol] the name of the parameter type to get
       # @return a parameter parser
