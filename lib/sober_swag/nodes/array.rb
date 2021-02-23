@@ -20,7 +20,7 @@ module SoberSwag
       ##
       # @see SoberSwag::Nodes::Array#cata
       #
-      # The block will be called with each element contained in this array node in turn, then called with a `SoberSwag::Nodes::Array` constructed
+      # The block will be called with each element contained in this array node in turn, then called with a {SoberSwag::Nodes::Array} constructed
       # from the resulting values.
       #
       # @return whatever the block yields.
@@ -39,7 +39,7 @@ module SoberSwag
       ##
       # Deconstruction for pattern-matching
       #
-      # @return [Hash{Symbol => Array<SoberSwag::Nodes::Base>}]
+      # @return [Hash{Symbol => ::Array<SoberSwag::Nodes::Base>}]
       #   a hash with the elements in the `:elements` key.
       def deconstruct_keys(_keys)
         { elements: @elements }
