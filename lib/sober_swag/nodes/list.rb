@@ -27,7 +27,8 @@ module SoberSwag
       end
 
       ##
-      # @return [Hash<Symbol => SoberSwag::Nodes::Base>] the contained type wrapped in an `element:` key.
+      # @return [Hash{Symbol => SoberSwag::Nodes::Base}]
+      #   the contained type wrapped in an `element:` key.
       def deconstruct_keys(_)
         { element: element }
       end
