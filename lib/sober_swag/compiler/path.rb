@@ -41,7 +41,8 @@ module SoberSwag
       ##
       # An array of "response" objects from swagger.
       #
-      # @return [Hash<String => Hash>] response code to response object.
+      # @return [Hash{String => Hash}]
+      #   response code to response object.
       def responses # rubocop:disable Metrics/MethodLength
         route.response_serializers.map { |status, serializer|
           [
