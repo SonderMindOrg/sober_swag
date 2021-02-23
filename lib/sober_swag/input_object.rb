@@ -13,9 +13,9 @@ module SoberSwag
       ##
       # The name to use for this type in external documentation.
       #
-      # @param [String] what to call this InputObject in external documentation.
-      def identifier(arg = nil)
-        @identifier = arg if arg
+      # @param new_ident [String] what to call this InputObject in external documentation.
+      def identifier(new_ident = nil)
+        @identifier = new_ident if new_ident
 
         @identifier || name.to_s.gsub('::', '.')
       end
@@ -125,8 +125,8 @@ module SoberSwag
       #
       # @param name [Symbol] the name of the parameter type to get
       # @return a parameter parser
-      def param(sym)
-        SoberSwag::Types::Params.const_get(sym)
+      def param(name)
+        SoberSwag::Types::Params.const_get(name)
       end
 
       private

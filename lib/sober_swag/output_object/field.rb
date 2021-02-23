@@ -10,7 +10,7 @@ module SoberSwag
       #   the value in this field.
       #   If given a `Proc` or `Lambda`, the `Proc` or `Lambda` should return
       #   an instance of SoberSwag::Serializer::Base when called.
-      # @param from: [Symbol] an optional parameter specifying
+      # @param from [Symbol] an optional parameter specifying
       #   that this field should be plucked "from" another
       #   attribute of a ruby object
       # @param block [Proc] a proc to get this field from a serialized

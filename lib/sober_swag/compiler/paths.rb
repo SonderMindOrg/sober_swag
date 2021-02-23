@@ -34,7 +34,7 @@ module SoberSwag
       # it has *no idea* how to handle types. So, it takes a compiler
       # which it will use to do that for it.
       #
-      # @param [SoberSwag::Compiler::Type] the type compiler to use
+      # @param compiler [SoberSwag::Compiler::Type] the type compiler to use
       # @return [Hash] a schema for all contained routes.
       def paths_list(compiler)
         grouped_paths.transform_values do |values|

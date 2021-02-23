@@ -23,7 +23,7 @@ module SoberSwag
       ##
       # Define a new view, with the view DSL
       # @param name [Symbol] the name of the view
-      # @param inherits: [Symbol] the name of another view this
+      # @param inherits [Symbol] the name of another view this
       #   view will "inherit" from
       # @param block [Proc] a block which will execute in the context of
       #   a new {SoberSwag::OutputObject::View}

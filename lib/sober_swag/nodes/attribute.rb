@@ -28,7 +28,7 @@ module SoberSwag
 
       ##
       # Deconstructs into the attributes as a hash.
-      # @param keys [void] ignored
+      # @param _keys [void] ignored
       # @return [Hash] the attributes as keys.
       def deconstruct_keys(_keys)
         { key: key, required: required, value: value, meta: meta }

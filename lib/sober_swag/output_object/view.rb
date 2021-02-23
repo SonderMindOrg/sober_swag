@@ -4,7 +4,7 @@ module SoberSwag
     # DSL for defining a view.
     # Used in `view` blocks within {SoberSwag::OutputObject.define}.
     #
-    # Views are "variants" of {SoberSwag::OutoutObject}s that contain
+    # Views are "variants" of {SoberSwag::OutputObject}s that contain
     # different fields.
     class View < SoberSwag::Serializer::Base
       ##

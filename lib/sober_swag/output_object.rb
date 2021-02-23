@@ -32,7 +32,7 @@ module SoberSwag
     # However, this is only a hack to get rid of the weird naming issue when
     # generating swagger from dry structs: their section of the schema area
     # is defined by their *Ruby Class Name*. In the future, if we get rid of this,
-    # we might be able to keep this on the value-level, in which case {#define}
+    # we might be able to keep this on the value-level, in which case {.define}
     # can simply return an *instance* of SoberSwag::Serializer that does
     # the correct thing, with the name you give it. This works for now, though.
     #
@@ -79,7 +79,7 @@ module SoberSwag
     ##
     # Get a serilizer for a single view contained in this output object.
     # Note: given `:base`, it will return a serializer for the base OutputObject
-    # @param view [Symbol] the name of the view
+    # @param name [Symbol] the name of the view
     # @return [SoberSwag::Serializer::Base] the serializer
     def view(name)
       return base_serializer if name == :base

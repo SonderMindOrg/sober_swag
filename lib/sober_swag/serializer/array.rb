@@ -38,7 +38,8 @@ module SoberSwag
       # Serialize an array of objects that can be serialized with {#element_serializer}
       # by calling `element_serializer.serialize` for each item in this array.
       #
-      # Note: since ruby is duck-typed, anything that responds to {#map} should work!
+      # Note: since ruby is duck-typed, anything that responds to the `#map` method from
+      # [Enumerable](https://ruby-doc.org/core-3.0.0/Enumerable.html) should work!
       #
       # @param object [Array<Object>,#map] collection of objects to serialize
       # @return [Array<Object>] JSON-compatible array
