@@ -31,7 +31,7 @@ module SoberSwag
       ##
       # Deconstructs into the elements.
       #
-      # @return [Array<SoberSwag::Node::Base>]
+      # @return [Array<SoberSwag::Nodes::Base>]
       def deconstruct
         @elements
       end
