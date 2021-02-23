@@ -4,9 +4,10 @@ module SoberSwag
     # A compiler for swagger-able types.
     #
     # This class turns Swagger-able types into a *schema*.
-    # This Schema may be a [schema object](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#schemaObject) with {#object_schema},
-    # a [path schema](https://swagger.io/docs/specification/describing-parameters/#path-parameters) with {#path_schema},
-    # or a [query schema](https://swagger.io/docs/specification/describing-parameters/#query-parameters) with {#query_schema}.
+    # This Schema may be:
+    # - a [schema object](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.3.md#schemaObject) with {#object_schema}
+    # - a [path schema](https://swagger.io/docs/specification/describing-parameters/#path-parameters) with {#path_schema}
+    # - a [query schema](https://swagger.io/docs/specification/describing-parameters/#query-parameters) with {#query_schema}
     #
     # As such, it compiles all types to all applicable schemas.
     #

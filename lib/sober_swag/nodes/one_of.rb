@@ -10,7 +10,8 @@ module SoberSwag
     # So, we initially serialize to a sum type, then later transform to this array type for further serialization.
     class OneOf < ::SoberSwag::Nodes::Array
       ##
-      # @return [Hash<Symbol => SoberSwag::Nodes::Base>] the alternatives, wrapped in an `alternatives:` key.
+      # @return [Hash{Symbol => SoberSwag::Nodes::Base}]
+      #   the alternatives, wrapped in an `alternatives:` key.
       def deconstruct_keys(_)
         { alternatives: @elemenets }
       end

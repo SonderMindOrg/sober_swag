@@ -59,7 +59,11 @@ module SoberSwag
       ##
       # @see SoberSwag::Nodes::Base#cata
       def cata(&block)
-        block.call(self.class.new(key, required, value.cata(&block), meta))
+        block.call(
+          self.class.new(
+            key, required, value.cata(&block), meta
+          )
+        )
       end
     end
   end

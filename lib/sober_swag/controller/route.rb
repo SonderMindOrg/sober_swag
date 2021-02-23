@@ -20,7 +20,8 @@ module SoberSwag
 
       ##
       # A hash of response code -> response serializer
-      # @return [Hash<Symbol, SoberSwag::Serializer::Base>]
+      # @return [Hash{Symbol => SoberSwag::Serializer::Base}]
+      #   response code to response serializer
       attr_reader :response_serializers
 
       ##

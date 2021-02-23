@@ -6,9 +6,9 @@ module SoberSwag
     # All nodes should define the following:
     #
     #
-    # - #deconstruct, which returns an array of *everything needed to idenitfy the node.*
+    # - `#deconstruct`, which returns an array of *everything needed to idenitfy the node.*
     #   We base comparisons on the result of deconstruction.
-    # - #deconstruct_keys, which returns a hash of *everything needed to identify the node*.
+    # - `#deconstruct_keys`, which returns a hash of *everything needed to identify the node*.
     #   We use this later.
     class Base
       include Comparable
