@@ -43,7 +43,8 @@ module SoberSwag
       ##
       # Wraps the attributes in a hash.
       #
-      # @return [Hash(Symbol => Object, Hash)] {#value} in `value:`, {#metadata} in `metadata:`
+      # @return [Hash{Symbol => Object, Hash}]
+      #   {#value} in `value:`, {#metadata} in `metadata:`
       def deconstruct_keys(_)
         { value: value, metadata: metadata }
       end
