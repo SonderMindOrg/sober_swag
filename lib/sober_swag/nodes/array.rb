@@ -37,8 +37,10 @@ module SoberSwag
       end
 
       ##
-      # Deconstruction for pattern-matching: returns a hash with the elements in the `:elements` key.
-      # @return [Hash<Symbol => Array<SoberSwag::Nodes::Base>>]
+      # Deconstruction for pattern-matching
+      #
+      # @return [Hash{Symbol => Array<SoberSwag::Nodes::Base>}]
+      #   a hash with the elements in the `:elements` key.
       def deconstruct_keys(_keys)
         { elements: @elements }
       end
