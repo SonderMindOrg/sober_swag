@@ -19,7 +19,8 @@ module SoberSwag
       end
 
       ##
-      # Deconstructs into attributes.
+      # Deconstruct into the {#key}, {#required}, {#value}, and {#meta} attributes
+      # of this {Attribute} object.
       #
       # @return [Array(Symbol, Boolean, Class, Hash)] the attributes of this object
       def deconstruct
@@ -27,7 +28,9 @@ module SoberSwag
       end
 
       ##
-      # Deconstructs into the attributes as a hash.
+      # Deconstructs into {#key}, {#required}, {#value}, and {#meta} attributes, as a
+      # hash with the attribute names as the keys.
+      #
       # @param _keys [void] ignored
       # @return [Hash] the attributes as keys.
       def deconstruct_keys(_keys)
