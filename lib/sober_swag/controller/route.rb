@@ -25,7 +25,8 @@ module SoberSwag
 
       ##
       # A hash of response code -> response description
-      # @return [Hash<Symbol, String>]
+      # @return [Hash{Symbol => String}]
+      #   response code to response description
       attr_reader :response_descriptions
 
       ##
