@@ -105,7 +105,7 @@ module SoberSwag
     end
 
     ##
-    # Get the path parameters, parsed into the type you defined with {SoberSwag::Controller.define}
+    # Get the path parameters, parsed into the type you defined with {SoberSwag::Controller::ClassMethods#define}
     # @raise [UndefinedPathError] if there's no path params defined for this route
     # @raise [Dry::Struct::Error] if we cannot convert the path params to the defined type.
     def parsed_path
@@ -119,7 +119,7 @@ module SoberSwag
     end
 
     ##
-    # Get the request body, parsed into the type you defined with {SoberSwag::Controller.define}.
+    # Get the request body, parsed into the type you defined with {SoberSwag::Controller::ClassMethods#define}.
     # @raise [UndefinedBodyError] if there's no request body defined for this route
     # @raise [Dry::Struct::Error] if we cannot convert the path params to the defined type.
     def parsed_body
@@ -133,7 +133,7 @@ module SoberSwag
     end
 
     ##
-    # Get the query params, parsed into the type you defined with {SoberSwag::Controller.define}
+    # Get the query params, parsed into the type you defined with {SoberSwag::Controller::ClassMethods#define}
     # @raise [UndefinedQueryError] if there's no query params defined for this route
     # @raise [Dry::Struct::Error] if we cannot convert the path params to the defined type.
     def parsed_query
