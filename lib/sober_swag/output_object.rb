@@ -5,7 +5,7 @@ module SoberSwag
   # Create a serializer that is heavily inspired by the "Blueprinter" library.
   # This allows you to make "views" and such inside.
   #
-  # Under the hood, this is actually all based on {SoberSwag::Serialzier::Base}.
+  # Under the hood, this is actually all based on {SoberSwag::Serializer::Base}.
   class OutputObject < SoberSwag::Serializer::Base
     autoload(:Field, 'sober_swag/output_object/field')
     autoload(:Definition, 'sober_swag/output_object/definition')
@@ -20,7 +20,7 @@ module SoberSwag
     #
     #     PersonSerializer = SoberSwag::OutputObject.define do
     #       field :id, primitive(:Integer)
-    #       field :name, primtive(:String).optional
+    #       field :name, primitive(:String).optional
     #
     #       view :complex do
     #         field :age, primitive(:Integer)
@@ -47,7 +47,7 @@ module SoberSwag
     ##
     # @param fields [Array<SoberSwag::OutputObject::Field>] the fields for this OutputObject
     # @param views [Array<SoberSwag::OutputObject::View>] the views for this OutputObject
-    # @param identifier [String] the external identifier for this OutoutObject
+    # @param identifier [String] the external identifier for this OutputObject
     def initialize(fields, views, identifier)
       @fields = fields
       @views = views
@@ -77,7 +77,7 @@ module SoberSwag
     end
 
     ##
-    # Get a serilizer for a single view contained in this output object.
+    # Get a serializer for a single view contained in this output object.
     # Note: given `:base`, it will return a serializer for the base OutputObject
     # @param name [Symbol] the name of the view
     # @return [SoberSwag::Serializer::Base] the serializer

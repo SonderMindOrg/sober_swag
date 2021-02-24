@@ -5,7 +5,7 @@ module SoberSwag
     module FieldSyntax
       ##
       # Defines a new field.
-      # @see SoberSwag::OutoutObject::Field#initialize
+      # @see SoberSwag::OutputObject::Field#initialize
       def field(name, serializer, from: nil, &block)
         add_field!(Field.new(name, serializer, from: from, &block))
       end

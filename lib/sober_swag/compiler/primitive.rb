@@ -5,7 +5,7 @@ module SoberSwag
     # Almost always constructed with the values from
     # {SoberSwag::Nodes::Primitive}.
     #
-    # This works by either generating a swagger primitive defintion, *or* a `$ref` to one with a given identifier.
+    # This works by either generating a swagger primitive definition, *or* a `$ref` to one with a given identifier.
     class Primitive
       ##
       # @param type [Class] the swagger-able class to document.
@@ -31,7 +31,7 @@ module SoberSwag
 
       ##
       # Turn this type into a swagger hash with a proper type key.
-      # This is suitable for use as the value of a `schema` key in a defintion.
+      # This is suitable for use as the value of a `schema` key in a definition.
       #
       # @return [Hash] the schema.
       def type_hash

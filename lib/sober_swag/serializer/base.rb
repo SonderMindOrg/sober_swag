@@ -35,7 +35,7 @@ module SoberSwag
 
       ##
       # Get a new serializer that will first run the given block before serializing an object.
-      # For example, if you have a serializer for strings called `StringSerialier`,
+      # For example, if you have a serializer for strings called `StringSerializer`,
       # and you want to serialize `Date` objects via encoding them to a standardized string format,
       # you can use:
       #
@@ -68,7 +68,7 @@ module SoberSwag
       #   end
       #
       #   Student = SoberSwag::OutputObject.define do
-      #     field :name, primtive(:String)
+      #     field :name, primitive(:String)
       #     view :detail do
       #       field :classes, -> { SchoolClass.view(:base) }
       #     end

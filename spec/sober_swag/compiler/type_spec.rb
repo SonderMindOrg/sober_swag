@@ -20,7 +20,7 @@ RSpec.describe SoberSwag::Compiler::Type do
       expect { subject.path_schema }.not_to raise_error
     end
 
-    it 'parses as querry schema' do
+    it 'parses as query schema' do
       expect { subject.query_schema }.not_to raise_error
     end
 
@@ -158,7 +158,7 @@ RSpec.describe SoberSwag::Compiler::Type do
 
   context 'with a class that has descriptions' do
     compiling do
-      attribute :icd_code, SoberSwag::Types::String.meta(description: "Called 'idc codes' internally sometimes beacuse of a typo long ago")
+      attribute :icd_code, SoberSwag::Types::String.meta(description: "Called 'idc codes' internally sometimes because of a typo long ago")
     end
 
     it_behaves_like 'a universal type'

@@ -41,7 +41,7 @@ module SoberSwag
       attr_reader :path
 
       ##
-      # The name of the rails action (usally the controller method) of this route.
+      # The name of the rails action (usually the controller method) of this route.
       # @return [Symbol]
       attr_reader :action_name
 
@@ -76,7 +76,7 @@ module SoberSwag
 
       ##
       # Define the request body, using SoberSwag's type-definition scheme.
-      # The block passed will be used to define the body of a new sublcass of `base` (defaulted to {SoberSwag::InputObject}.)
+      # The block passed will be used to define the body of a new subclass of `base` (defaulted to {SoberSwag::InputObject}.)
       # @overload request_body(base)
       #   Give a Swagger-able type that will be used to parse the request body, and used in generated docs.
       #   @param base [Class] a swagger-able class
@@ -181,7 +181,7 @@ module SoberSwag
       #     passed to {SoberSwag::OutputObject.define}
       #
       # @overload response(status_code, description, serializer)
-      #   Define a new response ffrom this route, with an existing serializer.
+      #   Define a new response from this route, with an existing serializer.
       #   The generated swagger will document this response's format using the serializer.
       #
       #   @param status_code [Symbol]

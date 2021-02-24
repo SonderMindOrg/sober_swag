@@ -35,7 +35,7 @@ module SoberSwag
       ##
       # Deconstructs to the value and the metadata.
       #
-      # @return [Array(Object, Hash)] containd value and metadata.
+      # @return [Array(Object, Hash)] containing value and metadata.
       def deconstruct
         [value, metadata]
       end

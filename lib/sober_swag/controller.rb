@@ -24,7 +24,7 @@ module SoberSwag
     module ClassMethods
       ##
       # Define a new action with the given HTTP method, action name, and path.
-      # This will eventaully delegate to making an actual method on your controller,
+      # This will eventually delegate to making an actual method on your controller,
       # so you can use controllers as you wish with no harm.
       #
       # This method takes a block, evaluated in the context of a {SoberSwag::Controller::Route}.
@@ -41,7 +41,7 @@ module SoberSwag
       #     end
       #
       # This will define an "action module" on this class to contain the generated types.
-      # In the above example, the following constants will be deifned on the controller:
+      # In the above example, the following constants will be defined on the controller:
       #
       # - `PostsController::Show` - the container module for everything in this action
       # - `PostsController::Show::PathParams` - the dry-struct type for the path attribute.
@@ -53,7 +53,7 @@ module SoberSwag
       # @todo Explore parsing the `path` parameter from rails routes so we can avoid forcing the duplicate boilerplate.
       #
       # @param method [Symbol] the HTTP method of this route
-      # @param action [Symbol] the name of the controller method this mapes onto
+      # @param action [Symbol] the name of the controller method this maps onto
       # @param path [String] an OpenAPI v3 Path Specifier
       def define(method, action, path, &block)
         r = Route.new(method, action, path)

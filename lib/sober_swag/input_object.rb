@@ -1,6 +1,6 @@
 module SoberSwag
   ##
-  # A variant of Dry::Struct that allows you to set a "model name" that is publically visible.
+  # A variant of Dry::Struct that allows you to set a "model name" that is publicly visible.
   # If you do not set one, it will be the Ruby class name, with any '::' replaced with a '.'.
   #
   # This otherwise behaves exactly like a Dry::Struct.
@@ -60,7 +60,7 @@ module SoberSwag
       #   This differs from a nil-able attribute as it can be *not provided*, while nilable attributes must be set to `null`.
       #
       #   @param key [Symbol] the attribute name
-      #   @param type the attribute type, another parseable object.
+      #   @param type the attribute type, another parsable object.
       def attribute?(key, parent = SoberSwag::InputObject, &block)
         raise ArgumentError, "parent class #{parent} is not an input object type!" unless valid_field_def?(parent, block)
 

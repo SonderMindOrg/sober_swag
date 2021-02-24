@@ -21,7 +21,7 @@ module SoberSwag
     # Start up.
     #
     # @param controller_proc [Proc] a proc that, when called, gives a list of {SoberSwag::Controller}s to document
-    # @param cache [Bool | Proc] if we should cache our defintions (default false)
+    # @param cache [Bool | Proc] if we should cache our definitions (default false)
     def initialize(
       controller_proc: RAILS_CONTROLLER_PROC,
       cache: false
