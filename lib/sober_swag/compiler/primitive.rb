@@ -39,7 +39,7 @@ module SoberSwag
 
       DATE_PRIMITIVE = { type: :string, format: :date }.freeze
       DATE_TIME_PRIMITIVE = { type: :string, format: :'date-time' }.freeze
-      HASH_PRIMATIVE = { type: :object, additionalProperties: true }.freeze
+      HASH_PRIMITIVE = { type: :object, additionalProperties: true }.freeze
 
       SWAGGER_PRIMITIVE_DEFS =
         {
@@ -54,7 +54,7 @@ module SoberSwag
           Date => DATE_PRIMITIVE,
           DateTime => DATE_TIME_PRIMITIVE,
           Time => DATE_TIME_PRIMITIVE,
-          Hash => HASH_PRIMATIVE
+          Hash => HASH_PRIMITIVE
         ).transform_values(&:freeze).freeze
 
       def ref_name
