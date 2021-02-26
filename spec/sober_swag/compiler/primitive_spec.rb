@@ -30,4 +30,12 @@ RSpec.describe SoberSwag::Compiler::Primitive do
     it { should_not be_named }
     it { should have_attributes(type_hash: { type: :string, format: :'date-time' }) }
   end
+
+  context 'with a hash' do
+    let(:type) { Hash }
+
+    it { should be_swagger_primitive }
+    it { should_not be_named }
+    it { should have_attributes(type_hash: { type: :object, additionalProperties: true }) }
+  end
 end
