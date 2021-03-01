@@ -27,7 +27,7 @@ module SoberSwag
       #   This might be useful in a case like the following:
       #
       #   ```ruby
-      #   class Classroom < SoberSwag::InputObject do
+      #   class Classroom < SoberSwag::InputObject
       #     attribute :biographical_detail do
       #       attribute :student_name, primitive(:String)
       #     end
