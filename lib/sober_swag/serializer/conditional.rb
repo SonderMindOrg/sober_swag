@@ -49,7 +49,7 @@ module SoberSwag
       # First, call {#chooser} with `object` and `options` to see what serializer to use, and *what* to serialize.
       # Then, if it returns `[:left, val]`, use {#left} to serialize `val`.
       # Otherwise, if it returns `[:right, val]`, use {#right} to serialize `val`.
-      # If it returns neither, throw `BadChoiceError`.
+      # If it returns neither, throw {BadChoiceError}.
       #
       # @raise [BadChoiceError] if {#chooser} did not choose what side to use
       # @return [Hash] a JSON-compatible object
