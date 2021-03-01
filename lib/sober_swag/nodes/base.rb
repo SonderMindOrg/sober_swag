@@ -15,9 +15,13 @@ module SoberSwag
 
       ##
       # Value-level comparison.
+      # Returns `-1`, `0`, or `+1`
+      # if this object is less than, equal to, or greater than `other`.
       #
       # @param other [Object] the other object
-      # @return [1, 0, -1] if the object is greater than, less than, or equal to the other
+      #
+      # @return [Integer]
+      #   comparison result
       def <=>(other)
         return other.class.name <=> self.class.name unless other.instance_of?(self.class)
 
