@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.18.0] 2021-03-02
+
+- Add generic hash type for primitive types
+
 ## [v0.17.0]: 2020-11-30
 
 - Allow tagging endpoints via the new `tags` method.
