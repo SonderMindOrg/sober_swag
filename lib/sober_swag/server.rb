@@ -22,6 +22,7 @@ module SoberSwag
     #
     # @param controller_proc [Proc] a proc that, when called, gives a list of {SoberSwag::Controller}s to document
     # @param cache [Bool | Proc] if we should cache our defintions (default false)
+    # @param redoc_version [String] what version of the redoc library to use to display UI (default 'next', the latest version).
     def initialize(
       controller_proc: RAILS_CONTROLLER_PROC,
       cache: false,
