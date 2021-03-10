@@ -24,10 +24,12 @@ module SoberSwag
     # @param cache [Bool | Proc] if we should cache our defintions (default false)
     def initialize(
       controller_proc: RAILS_CONTROLLER_PROC,
-      cache: false
+      cache: false,
+      redoc_version: 'next'
     )
       @controller_proc = controller_proc
       @cache = cache
+      @html = EFFECT_HTML.gsub(/REDOC_VERSION/, redoc_version)
     end
 
     EFFECT_HTML = <<~HTML.freeze
@@ -52,7 +54,7 @@ module SoberSwag
         </head>
         <body>
           <redoc spec-url='SCRIPT_NAME'></redoc>
-          <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"> </script>
+          <script src="https://cdn.jsdelivr.net/npm/redoc@REDOC_VERSION/bundles/redoc.standalone.js"> </script>
         </body>
       </html>
     HTML
@@ -62,7 +64,7 @@ module SoberSwag
       if req.path_info&.match?(/json/si) || req.get_header('Accept')&.match?(/json/si)
         [200, { 'Content-Type' => 'application/json' }, [generate_json_string]]
       else
-        [200, { 'Content-Type' => 'text/html' }, [EFFECT_HTML.gsub(/SCRIPT_NAME/, "#{env['SCRIPT_NAME']}.json")]]
+        [200, { 'Content-Type' => 'text/html' }, [@html.gsub(/SCRIPT_NAME/, "#{env['SCRIPT_NAME']}.json")]]
       end
     end
 
