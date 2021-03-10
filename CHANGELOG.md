@@ -1,5 +1,9 @@
 # Changelog
 
+## [vNext]
+
+- Use [redoc](https://github.com/Redocly/redoc) for generated documentation UI
+
 ## [v0.18.0] 2021-03-02
 
 - Add generic hash type for primitive types

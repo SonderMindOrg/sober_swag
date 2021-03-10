@@ -34,16 +34,25 @@ module SoberSwag
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Swagger-UI</title>
-          <script src="https://unpkg.com/swagger-ui-dist@3/swagger-ui-bundle.js"></script>
-          <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@3.23.4/swagger-ui.css"></link>
+          <title>ReDoc</title>
+          <!-- needed for adaptive design -->
+          <meta charset="utf-8"/>
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
+
+          <!--
+          ReDoc doesn't change outer page styles
+          -->
+          <style>
+            body {
+              margin: 0;
+              padding: 0;
+            }
+          </style>
         </head>
         <body>
-          <div id="swagger">
-          </div>
-          <script>
-            SwaggerUIBundle({url: 'SCRIPT_NAME', dom_id: '#swagger'})
-          </script>
+          <redoc spec-url='SCRIPT_NAME'></redoc>
+          <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"> </script>
         </body>
       </html>
     HTML
@@ -53,7 +62,7 @@ module SoberSwag
       if req.path_info&.match?(/json/si) || req.get_header('Accept')&.match?(/json/si)
         [200, { 'Content-Type' => 'application/json' }, [generate_json_string]]
       else
-        [200, { 'Content-Type' => 'text/html' }, [EFFECT_HTML.gsub(/SCRIPT_NAME/, env['SCRIPT_NAME'] + '.json')]]
+        [200, { 'Content-Type' => 'text/html' }, [EFFECT_HTML.gsub(/SCRIPT_NAME/, "#{env['SCRIPT_NAME']}.json")]]
       end
     end
 
