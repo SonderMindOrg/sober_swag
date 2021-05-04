@@ -3,6 +3,7 @@ require 'bundler/setup'
 require 'sober_swag'
 
 require 'yaml'
+require 'benchmark/ips'
 
 ##
 # Quick and dirty way to benchmark things.
@@ -27,7 +28,7 @@ class Bench
 end
 
 Dir['bench/benchmarks/**/*.rb'].sort.each do |file|
-  require file
+  require_relative file.gsub(%r{^bench/}, '')
 end
 
 Bench.write!('benchmark_results.yaml')
