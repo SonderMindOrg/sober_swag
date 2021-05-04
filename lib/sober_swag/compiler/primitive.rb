@@ -52,6 +52,7 @@ module SoberSwag
       ##
       # Primitive schema used for ruby `DateTime` values.
       DATE_TIME_PRIMITIVE = { type: :string, format: :'date-time' }.freeze
+      HASH_PRIMITIVE = { type: :object, additionalProperties: true }.freeze
 
       ##
       # Map of types that are considered "primitive types" in the OpenAPI V3 spec.
@@ -67,7 +68,8 @@ module SoberSwag
         .to_h.merge(
           Date => DATE_PRIMITIVE,
           DateTime => DATE_TIME_PRIMITIVE,
-          Time => DATE_TIME_PRIMITIVE
+          Time => DATE_TIME_PRIMITIVE,
+          Hash => HASH_PRIMITIVE
         ).transform_values(&:freeze).freeze
 
       ##

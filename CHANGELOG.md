@@ -4,6 +4,14 @@
 
 - Added YARD documentation to almost every method
 
+## [v0.19.0] 2021-03-10
+
+- Use [redoc](https://github.com/Redocly/redoc) for generated documentation UI
+
+## [v0.18.0] 2021-03-02
+
+- Add generic hash type for primitive types
+
 ## [v0.17.0]: 2020-11-30
 
 - Allow tagging endpoints via the new `tags` method.
