@@ -1,0 +1,39 @@
+name: Ruby Benchmark
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby: [ '2.6', '2.7', '3.0' ]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+    - uses: actions/cache@v2
+      with:
+        path: vendor/bundle
+        key: ${{ runner.os }}-${{ matrix.ruby }}-gem-deps-${{ hashFiles('**/Gemfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ matrix.ruby }}-gem-deps-
+    - name: Install dependencies
+      run: |
+        bundle config path vendor/bundle
+        bundle install
+    - name: Run Benchmark
+      run: bundle exec ruby bench/benchmark.rb
+    - uses: actions/upload-artifact@v2
+      with:
+        name: benchmark-result
+        path: benchmark_results.yaml
+        if-no-files-found: error

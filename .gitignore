@@ -17,3 +17,4 @@ Gemfile.lock
 /vendor/
 
 .yardoc
+benchmark_results.yaml
