@@ -27,9 +27,14 @@ class ViewSelection
     field :first_name, primitive(:String)
     field :last_name, primitive(:String)
 
+    # make a bunch of dummy views
+    1.upto(10).each { |n| view(:"view_#{n}") {} }
+
     view :detail do
       field :accomplishments, AccomplishmentSerializer.view(:detail)
     end
+
+    1.upto(10).each { |n| view(:"view_after_#{n}") {} }
   end
 
   Bench.report 'View Selection' do |bm|
