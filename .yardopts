@@ -1,0 +1,7 @@
+--markup-provider=redcarpet
+--markup=markdown
+--plugin activesupport-concern
+--plugin solargraph
+--private
+--protected
+--files docs/serializers.md

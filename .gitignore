@@ -15,3 +15,5 @@ Gemfile.lock
 *.gem
 
 /vendor/
+
+.yardoc

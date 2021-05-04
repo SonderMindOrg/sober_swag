@@ -1,11 +1,19 @@
 module SoberSwag
   module Nodes
     ##
-    # Swagges uses an array of OneOf types, so we
-    # transform our sum nodes into this
+    # OpenAPI v3 represents types that are a "choice" between multiple alternatives as an array.
+    # However, it is easier to model these as a sum type initially: if a type can be either an `A`, a `B`, or a `C`, we can model this as:
+    #
+    # `Sum.new(A, Sum.new(B, C))`.
+    #
+    # This means we only ever need to deal with two types at once.
+    # So, we initially serialize to a sum type, then later transform to this array type for further serialization.
     class OneOf < ::SoberSwag::Nodes::Array
+      ##
+      # @return [Hash{Symbol => SoberSwag::Nodes::Base}]
+      #   the alternatives, wrapped in an `alternatives:` key.
       def deconstruct_keys(_)
-        { alternatives: @elemenets }
+        { alternatives: @elements }
       end
     end
   end

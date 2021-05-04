@@ -1,13 +1,19 @@
 module SoberSwag
   ##
   # Parses a *Dry-Types Schema* into a set of nodes we can use to compile.
-  # This is mostly because the vistior pattern sucks and catamorphisms are nice.
+  # This is mostly because the visitor pattern sucks and catamorphisms are nice.
+  #
+  # Do not use this class directly, as it is not part of the public api.
+  # Instead, use classes from the {SoberSwag::Compiler} namespace.
   class Parser
     def initialize(node)
       @node = node
       @found = Set.new
     end
 
+    ##
+    # Compile to one of our internal nodes.
+    # @return [SoberSwag::Nodes::Base] the node that describes this type.
     def to_syntax # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
       case @node
       when Dry::Types::Default

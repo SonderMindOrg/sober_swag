@@ -1,5 +1,9 @@
 # Changelog
 
+## NEXT
+
+- Added YARD documentation to almost every method
+
 ## [v0.19.0] 2021-03-10
 
 - Use [redoc](https://github.com/Redocly/redoc) for generated documentation UI

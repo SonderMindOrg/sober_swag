@@ -9,8 +9,10 @@ require 'sober_swag/version'
 require 'active_support/inflector'
 
 ##
-# Root namespace
+# Root namespace for the SoberSwag Module.
 module SoberSwag
+  ##
+  # Root Error Class for SoberSwag errors.
   class Error < StandardError; end
 
   autoload :Parser, 'sober_swag/parser'
@@ -26,7 +28,10 @@ module SoberSwag
   ##
   # Define a struct of something.
   # Useful to prevent weirdness from autoloading.
+  #
   # @param parent [Class] the base class for the struct (default of {SoberSwag::Struct})
+  # @yieldself [SoberSwag::InputObject]
+  # @return [Class] the input object class generated
   def self.input_object(parent = nil, &block)
     Class.new(parent || SoberSwag::InputObject, &block)
   end

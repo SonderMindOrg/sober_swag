@@ -11,7 +11,7 @@ An introductory presentation is available [here](https://www.icloud.com/keynote/
 
 Further documentation on using the gem is available in the `docs/` directory:
 
-- [Serializers](docs/serializers.md)
+- {file:docs/serializers.md Serializers}
 
 ## Types for a fully-automated API
 

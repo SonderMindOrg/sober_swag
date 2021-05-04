@@ -1,8 +1,11 @@
 module SoberSwag
   class Compiler
     ##
-    # Compile a singular path, and that's it.
-    # Only handles the actual body.
+    # This compiler transforms a {SoberSwag::Controller::Route} object into its associated OpenAPI V3 definition.
+    # These definitions are [called "paths" in the OpenAPI V3 spec](https://swagger.io/docs/specification/paths-and-operations/),
+    # thus the name of this compiler.
+    #
+    # It only compiles a *single* "path" at a time.
     class Path
       ##
       # @param route [SoberSwag::Controller::Route] a route to use
@@ -12,8 +15,18 @@ module SoberSwag
         @compiler = compiler
       end
 
-      attr_reader :route, :compiler
+      ##
+      # @return [SoberSwag::Controller::Route]
+      attr_reader :route
 
+      ##
+      # @return [SoberSwag::Compiler] the compiler used for type compilation
+      attr_reader :compiler
+
+      ##
+      # The OpenAPI V3 "path" object for the associated {SoberSwag::Controller::Route}
+      #
+      # @return [Hash] the OpenAPI V3 description
       def schema
         base = {}
         base[:summary] = route.summary if route.summary
@@ -25,6 +38,11 @@ module SoberSwag
         base
       end
 
+      ##
+      # An array of "response" objects from swagger.
+      #
+      # @return [Hash{String => Hash}]
+      #   response code to response object.
       def responses # rubocop:disable Metrics/MethodLength
         route.response_serializers.map { |status, serializer|
           [
@@ -41,10 +59,19 @@ module SoberSwag
         }.to_h
       end
 
+      ##
+      # An array of all parameters, be they in the query or in the path.
+      # See [this page](https://swagger.io/docs/specification/serialization/) for what that looks like.
+      #
+      # @return [Array<Hash>]
       def params
         query_params + path_params
       end
 
+      ##
+      # An array of schemas for all query parameters.
+      #
+      # @return [Array<Hash>] the schemas
       def query_params
         if route.query_params_class
           compiler.query_params_for(route.query_params_class)
@@ -53,6 +80,10 @@ module SoberSwag
         end
       end
 
+      ##
+      # An array of schemas for all path parameters.
+      #
+      # @return [Array<Hash>] the schemas
       def path_params
         if route.path_params_class
           compiler.path_params_for(route.path_params_class)
@@ -61,6 +92,11 @@ module SoberSwag
         end
       end
 
+      ##
+      # The schema for a request body.
+      # Matches [this spec.](https://swagger.io/docs/specification/paths-and-operations/)
+      #
+      # @return [Hash] the schema
       def request_body
         return nil unless route.request_body_class
 
@@ -74,6 +110,9 @@ module SoberSwag
         }
       end
 
+      ##
+      # The tags for this path.
+      # @return [Array<String>] the tags
       def tags
         return nil unless route.tags.any?
 

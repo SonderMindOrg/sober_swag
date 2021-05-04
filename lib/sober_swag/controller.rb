@@ -2,7 +2,8 @@ require 'active_support/concern'
 
 module SoberSwag
   ##
-  # Controller concern
+  # This module can be included in any subclass of `ActionController` or `ActionController::API` to make it `SoberSwag`-able.
+  # This means that you can use the mechanics of SoberSwag to define a type-safe API, with generated Swagger documentation!
   module Controller
     extend ActiveSupport::Concern
 
@@ -17,14 +18,18 @@ module SoberSwag
       include ::Dry::Types()
     end
 
-    class_methods do
+    ##
+    # Module containing class methods.
+    # Any class that `include`s {SoberSwag::Controller} will also `extend` {SoberSwag::Controller::ClassMethods}.
+    module ClassMethods
       ##
       # Define a new action with the given HTTP method, action name, and path.
-      # This will eventaully delegate to making an actual method on your controller,
+      # This will eventually delegate to making an actual method on your controller,
       # so you can use controllers as you wish with no harm.
       #
       # This method takes a block, evaluated in the context of a {SoberSwag::Controller::Route}.
       # Used like:
+      #
       #     define(:get, :show, '/posts/{id}') do
       #       path_params do
       #         attribute :id, Types::Integer
@@ -36,32 +41,46 @@ module SoberSwag
       #     end
       #
       # This will define an "action module" on this class to contain the generated types.
-      # In the above example, the following constants will be deifned on the controller:
-      #     PostsController::Show # the container module for everything in this action
-      #     PostsController::Show::PathParams # the dry-struct type for the path attribute.
+      # In the above example, the following constants will be defined on the controller:
+      #
+      # - `PostsController::Show` - the container module for everything in this action
+      # - `PostsController::Show::PathParams` - the dry-struct type for the path attribute.
+      #
       # So, in the same controller, you can refer to Show::PathParams to get the type created by the 'path_params' block above.
+      #
+      # The block given evaluates in the context of `SoberSwag::Controller::Route`.
+      #
+      # @todo Explore parsing the `path` parameter from rails routes so we can avoid forcing the duplicate boilerplate.
+      #
+      # @param method [Symbol] the HTTP method of this route
+      # @param action [Symbol] the name of the controller method this maps onto
+      # @param path [String] an OpenAPI v3 Path Specifier
       def define(method, action, path, &block)
         r = Route.new(method, action, path)
         r.instance_eval(&block)
         const_set(r.action_module_name, r.action_module)
         defined_routes << r
-        define_method(action, r.action) if r.action
       end
 
       ##
       # All the routes that this controller knows about.
+      # @return [Array<SoberSwag::Controller::Route>
       def defined_routes
         @defined_routes ||= []
       end
 
       ##
       # Find a route with the given name.
+      # @param name [Symbol] the name
+      # @return [SoberSwag::Controller::Route]
       def find_route(name)
         defined_routes.find { |r| r.action_name.to_s == name.to_s }
       end
 
       ##
-      # A swagger definition for *this controller only*.
+      # Get the OpenAPI v3 definition for this controller.
+      #
+      # @return [Hash]
       def swagger_info
         @swagger_info ||=
           begin
@@ -74,14 +93,19 @@ module SoberSwag
       end
     end
 
+    included do |base|
+      base.extend ClassMethods
+    end
+
     ##
-    # Action to get the singular swagger for this entire API.
+    # ActiveController action to get the swagger definition for this API.
+    # It renders a JSON of the OpenAPI v3 schema for this API.
     def swagger
       render json: self.class.swagger_info
     end
 
     ##
-    # Get the path parameters, parsed into the type you defined with {SoberSwag::Controller.define}
+    # Get the path parameters, parsed into the type you defined with {SoberSwag::Controller::ClassMethods#define}
     # @raise [UndefinedPathError] if there's no path params defined for this route
     # @raise [Dry::Struct::Error] if we cannot convert the path params to the defined type.
     def parsed_path
@@ -95,7 +119,7 @@ module SoberSwag
     end
 
     ##
-    # Get the request body, parsed into the type you defined with {SoberSwag::Controller.define}.
+    # Get the request body, parsed into the type you defined with {SoberSwag::Controller::ClassMethods#define}.
     # @raise [UndefinedBodyError] if there's no request body defined for this route
     # @raise [Dry::Struct::Error] if we cannot convert the path params to the defined type.
     def parsed_body
@@ -109,7 +133,7 @@ module SoberSwag
     end
 
     ##
-    # Get the query params, parsed into the type you defined with {SoberSwag::Controller.define}
+    # Get the query params, parsed into the type you defined with {SoberSwag::Controller::ClassMethods#define}
     # @raise [UndefinedQueryError] if there's no query params defined for this route
     # @raise [Dry::Struct::Error] if we cannot convert the path params to the defined type.
     def parsed_query
@@ -140,6 +164,8 @@ module SoberSwag
     # This kinda violates the "be liberal in what you accept" principle,
     # but it keeps the docs honest: parameters sent in the body *must* be
     # in the body.
+    #
+    # @return [Hash]
     def body_params
       request.request_parameters
     end
@@ -147,6 +173,7 @@ module SoberSwag
     ##
     # Get the action-definition for the current action.
     # Under the hood, delegates to the `:action` key of rails params.
+    # @return [SoberSwag::Controller::Route]
     def current_action_def
       self.class.find_route(params[:action])
     end

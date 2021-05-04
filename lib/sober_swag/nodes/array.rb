@@ -10,18 +10,37 @@ module SoberSwag
 
       attr_reader :elements
 
+      ##
+      # @see SoberSwag::Nodes::Array#map
+      #
       def map(&block)
         self.class.new(elements.map { |elem| elem.map(&block) })
       end
 
+      ##
+      # @see SoberSwag::Nodes::Array#cata
+      #
+      # The block will be called with each element contained in this array node in turn, then called with a {SoberSwag::Nodes::Array} constructed
+      # from the resulting values.
+      #
+      # @return whatever the block yields.
       def cata(&block)
         block.call(self.class.new(elements.map { |elem| elem.cata(&block) }))
       end
 
+      ##
+      # Deconstructs into the elements.
+      #
+      # @return [Array<SoberSwag::Nodes::Base>]
       def deconstruct
         @elements
       end
 
+      ##
+      # Deconstruction for pattern-matching
+      #
+      # @return [Hash{Symbol => ::Array<SoberSwag::Nodes::Base>}]
+      #   a hash with the elements in the `:elements` key.
       def deconstruct_keys(_keys)
         { elements: @elements }
       end

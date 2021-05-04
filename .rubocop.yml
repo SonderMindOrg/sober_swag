@@ -2,6 +2,7 @@ require: rubocop-rspec
 
 AllCops:
   TargetRubyVersion: 2.6.0
+  NewCops: enable
   Exclude:
     - 'bin/bundle'
     - 'example/bin/bundle'
@@ -21,6 +22,9 @@ Metrics/BlockLength:
     - 'spec/**/*.rb'
     - 'sober_swag.gemspec'
     - 'example/spec/**/*.rb'
+
+Lint/MissingSuper:
+  Enabled: false
 
 RSpec/ImplicitBlockExpectation:
   Enabled: false

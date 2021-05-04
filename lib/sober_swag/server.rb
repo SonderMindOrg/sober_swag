@@ -21,7 +21,7 @@ module SoberSwag
     # Start up.
     #
     # @param controller_proc [Proc] a proc that, when called, gives a list of {SoberSwag::Controller}s to document
-    # @param cache [Bool | Proc] if we should cache our defintions (default false)
+    # @param cache [Bool | Proc] if we should cache our definitions (default false)
     # @param redoc_version [String] what version of the redoc library to use to display UI (default 'next', the latest version).
     def initialize(
       controller_proc: RAILS_CONTROLLER_PROC,
@@ -60,6 +60,8 @@ module SoberSwag
       </html>
     HTML
 
+    ##
+    # Standard Rack call method.
     def call(env)
       req = Rack::Request.new(env)
       if req.path_info&.match?(/json/si) || req.get_header('Accept')&.match?(/json/si)
@@ -68,6 +70,8 @@ module SoberSwag
         [200, { 'Content-Type' => 'text/html' }, [@html.gsub(/SCRIPT_NAME/, "#{env['SCRIPT_NAME']}.json")]]
       end
     end
+
+    private
 
     def generate_json_string
       if cache?
