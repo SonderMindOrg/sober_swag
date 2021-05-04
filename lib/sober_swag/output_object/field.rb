@@ -23,6 +23,8 @@ module SoberSwag
         @block = block
       end
 
+      ##
+      # @return [Symbol] name of this field.
       attr_reader :name
 
       ##
@@ -43,17 +45,19 @@ module SoberSwag
 
       private
 
-      def transform_proc # rubocop:disable Metrics/MethodLength
-        if @block
-          @block
-        else
-          key = @from || @name
-          proc do |object, _|
-            if object.respond_to?(key)
-              object.public_send(key)
-            else
-              object[key]
-            end
+      ##
+      # @return [Proc]
+      def transform_proc
+        return @transform_proc if defined?(@transform_proc)
+
+        return @transform_proc = @block if @block
+
+        key = @from || @name
+        @transform_proc = proc do |object, _|
+          if object.respond_to?(key)
+            object.public_send(key)
+          else
+            object[key]
           end
         end
       end

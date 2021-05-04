@@ -9,7 +9,13 @@ module SoberSwag
         @views = []
       end
 
-      attr_reader :fields, :views
+      ##
+      # @return [Array<SoberSwag::OutputObject::Field>]
+      attr_reader :fields
+
+      ##
+      # @return [Array<SoberSwag::OutputObject::View>]
+      attr_reader :views
 
       include FieldSyntax
 
@@ -25,8 +31,8 @@ module SoberSwag
       # @param name [Symbol] the name of the view
       # @param inherits [Symbol] the name of another view this
       #   view will "inherit" from
-      # @param block [Proc] a block which will execute in the context of
-      #   a new {SoberSwag::OutputObject::View}
+      # @yieldself [SoberSwag::OutputObject::View]
+      # @return [nil] nothing interesting.
       def view(name, inherits: nil, &block)
         initial_fields =
           if inherits.nil? || inherits == :base
@@ -56,6 +62,12 @@ module SoberSwag
 
       private
 
+      ##
+      # Get the already-defined view with a specific name.
+      #
+      # @param name [Symbol] name of view to look up
+      # @return [SoberSwag::OutputObject::View] the view found
+      # @raise [ArgumentError] if no view with that name found
       def find_view(name)
         @views.find { |view| view.name == name } || (raise ArgumentError, "no view #{name.inspect} defined!")
       end

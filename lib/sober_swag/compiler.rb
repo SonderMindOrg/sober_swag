@@ -18,7 +18,7 @@ module SoberSwag
     ##
     # Convert a compiler to the overall type definition.
     #
-    # @return Hash
+    # @return Hash the swagger definition.
     def to_swagger
       {
         paths: path_schemas,
@@ -31,6 +31,7 @@ module SoberSwag
     ##
     # Add a path to be compiled.
     # @param route [SoberSwag::Controller::Route] the route to add.
+    # @return [Compiler] self
     def add_route(route)
       tap { @paths.add_route(route) }
     end

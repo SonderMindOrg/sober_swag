@@ -23,6 +23,9 @@ module SoberSwag
 
       ##
       # Serialize an object to a JSON hash by using each field in the list.
+      # @param object [Object] object to serialize
+      # @param options [Hash] arbitrary options
+      # @return [Hash] serialized object.
       def serialize(object, options = {})
         field_list.map { |field|
           [field.name, field.serializer.serialize(object, options)]
