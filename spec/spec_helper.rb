@@ -7,6 +7,7 @@ if ENV['COVERAGE']
 end
 
 require 'sober_swag'
+require 'rspec/its'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

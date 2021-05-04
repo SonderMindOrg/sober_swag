@@ -3,6 +3,8 @@
 ## NEXT
 
 - Added YARD documentation to almost every method
+- Added a new method of serializing views based on hash lookups, improving performance
+- Added a benchmarking suite
 
 ## [v0.19.0] 2021-03-10
 

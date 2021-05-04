@@ -27,9 +27,11 @@ module SoberSwag
       # @param options [Hash] arbitrary options
       # @return [Hash] serialized object.
       def serialize(object, options = {})
-        field_list.map { |field|
-          [field.name, field.serializer.serialize(object, options)]
-        }.to_h
+        {}.tap do |hash|
+          field_list.each do |field|
+            hash[field.name] = field.serializer.serialize(object, options)
+          end
+        end
       end
 
       ##
