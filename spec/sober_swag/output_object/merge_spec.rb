@@ -34,7 +34,7 @@ RSpec.describe 'merging SoberSwag output objects' do
       let(:example) do
         bp = base
         SoberSwag::OutputObject.define do
-          merge(bp, { except: [:id] })
+          merge(bp, except: [:id])
 
           field :items, primitive(:Integer)
         end
