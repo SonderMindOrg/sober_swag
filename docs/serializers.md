@@ -241,6 +241,9 @@ end
 Using `#merge` lets you add in all the fields from one output object into another.
 You can even use `merge` from within a view.
 
+Exclude any unneeded fields from the merge by passing a hash:
+`merge GenericBioOutput, { except: [:position] }`
+
 Note that `merge` does *not* copy anything but fields.
 Identifiers and views will not be copied over.
 
