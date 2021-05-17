@@ -1,5 +1,9 @@
 # Changelog
 
+## [vNEXT]
+
+- Added `except` parameter to the `merge` method, which allows a specified field to be excluded from the merge.
+
 ## NEXT
 
 - Added YARD documentation to almost every method
