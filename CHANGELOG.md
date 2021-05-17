@@ -1,9 +1,10 @@
 # Changelog
 
-## NEXT
+## [v0.20.0] 2021-05-17
 
 - Added YARD documentation to almost every method
 - Added `except` parameter to the `merge` method, which allows a specified field to be excluded from the merge.
+
 ## [v0.19.0] 2021-03-10
 
 - Use [redoc](https://github.com/Redocly/redoc) for generated documentation UI
