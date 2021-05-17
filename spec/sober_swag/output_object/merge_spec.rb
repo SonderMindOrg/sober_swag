@@ -10,21 +10,41 @@ RSpec.describe 'merging SoberSwag output objects' do
   end
 
   context 'when merged into a blueprint' do
-    subject { example.serialize({ id: 10, name: 'Bob', items: 10 }) }
+    context 'without exceptions' do
+      subject { example.serialize({ id: 10, name: 'Bob', items: 10 }) }
 
-    let(:example) do
-      bp = base
-      SoberSwag::OutputObject.define do
-        merge bp
+      let(:example) do
+        bp = base
+        SoberSwag::OutputObject.define do
+          merge bp
 
-        field :items, primitive(:Integer)
+          field :items, primitive(:Integer)
+        end
       end
+
+      specify { expect { subject }.not_to raise_error }
+      it { should have_key(:id) }
+      it { should have_key(:name) }
+      it { should have_key(:items) }
     end
 
-    specify { expect { subject }.not_to raise_error }
-    it { should have_key(:id) }
-    it { should have_key(:name) }
-    it { should have_key(:items) }
+    context 'with exceptions' do
+      subject { example.serialize({ id: 10, name: 'Bob', items: 10 }) }
+
+      let(:example) do
+        bp = base
+        SoberSwag::OutputObject.define do
+          merge(bp, { except: [:id] })
+
+          field :items, primitive(:Integer)
+        end
+      end
+
+      specify { expect { subject }.not_to raise_error }
+      it { should_not have_key(:id) }
+      it { should have_key(:name) }
+      it { should have_key(:items) }
+    end
   end
 
   context 'when merged into a view' do
