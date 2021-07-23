@@ -12,3 +12,7 @@ gem 'redcarpet'
 gem 'yard-activesupport-concern'
 
 gem 'solargraph'
+
+gem 'benchmark-ips'
+
+gem 'rspec-its'

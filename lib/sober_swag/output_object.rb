@@ -99,23 +99,12 @@ module SoberSwag
     # and {SoberSwag::Serializer::FieldList} to do the actual serialization.
     #
     # @todo: optimize view selection to use binary instead of linear search
-    def serializer # rubocop:disable Metrics/MethodLength
+    def serializer
       @serializer ||=
         begin
-          views.reduce(base_serializer) do |base, view|
-            view_serializer = view.serializer
-            SoberSwag::Serializer::Conditional.new(
-              proc do |object, options|
-                if options[:view].to_s == view.name.to_s
-                  [:left, object]
-                else
-                  [:right, object]
-                end
-              end,
-              view_serializer,
-              base
-            )
-          end
+          view_choices = views.map { |view| [view.name.to_s, view.serializer] }.to_h
+          view_choices['base'] = base_serializer
+          SoberSwag::Serializer::Hash.new(view_choices, base, proc { |_, options| options[:view]&.to_s })
         end
     end
 
