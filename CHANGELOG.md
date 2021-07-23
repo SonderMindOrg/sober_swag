@@ -1,11 +1,14 @@
 # Changelog
 
-## [v0.20.0] 2021-05-17
+## [vNEXT]
 
-- Added YARD documentation to almost every method
 - Added a new method of serializing views based on hash lookups, improving performance
 - Added a benchmarking suite
 - Added `except` parameter to the `merge` method, which allows a specified field to be excluded from the merge.
+
+## [v0.20.0] 2021-05-17
+
+- Added YARD documentation to almost every method
 
 
 ## [v0.19.0] 2021-03-10
