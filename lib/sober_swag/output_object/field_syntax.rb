@@ -37,10 +37,11 @@ module SoberSwag
       # Note that merging in a full output object *will not* also merge in views, just fields defined on the base.
       #
       # @param other [#fields] a field container, like a {SoberSwag::OutputObject} or something
+      # @param except [Array<Symbol>] optionally exclude a field from the output object being merged
       # @return [void]
-      def merge(other)
+      def merge(other, except: [])
         other.fields.each do |field|
-          add_field!(field)
+          add_field!(field) unless except.include?(field.name)
         end
       end
     end
