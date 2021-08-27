@@ -37,6 +37,7 @@ module SoberSwag
     # the correct thing, with the name you give it. This works for now, though.
     #
     # @return [Class] the serializer generated.
+    # @yieldself [SoberSwag::OutputObject::Definition]
     def self.define(&block)
       d = Definition.new.tap do |o|
         o.instance_eval(&block)

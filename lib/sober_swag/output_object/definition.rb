@@ -20,6 +20,32 @@ module SoberSwag
       include FieldSyntax
 
       ##
+      # Adds a "type key", which is basically a field that will be
+      # serialized out to a constant value.
+      #
+      # This is useful if you have multiple types you may want to serialize out, and want consumers of your API to distinguish between them.
+      #
+      # By default this will have the key "type" but you can set it with the keyword arg.
+      # ```ruby
+      #   type_key('MyObject')
+      #   # is
+      #   field :type, SoberSwag::Serializer::Primitive.new(SoberSwag::Types::String.enum('MyObject')) do |_, _|
+      #   'MyObject'
+      #   end
+      # ```
+      # @param str [String|Symbol] the value to serialize (will be converted to a string)
+      # @param
+      def type_key(str, field_name: :type)
+        str = str.to_s
+        field(
+          field_name,
+          SoberSwag::Serializer::Primitive.new(
+            SoberSwag::Types::String.enum(str)
+          )
+        ) { |_, _| str }
+      end
+
+      ##
       # Adds a new field to the fields array
       # @param field [SoberSwag::OutputObject::Field]
       def add_field!(field)
