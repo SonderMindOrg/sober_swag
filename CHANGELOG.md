@@ -6,6 +6,7 @@
 - Added a benchmarking suite
 - Added `except` parameter to the `merge` method, which allows a specified field to be excluded from the merge.
 - Add `type_key` to output objects, for easily serializing out type fields with a constant string.
+- Added `type_attribute` to `SoberSwag::InputObject` to add easy constant-value disambiguation.
 
 ## [v0.20.0] 2021-05-17
 
