@@ -33,7 +33,7 @@ module SoberSwag
       #   'MyObject'
       #   end
       # ```
-      # @param str [String|Symbol] the value to serialize (will be converted to a string)
+      # @param str [String, Symbol] the value to serialize (will be converted to a string)
       # @param
       def type_key(str, field_name: :type)
         str = str.to_s
