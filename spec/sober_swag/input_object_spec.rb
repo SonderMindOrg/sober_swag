@@ -37,4 +37,36 @@ RSpec.describe SoberSwag::InputObject do
       end
     end
   end
+
+  describe '.type_attribute' do
+    let(:accept) do
+      SoberSwag.input_object do
+        identifier 'Accept'
+        type_attribute 'accept'
+      end
+    end
+
+    let(:reject) do
+      SoberSwag.input_object do
+        identifier 'Reject'
+        type_attribute 'reject'
+      end
+    end
+
+    let(:input) { accept | reject }
+
+    context 'with a reject key' do
+      subject { input.call(type: 'reject') }
+
+      it { should be_a(reject) }
+      its(:type) { should eq 'reject' }
+    end
+
+    context 'with an accept key' do
+      subject { input.call(type: 'accept') }
+
+      it { should be_an(accept) }
+      its(:type) { should eq 'accept' }
+    end
+  end
 end

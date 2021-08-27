@@ -47,6 +47,40 @@ module SoberSwag
       end
 
       ##
+      # Add on an attribute which only ever parses from a constant value.
+      # By default, this attribute will be called `type`, but you can override it with the kwarg.
+      # This is useful in situations where you want to emulate a sum type.
+      # For example, if you want to make an API endpoint that can either accept or reject proposals
+      #
+      # ```ruby
+      #
+      # ApiInputType = SoberSwag.input_object {
+      #   identifier 'AcceptProposal'
+      #   type_attribute 'accept'
+      #   attribute(:message, primitive(:String))
+      # } | SoberSwag.input_object {
+      #   identifier 'RejectProposal'
+      #   type_attribute 'reject'
+      #   attribute(:message, primitive(:String))
+      # }
+      # ```
+      #
+      # Under the hood, this basically looks like:
+      #
+      # ```ruby
+      # type_attribute 'archive'
+      # # is equivalent to
+      #
+      # attribute(:type, SoberSwag::Types::String.enum('archive'))
+      # ```
+      #
+      # @param value [String,Symbol] the value to parse
+      # @param attribute_key [Symbol] what key to use
+      def type_attribute(value, attribute_key: :type)
+        attribute(attribute_key, SoberSwag::Types::String.enum(value.to_s))
+      end
+
+      ##
       # @overload attribute(key, parent = SoberSwag::InputObject, &block)
       #   Defines an optional attribute by defining a sub-object inline.
       #   This differs from a nil-able attribute as it can be *not provided*, while nilable attributes must be set to `null`.
