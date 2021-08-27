@@ -28,7 +28,7 @@ module SoberSwag
       # By default this will have the key "type" but you can set it with the keyword arg.
       # ```ruby
       #   type_key('MyObject')
-      #   # is
+      #   # is equivalent to
       #   field :type, SoberSwag::Serializer::Primitive.new(SoberSwag::Types::String.enum('MyObject')) do |_, _|
       #   'MyObject'
       #   end
