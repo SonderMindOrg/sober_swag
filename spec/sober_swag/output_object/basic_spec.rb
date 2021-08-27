@@ -4,6 +4,8 @@ RSpec.describe 'a basic SoberSwag::OutputObject' do
   let(:output_object) do
     SoberSwag::OutputObject.define do
       identifier 'BasicOutputObject'
+      type_key 'basic_output_object'
+
       field :id, primitive(:Integer)
       field :name, primitive(:String)
     end
@@ -24,7 +26,7 @@ RSpec.describe 'a basic SoberSwag::OutputObject' do
   end
 
   it 'serializes properly' do
-    expect(output_object.serialize({ id: 1, name: 'Anthony' })).to eq(id: 1, name: 'Anthony')
+    expect(output_object.serialize({ id: 1, name: 'Anthony' })).to eq(id: 1, name: 'Anthony', type: 'basic_output_object')
   end
 
   describe 'roundtripping' do
