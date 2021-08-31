@@ -105,7 +105,7 @@ This changes the type properly too.
 
 98% of the time, when we're writing web APIs, we want to transform our domain objects into JSON objects.
 We often want different ways to do this, too.
-Consider, for exmaple, and API for a college.
+Consider, for example, an API for a college.
 We might want to provide one detailed way to serialize a student, which includes their full name, grade, student ID, GPA, and so on.
 On another page, we might want to display a classroom with a list of students.
 However, on the classroom page, we don't want to serialize a full student: that's sending too much data.
