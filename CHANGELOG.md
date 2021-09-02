@@ -1,6 +1,6 @@
 # Changelog
 
-## [vNEXT]
+## [v0.21.0] 2021-09-02
 
 - Added a new method of serializing views based on hash lookups, improving performance
 - Added a benchmarking suite
