@@ -127,14 +127,14 @@ GEM
     mini_portile2 (2.6.1)
     minitest (5.14.4)
     msgpack (1.4.2)
-    nio4r (2.5.7)
+    nio4r (2.5.8)
     nokogiri (1.12.3)
       mini_portile2 (~> 2.6.1)
       racc (~> 1.4)
     pry (0.14.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    puma (5.4.0)
+    puma (5.5.2)
       nio4r (~> 2.0)
     racc (1.5.2)
     rack (2.2.3)
@@ -218,7 +218,7 @@ DEPENDENCIES
   dry-types-rails
   listen (>= 3.0.5, < 3.8)
   pry
-  puma (~> 5.4)
+  puma (~> 5.5)
   rails (~> 6.0.2, >= 6.0.2.2)
   rspec-rails
   sober_swag!
