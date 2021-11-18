@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    sober_swag (0.19.0)
+    sober_swag (0.21.0)
       activesupport
       dry-struct (~> 1.0)
       dry-types (~> 1.2)

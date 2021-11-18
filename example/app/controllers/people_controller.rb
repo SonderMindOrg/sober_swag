@@ -31,8 +31,13 @@ class PeopleController < ApplicationController
     attribute :person, PersonBodyPatchParams
   end
 
+  class ReportingPersonParams < SoberSwag::Reporting::Input::Struct
+    attribute :first_name, SoberSwag::Reporting::Input::Text.new
+    attribute :last_name, SoberSwag::Reporting::Input::Text.new
+  end
+
   define :post, :create, '/people/' do
-    request_body(PersonParams)
+    request_body(ReportingPersonParams)
     response(:ok, 'the person created', PersonOutputObject)
     response(:unprocessable_entity, 'the validation errors', PersonErrorsOutputObject)
     tags 'people', 'create'
@@ -69,7 +74,7 @@ class PeopleController < ApplicationController
       end
       attribute :view, Types::String.default('base'.freeze).enum('base', 'detail')
     end
-    response(:ok, 'all the people', PersonOutputObject.array)
+    response(:ok, 'all the people', PersonOutputObject.list)
     tags 'people', 'list'
   end
   def index

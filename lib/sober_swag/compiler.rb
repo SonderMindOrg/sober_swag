@@ -13,6 +13,7 @@ module SoberSwag
     def initialize
       @types = Set.new
       @paths = Paths.new
+      @reporting_types = SoberSwag::Reporting::Compiler::Schema.new
     end
 
     ##
@@ -29,6 +30,10 @@ module SoberSwag
     end
 
     ##
+    # @return [SoberSwag::Reporting::Compiler::Schema]
+    attr_reader :reporting_types
+
+    ##
     # Add a path to be compiled.
     # @param route [SoberSwag::Controller::Route] the route to add.
     # @return [Compiler] self
@@ -41,7 +46,9 @@ module SoberSwag
     #
     # @return [Hash]
     def object_schemas
-      @types.map { |v| [v.ref_name, v.object_schema] }.to_h
+      @types.map { |v| [v.ref_name, v.object_schema] }.to_h.merge(
+        reporting_types.references
+      )
     end
 
     ##
@@ -80,6 +87,9 @@ module SoberSwag
     # @return [Hash]
     def body_for(type)
       add_type(type)
+
+      return reporting_types.compile(type) if type.respond_to?(:swagger_schema)
+
       Type.new(type).schema_stub
     end
 
@@ -109,21 +119,33 @@ module SoberSwag
       # use tap here to avoid an explicit self at the end of this
       # which makes this method chainable
       tap do
-        type_compiler = Type.new(type)
-
-        ##
-        # Do nothing if we already have a type
-        return self if @types.include?(type_compiler)
-
-        @types.add(type_compiler) if type_compiler.standalone?
-
-        type_compiler.found_types.each do |ft|
-          add_type(ft)
+        if type.is_a?(SoberSwag::Reporting::Input::Interface) || type.is_a?(SoberSwag::Reporting::Output::Interface)
+          add_reporting_type(type)
+        else
+          add_dry_type(type)
         end
       end
     end
 
     private
+
+    def add_dry_type(type)
+      type_compiler = Type.new(type)
+
+      ##
+      # Do nothing if we already have a type
+      return self if @types.include?(type_compiler)
+
+      @types.add(type_compiler) if type_compiler.standalone?
+
+      type_compiler.found_types.each do |ft|
+        add_type(ft)
+      end
+    end
+
+    def add_reporting_type(type)
+      reporting_types.compile(type)
+    end
 
     def with_types_discovered(type)
       Type.new(type).tap do |type_compiler|
