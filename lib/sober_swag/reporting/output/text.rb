@@ -3,8 +3,6 @@ module SoberSwag
     module Output
       ##
       # Output raw text.
-      #
-      # This does not do any sort of validation checking.
       class Text < Base
         def call(input)
           input

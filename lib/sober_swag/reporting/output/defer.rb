@@ -4,7 +4,14 @@ module SoberSwag
       ##
       # Defer loading of an output for mutual recursion and/or loading time speed.
       # Probably just do this for mutual recursion though.
+      #
+      # Note: this *does not* save you from infinite schema generation.
+      # This type *must* return some sort of {Referenced} type in order to do that!
       class Defer < Base
+        ##
+        # Nicer initialization: uses a block.
+        #
+        # @yieldreturn [Interface] serializer to use.
         def self.defer(&block)
           new(block)
         end

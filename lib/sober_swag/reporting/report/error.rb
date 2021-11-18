@@ -2,7 +2,7 @@ module SoberSwag
   module Reporting
     module Report
       ##
-      # Exception thrown when used with {Reporting::Input::Base#call!}
+      # Exception thrown when used with {Reporting::Input::Interface#call!}.
       class Error < StandardError
         def initialize(report)
           @report = report
@@ -10,7 +10,6 @@ module SoberSwag
 
         attr_reader :report
       end
-
     end
   end
 end
