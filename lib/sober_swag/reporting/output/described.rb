@@ -21,6 +21,10 @@ module SoberSwag
           output.call(value)
         end
 
+        def serialize_report(value)
+          output.serialize_report(value)
+        end
+
         def swagger_schema
           schema, found = output.swagger_schema
 

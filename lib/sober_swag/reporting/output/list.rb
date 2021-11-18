@@ -39,7 +39,7 @@ module SoberSwag
 
           errs = {}
           mapped = input.map.with_index do |item, idx|
-            element.serialize_report(item).tap { |e| errs[idx] = e if e.is_a?(Report::Base) }
+            element_output.serialize_report(item).tap { |e| errs[idx] = e if e.is_a?(Report::Base) }
           end
 
           if errs.any?

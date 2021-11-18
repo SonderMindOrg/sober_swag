@@ -37,9 +37,41 @@ RSpec::Matchers.define :parse_input do |input|
   end
 end
 
+RSpec::Matchers.define :serialize_output do |input|
+  match do |actual|
+    if defined?(@serialize_to)
+      values_match?(@serialize_to, actual.serialize_report(input))
+    else
+      !actual.serialize_report(input).is_a?(SoberSwag::Reporting::Report::Base)
+    end
+  end
+
+  chain :to do |serialize_to|
+    @serialize_to = serialize_to
+  end
+end
+
 RSpec::Matchers.define :report_on_input do |input|
   match do |actual|
     result = actual.call(input)
+
+    res = result.is_a?(SoberSwag::Reporting::Report::Base)
+
+    if defined?(@message_body)
+      res && result.full_errors.any? { |r| values_match?(@message_body, r) }
+    else
+      res
+    end
+  end
+
+  chain :with_message do |message|
+    @message_body = message
+  end
+end
+
+RSpec::Matchers.define :report_on_output do |input|
+  match do |actual|
+    result = actual.serialize_report(input)
 
     res = result.is_a?(SoberSwag::Reporting::Report::Base)
 

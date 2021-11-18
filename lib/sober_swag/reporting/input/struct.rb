@@ -67,7 +67,7 @@ module SoberSwag
             if val
               @identifier = val
             else
-              @identifier || name.gsub('::', '.')
+              @identifier || name&.gsub('::', '.')
             end
           end
 
