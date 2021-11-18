@@ -20,7 +20,6 @@ SingleFloorLocation = SoberSwag.input_object do
   attribute :room, SoberSwag::Types::Integer
 end
 
-
 SortDirections = SoberSwag::Types::CommaArray.of(SoberSwag::Types::String.enum('created_at', 'updated_at', '-created_at', '-updated_at'))
 
 # test
