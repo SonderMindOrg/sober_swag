@@ -26,6 +26,32 @@ module SoberSwag
           List.new(self)
         end
 
+        ##
+        # Partition this serializer into two potentials.
+        # If the block given returns *false*, we will use `other` as the serializer.
+        # Otherwise, we will use `self`.
+        #
+        # @param other [Interface] serializer to use if the block returns false
+        # @yieldreturn [true,false] false if we should use the other serializer
+        # @return [Interface]
+        def partitioned(other, &block)
+          raise ArgumentError, 'need a block' if block.nil?
+
+          Partitioned.new(
+            block,
+            self,
+            other
+          )
+        end
+
+        def nilable
+          Partitioned.new(
+            :nil?.to_proc,
+            Null.new,
+            self
+          )
+        end
+
         def array
           List.new(self)
         end
