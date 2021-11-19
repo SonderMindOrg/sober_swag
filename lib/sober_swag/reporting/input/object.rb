@@ -57,7 +57,7 @@ module SoberSwag
           required_fields = fields.map { |k, v| k if v.required? }.compact
 
           if required_fields.empty?
-            { minProperties: 1 }
+            {}
           else
             { required: required_fields }
           end

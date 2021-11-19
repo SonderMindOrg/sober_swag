@@ -32,7 +32,13 @@ module SoberSwag
         def swagger_schema
           single, found = input.swagger_schema
 
-          [add_schema_key(single, { pattern: pattern.to_s }), found]
+          [add_schema_key(single, { pattern: formatted_pattern }), found]
+        end
+
+        ##
+        # Try to format a pattern so it'll work nicely with JS.
+        def formatted_pattern
+          pattern.to_s.gsub('?-mix:', '')
         end
       end
     end

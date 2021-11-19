@@ -39,6 +39,18 @@ module SoberSwag
           Referenced.new(self, name)
         end
 
+        def format(format)
+          Format.new(self, format)
+        end
+
+        def described(desc)
+          Described.new(self, desc)
+        end
+
+        def enum(*cases)
+          Enum.new(self, cases)
+        end
+
         ##
         # Map a function after this input runs.
         #

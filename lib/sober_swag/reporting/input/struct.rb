@@ -53,8 +53,10 @@ module SoberSwag
             @object_properties ||= {}
           end
 
+          attr_accessor :parent_struct
+
           def inherited(other)
-            other.object_properties.merge!(object_properties)
+            other.parent_struct = self unless self == SoberSwag::Reporting::Input::Struct
           end
 
           include Interface
@@ -101,7 +103,11 @@ module SoberSwag
           end
 
           def object_type
-            Object.new(object_properties)
+            if parent_struct.nil?
+              Object.new(object_properties)
+            else
+              MergeObjects.new(parent_struct, Object.new(object_properties))
+            end
           end
         end
 
@@ -146,7 +152,13 @@ module SoberSwag
         #
         # Keys not present in the input will also not be present in this hash.
         def to_h
-          @struct_properties
+          @struct_properties.transform_values do |value|
+            if value.is_a?(SoberSwag::Reporting::Input::Struct)
+              value.to_h
+            else
+              value
+            end
+          end
         end
 
         def inspect
