@@ -16,7 +16,7 @@ class PeopleController < ApplicationController
   PersonBodyPatchParams = SoberSwag.input_object(PersonBodyParams) do
     identifier 'PersonBodyPatchParams'
 
-    attribute? :first_name, SoberSwag::Types::String
+    attribute? :first_name, SoberSwag::Types::String.meta(description: 'asdf')
     attribute? :last_name, SoberSwag::Types::String
     attribute? :date_of_birth, SoberSwag::Types::Params::DateTime.optional
   end
@@ -32,8 +32,10 @@ class PeopleController < ApplicationController
   end
 
   class ReportingPersonParams < SoberSwag::Reporting::Input::Struct
-    attribute :first_name, SoberSwag::Reporting::Input::Text.new
-    attribute :last_name, SoberSwag::Reporting::Input::Text.new
+    attribute? :first_name, SoberSwag::Reporting::Input::Text.new.with_pattern(/.+/)
+    attribute? :last_name, SoberSwag::Reporting::Input::Text.new.with_pattern(/.+/)
+    attribute? :ident, SoberSwag::Reporting::Input::Converting::Decimal, description: 'Student ID'
+    attribute? :cool, SoberSwag::Reporting::Input::Converting::Bool, description: 'a boolean'
   end
 
   define :post, :create, '/people/' do

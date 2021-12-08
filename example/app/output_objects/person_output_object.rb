@@ -7,7 +7,8 @@ class PersonOutputObject < SoberSwag::Reporting::Output::Struct
 
   field :id, SoberSwag::Reporting::Output::Text.new.via_map(&:to_s)
   field(
-    :first_name, SoberSwag::Reporting::Output::Text.new,
+    :first_name,
+    SoberSwag::Reporting::Output::Text.new,
     description: <<~MARKDOWN
       This is the first name of a person.
       Note that you can't use this as a unique identifier, and you really should understand how names work before using this.
@@ -23,9 +24,7 @@ class PersonOutputObject < SoberSwag::Reporting::Output::Struct
     field(
       :initials,
       SoberSwag::Reporting::Output::Text.new
-    ) do |o|
-      [o.first_name, o.last_name].map { |t| t[0..0] }.map { |i| "#{i}." }.join(' ')
-    end
+    )
 
     field(
       :posts,
