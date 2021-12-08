@@ -21,6 +21,32 @@ module SoberSwag
       autoload(:Text, 'sober_swag/reporting/output/text')
       autoload(:ViaMap, 'sober_swag/reporting/output/via_map')
       autoload(:Viewed, 'sober_swag/reporting/output/viewed')
+
+      class << self
+        ##
+        # @return [SoberSwag::Reporting::Output::Bool]
+        def bool
+          Bool.new
+        end
+
+        ##
+        # @return [SoberSwag::Reporting::Output::Number]
+        def number
+          Number.new
+        end
+
+        ##
+        # @return [SoberSwag::Reporting::Output::Text]
+        def text
+          Text.new
+        end
+
+        ##
+        # @return [SoberSwag::Reporting::Output::Null]
+        def null
+          Null.new
+        end
+      end
     end
   end
 end

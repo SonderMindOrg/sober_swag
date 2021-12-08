@@ -22,6 +22,32 @@ module SoberSwag
       autoload :Referenced, 'sober_swag/reporting/input/referenced'
       autoload :Struct, 'sober_swag/reporting/input/struct'
       autoload :Text, 'sober_swag/reporting/input/text'
+
+      class << self
+        ##
+        # @return [SoberSwag::Reporting::Input::Bool]
+        def bool
+          Bool.new
+        end
+
+        ##
+        # @return [SoberSwag::Reporting::Input::Text]
+        def text
+          Text.new
+        end
+
+        ##
+        # @return [SoberSwag::Reporting::Input::Number]
+        def number
+          Number.new
+        end
+
+        ##
+        # @return [SoberSwag::Reporting::Input::Null]
+        def null
+          Null.new
+        end
+      end
     end
   end
 end
