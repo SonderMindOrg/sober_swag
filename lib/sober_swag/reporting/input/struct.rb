@@ -8,24 +8,61 @@ module SoberSwag
       # They provide a fluid interface for doing so.
       #
       # Classes which inherit from {Struct} "quack like" an {Interface}, so you can use them as input type definitions.
+      #
+      # You should add attributes using the {.attribute} or {.attribute?} methods.
+      # These also let you nest definitions, so this is okay:
+      #
+      # ```ruby
+      # class Person < SoberSwag::Reporting::Input::Struct
+      #   attribute :first_name, SoberSwag::Reporting::Input.text
+      #   attribute :stats do
+      #     attribute :average_score, SoberSwag::Reporting::Input.number
+      #   end
+      # end
+      # ```
       class Struct # rubocop:disable Metrics/ClassLength
         class << self
           ##
-          # Define a new attribute, which will be required.
-          # @param name [Symbol] the name of this attribute
-          # @param input [Interface] input reporting type
-          # @param description [String,nil] description for this attribute
-          def attribute(name, input, description: nil)
-            add_attribute!(name, input, required: true, description: description)
+          # @overload attribute(name, input, description: nil)
+          #   Define a new attribute, which will be required.
+          #   @param name [Symbol] the name of this attribute
+          #   @param input [Interface] input reporting type
+          #   @param description [String,nil] description for this attribute
+          # @overload attribute(name, description: nil, &block)
+          #   Define a new nested attribute, which will be required, using a block to describe
+          #   a sub-struct. This block will immediately be evaluated to create a child struct.
+          #   @param name [Symbol] the name of the attribute.
+          #     The sub-struct defined will be stored in a constant on this class,
+          #     under this name, classified.
+          #
+          #     So if the name is :first_name, then the constant will be FirstName
+          #   @param description [String, nil] describe this attribute
+          #   @yieldself [SoberSwag::Reporting::Input::Struct] yields
+          def attribute(name, input = nil, description: nil, &block)
+            input_type = make_input_type(name, input, block)
+            add_attribute!(name, input_type, required: true, description: description)
           end
 
           ##
-          # Define a new attribute, which will not be required.
-          # @param name [Symbol] the name of this attribute
-          # @param input [Interface] input reporting type
-          # @param description [String,nil] description for this attribute
-          def attribute?(name, input, description: nil)
-            add_attribute!(name, input, required: false, description: description)
+          # @overload attribute?(name, input, description: nil)
+          #   Define a new attribute, which will be not required.
+          #   @param name [Symbol] the name of this attribute
+          #   @param input [Interface] input reporting type
+          #   @param description [String,nil] description for this attribute
+          # @overload attribute?(name, description: nil, &block)
+          #   Define a new nested attribute, which will not be required, using a block to describe
+          #   a sub-struct. This block will immediately be evaluated to create a child struct.
+          #   @param name [Symbol] the name of the attribute.
+          #     The sub-struct defined will be stored in a constant on this class,
+          #     under this name, classified.
+          #
+          #     So if the name is :first_name, then the constant will be FirstName
+          #   @param description [String, nil] describe this attribute
+          #   @yieldself [SoberSwag::Reporting::Input::Struct] yields
+          def attribute?(name, input, description: nil, &block)
+            input_type = make_input_type(name, input, block)
+
+            add_attribute!(name, input_type, required: false, description: description)
           end
 
           ##
@@ -49,22 +86,44 @@ module SoberSwag
             )
           end
 
+          ##
+          # Get a list of properties defined by *this instance*.
+          #
+          # Please do not mutate this, it will break everything.
+          #
+          # @return [Hash<Symbol, Object::Property>]
           def object_properties
             @object_properties ||= {}
           end
 
+          ##
+          # @return [SoberSwag::Reporting::Input::Struct,nil] the struct we inherit from.
+          #   Used to implement `allOf` style inheritance.
           attr_accessor :parent_struct
 
+          ##
+          # @param other [Class] the inheriting class
+          #
+          # Used to implement `allOf` style inheritance by setting {#parent_struct} on the object that is inheriting from us.
           def inherited(other)
             other.parent_struct = self unless self == SoberSwag::Reporting::Input::Struct
           end
 
           include Interface
 
+          ##
+          # @return [SoberSwag::Reporting::Input::Base] the type to use for input.
           def input_type
             object_type.mapped { |x| new(x) }.referenced(identifier)
           end
 
+          ##
+          # @overload identifier()
+          #   @return [String,nil] the identifier for this object, used for its reference path.
+          # @overload identifier(val)
+          #   Sets an identifier for this struct.
+          #   @param val [String] the identifier to set
+          #   @return [String] the set identifier.
           def identifier(val = nil)
             if val
               @identifier = val
@@ -73,23 +132,46 @@ module SoberSwag
             end
           end
 
+          ##
+          # @return [SoberSwag::Reporting::Input::Struct, SoberSwag::Reporting::Report::Base] the struct class,
+          #   or a report of what went wrong.
           def call(attrs)
             input_type.call(attrs)
           end
 
+          ##
+          # @see #call
           def parse(json)
             call(json)
           end
 
+          ##
+          # @see call!
           def parse!(json)
             call!(json)
           end
 
+          ##
+          # @return [Array[Hash, Hash]] swagger schema type.
           def swagger_schema
             input_type.swagger_schema
           end
 
           private
+
+          def make_input_type(name, input, block)
+            raise ArgumentError, 'cannot pass a block to make a sub-struct and a field type' if input && block
+
+            return input if input
+
+            raise ArgumentError, 'must pass an input type OR a block to make a sub-struct' unless block
+
+            const_name = name.to_s.camelize
+
+            raise ArgumentError, 'cannot define struct sub-type, constant already exists!' if const_defined?(const_name)
+
+            Class.new(SoberSwag::Reporting::Input::Struct, &block).tap { |c| const_set(const_name, c) }
+          end
 
           ##
           # Quick method which defines an accessor method for this struct.

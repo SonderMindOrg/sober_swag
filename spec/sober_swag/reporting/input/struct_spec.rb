@@ -55,6 +55,29 @@ RSpec.describe SoberSwag::Reporting::Input::Struct do
     end
   end
 
+  context 'with inline parsers' do
+    let(:nested_struct) do
+      Class.new(described_class) do
+        attribute :name, SoberSwag::Reporting::Input.text
+        attribute :scores do
+          attribute :median, SoberSwag::Reporting::Input.number
+          attribute :highest, SoberSwag::Reporting::Input.number
+        end
+      end
+    end
+
+    subject { nested_struct }
+
+    it { should be_const_defined(:Scores) }
+
+    describe 'parsed result' do
+      subject { nested_struct.call({ name: 'Foo', scores: { median: 10.1, highest: 14 } }) }
+
+      its(:name) { should eq 'Foo' }
+      its(:scores) { should be_a(nested_struct::Scores) }
+    end
+  end
+
   context 'with nested structs' do
     describe 'parsed result' do
       let(:attributes) do
