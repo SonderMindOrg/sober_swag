@@ -32,6 +32,10 @@ module SoberSwag
           other.call(input)
         end
 
+        def serialize_report(input)
+          other.serialize_report(input)
+        end
+
         def view(view)
           other.view(view)
         end
