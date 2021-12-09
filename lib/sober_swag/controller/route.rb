@@ -2,7 +2,7 @@ module SoberSwag
   module Controller
     ##
     # Describe a single controller endpoint.
-    class Route
+    class Route # rubocop:disable Metrics/ClassLength
       ##
       # @param method [Symbol] the HTTP method to get
       # @param action_name [Symbol] the name of the rails action
