@@ -59,7 +59,7 @@ module SoberSwag
           #     So if the name is :first_name, then the constant will be FirstName
           #   @param description [String, nil] describe this attribute
           #   @yieldself [SoberSwag::Reporting::Input::Struct] yields
-          def attribute?(name, input, description: nil, &block)
+          def attribute?(name, input = nil, description: nil, &block)
             input_type = make_input_type(name, input, block)
 
             add_attribute!(name, input_type, required: false, description: description)

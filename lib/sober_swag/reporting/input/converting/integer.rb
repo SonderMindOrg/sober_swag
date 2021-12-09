@@ -7,7 +7,7 @@ module SoberSwag
           (SoberSwag::Reporting::Input.text.format('integer').mapped do |v|
             Integer(v)
           rescue ArgumentError
-            Report::Value.new('was not an integer string')
+            Report::Value.new(['was not an integer string'])
           end).described(<<~MARKDOWN).referenced('SoberSwag.Converting.Integer')
             Integer formatted input.
 
