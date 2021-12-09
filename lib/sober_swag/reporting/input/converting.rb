@@ -9,6 +9,7 @@ module SoberSwag
         autoload(:Date, 'sober_swag/reporting/input/converting/date')
         autoload(:DateTime, 'sober_swag/reporting/input/converting/date_time')
         autoload(:Bool, 'sober_swag/reporting/input/converting/bool')
+        autoload(:Integer, 'sober_swag/reporting/input/converting/integer')
       end
     end
   end
