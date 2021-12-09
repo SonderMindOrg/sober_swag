@@ -43,6 +43,14 @@ module SoberSwag
           ]
         end
 
+        def swagger_path_schema
+          parent.swagger_path_schema + child.swagger_path_schema
+        end
+
+        def swagger_query_schema
+          parent.swagger_query_schema + child.swagger_query_schema
+        end
+
         private
 
         def merge_results(par, chi) # rubocop:disable Metrics/MethodLength

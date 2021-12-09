@@ -38,7 +38,31 @@ module SoberSwag
           [obj, found]
         end
 
+        def swagger_query_schema
+          swagger_parameter_schema.map do |param|
+            param.merge({ in: :query, style: :deepObject, explode: true })
+          end
+        end
+
+        def swagger_path_schema
+          swagger_parameter_schema.map do |param|
+            param.merge({ in: :path })
+          end
+        end
+
         private
+
+        def swagger_parameter_schema
+          fields.map do |name, field|
+            key_schema, = field.property_schema
+            base = {
+              name: name,
+              schema: key_schema,
+              required: field.required?
+            }
+            field.description ? base.merge(description: field.description) : base
+          end
+        end
 
         def field_schemas
           fields.reduce([{}, Set.new]) do |(field_schemas, found), (k, v)|

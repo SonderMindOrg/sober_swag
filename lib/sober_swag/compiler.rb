@@ -66,7 +66,13 @@ module SoberSwag
     # @param type [Class] the type to get a path_params definition for
     # @return [Hash]
     def path_params_for(type)
-      with_types_discovered(type).path_schema
+      compiler = with_types_discovered(type)
+
+      if compiler.respond_to?(:swagger_path_schema)
+        compiler.swagger_path_schema
+      else
+        compiler.path_schema
+      end
     end
 
     ##
@@ -76,7 +82,13 @@ module SoberSwag
     # @param type [Class] the type to get the query_params definitions for
     # @return [Hash]
     def query_params_for(type)
-      with_types_discovered(type).query_schema
+      compiler = with_types_discovered(type)
+
+      if compiler.respond_to?(:swagger_query_schema)
+        compiler.swagger_query_schema
+      else
+        compiler.query_schema
+      end
     end
 
     ##
@@ -148,6 +160,18 @@ module SoberSwag
     end
 
     def with_types_discovered(type)
+      if type.respond_to?(:swagger_schema)
+        with_reporting_types_discovered(type)
+      else
+        with_dry_types_discovered(type)
+      end
+    end
+
+    def with_reporting_types_discovered(type)
+      type.tap { |t| reporting_types.compile(t) }
+    end
+
+    def with_dry_types_discovered(type)
       Type.new(type).tap do |type_compiler|
         type_compiler.found_types.each { |ft| add_type(ft) }
       end

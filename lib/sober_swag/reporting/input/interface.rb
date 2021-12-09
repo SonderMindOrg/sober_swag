@@ -66,6 +66,14 @@ module SoberSwag
           res
         end
 
+        def swagger_path_schema
+          raise InvalidSchemaError::InvalidForPathError.new(self) # rubocop:disable Style/RaiseArgs
+        end
+
+        def swagger_query_schema
+          raise InvalidSchemaError::InvalidForQueryError.new(self) # rubocop:disable Style/RaiseArgs
+        end
+
         def add_schema_key(base, addition)
           if base.key?(:$ref)
             { allOf: [base] }.merge(addition)

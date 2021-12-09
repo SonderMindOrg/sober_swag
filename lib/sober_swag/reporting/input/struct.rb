@@ -157,6 +157,14 @@ module SoberSwag
             input_type.swagger_schema
           end
 
+          def swagger_query_schema
+            object_type.swagger_query_schema
+          end
+
+          def swagger_path_schema
+            object_type.swagger_path_schema
+          end
+
           private
 
           def make_input_type(name, input, block)
