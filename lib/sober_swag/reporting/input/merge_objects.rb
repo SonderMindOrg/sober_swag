@@ -31,6 +31,18 @@ module SoberSwag
           merge_results(parent_attrs, child_attrs)
         end
 
+        def swagger_schema
+          parent_schema, parent_found = parent.swagger_schema
+          child_schema, child_found = child.swagger_schema
+
+          [
+            {
+              allOf: (parent_schema[:allOf] || [parent_schema]) + (child_schema[:allOf] || [child_schema])
+            },
+            parent_found.merge(child_found)
+          ]
+        end
+
         private
 
         def merge_results(par, chi) # rubocop:disable Metrics/MethodLength
