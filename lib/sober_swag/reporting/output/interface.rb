@@ -12,6 +12,18 @@ module SoberSwag
           res
         end
 
+        ##
+        # Show off that this is a reporting output.
+        def reporting?
+          true
+        end
+
+        ##
+        # Delegates to {#call}
+        def serialize(item)
+          call(item)
+        end
+
         def via_map(&block)
           raise ArgumentError, 'block argument required' unless block
 

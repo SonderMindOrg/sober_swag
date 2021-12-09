@@ -31,15 +31,26 @@ class PeopleController < ApplicationController
     attribute :person, PersonBodyPatchParams
   end
 
+  ##
+  # Parameters to create or update a person.
   class ReportingPersonParams < SoberSwag::Reporting::Input::Struct
+    identifier 'PersonReportingParams'
+
     attribute? :first_name, SoberSwag::Reporting::Input::Text.new.with_pattern(/.+/)
     attribute? :last_name, SoberSwag::Reporting::Input::Text.new.with_pattern(/.+/)
-    attribute? :ident, SoberSwag::Reporting::Input::Converting::Decimal, description: 'Student ID'
-    attribute? :cool, SoberSwag::Reporting::Input::Converting::Bool, description: 'a boolean'
+    attribute? :date_of_birth, SoberSwag::Reporting::Input::Converting::DateTime.optional
+  end
+
+  ##
+  # Parameters to create a person.
+  class ReportingPersonCreate < SoberSwag::Reporting::Input::Struct
+    identifier 'ReportingPersonCreate'
+
+    attribute :person, ReportingPersonParams
   end
 
   define :post, :create, '/people/' do
-    request_body(ReportingPersonParams)
+    request_body(ReportingPersonCreate)
     response(:ok, 'the person created', PersonOutputObject)
     response(:unprocessable_entity, 'the validation errors', PersonErrorsOutputObject)
     tags 'people', 'create'
