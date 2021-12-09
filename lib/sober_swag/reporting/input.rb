@@ -7,6 +7,7 @@ module SoberSwag
       autoload :Bool, 'sober_swag/reporting/input/bool'
       autoload :Converting, 'sober_swag/reporting/input/converting'
       autoload :Described, 'sober_swag/reporting/input/described'
+      autoload :Dictionary, 'sober_swag/reporting/input/dictionary'
       autoload :Defer, 'sober_swag/reporting/input/defer'
       autoload :Enum, 'sober_swag/reporting/input/enum'
       autoload :Either, 'sober_swag/reporting/input/either'
