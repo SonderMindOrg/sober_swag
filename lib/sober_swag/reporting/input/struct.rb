@@ -117,6 +117,10 @@ module SoberSwag
 
         attr_reader :struct_properties
 
+        def [](name)
+          @struct_properties[name]
+        end
+
         ##
         # Hash code for this struct.
         def hash
@@ -159,6 +163,10 @@ module SoberSwag
               value
             end
           end
+        end
+
+        def to_s
+          inspect
         end
 
         def inspect
