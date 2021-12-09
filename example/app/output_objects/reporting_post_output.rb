@@ -1,3 +1,5 @@
+##
+# A reporting output object for a post.
 class ReportingPostOutput < SoberSwag::Reporting::Output::Struct
   identifier 'ReportingPostOutput'
 

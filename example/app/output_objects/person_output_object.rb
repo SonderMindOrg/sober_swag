@@ -1,3 +1,5 @@
+##
+# Output object that serializes a person.
 class PersonOutputObject < SoberSwag::Reporting::Output::Struct
   identifier 'PersonOutput'
 

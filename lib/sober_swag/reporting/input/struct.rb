@@ -8,7 +8,7 @@ module SoberSwag
       # They provide a fluid interface for doing so.
       #
       # Classes which inherit from {Struct} "quack like" an {Interface}, so you can use them as input type definitions.
-      class Struct
+      class Struct # rubocop:disable Metrics/ClassLength
         class << self
           ##
           # Define a new attribute, which will be required.
