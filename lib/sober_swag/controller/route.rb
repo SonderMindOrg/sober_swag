@@ -83,8 +83,11 @@ module SoberSwag
       # @overload request_body(base = SoberSwag::InputObject, &block)
       #   Define a Swagger-able type inline to use to parse the request body.
       #   @see SoberSwag.input_object
-      def request_body(base = SoberSwag::InputObject, &block)
-        @request_body_class = make_input_object!(base, &block)
+      # @overload request_body(base = SoberSwag::Reporting::Input::Struct, reporting: true, &block)
+      #   Define a swagger-able type inline, using the new reporting system.
+      #   @see SoberSwag::Reporting::Input::Struct
+      def request_body(base = SoberSwag::InputObject, reporting: false, &block)
+        @request_body_class = make_input_object!(base, reporting: reporting, &block)
         action_module.const_set('RequestBody', @request_body_class)
       end
 
@@ -101,8 +104,11 @@ module SoberSwag
       # @overload query_params(base = SoberSwag::InputObject, &block)
       #   Define a Swagger-able type inline to use to parse the query params.
       #   @see SoberSwag.input_object
-      def query_params(base = SoberSwag::InputObject, &block)
-        @query_params_class = make_input_object!(base, &block)
+      # @overload query_params(base = SoberSwag::Reporting::Input::Struct, reporting: true, &block)
+      #   Define a swagger-able type inline, using the new reporting system.
+      #   @see SoberSwag::Reporting::Input::Struct
+      def query_params(base = SoberSwag::InputObject, reporting: false, &block)
+        @query_params_class = make_input_object!(base, reporting: reporting, &block)
         action_module.const_set('QueryParams', @query_params_class)
       end
 
@@ -119,8 +125,11 @@ module SoberSwag
       # @overload path_params(base = SoberSwag::InputObject, &block)
       #   Define a Swagger-able type inline to use to parse the path params.
       #   @see SoberSwag.input_object
-      def path_params(base = SoberSwag::InputObject, &block)
-        @path_params_class = make_input_object!(base, &block)
+      # @overload path_params(base = SoberSwag::Reporting::Input::Struct, reporting: true, &block)
+      #   Define a swagger-able type inline, using the new reporting system.
+      #   @see SoberSwag::Reporting::Input::Struct
+      def path_params(base = SoberSwag::InputObject, reporting: false, &block)
+        @path_params_class = make_input_object!(base, reporting: reporting, &block)
         action_module.const_set('PathParams', @path_params_class)
       end
 
@@ -214,7 +223,34 @@ module SoberSwag
         @response_module ||= Module.new.tap { |m| action_module.const_set(:Response, m) }
       end
 
-      def make_input_object!(base, &block)
+      def make_input_object!(base, reporting:, &block)
+        if reporting
+          make_reporting_input!(
+            base == SoberSwag::InputObject ? SoberSwag::Reporting::Input::Struct : base,
+            &block
+          )
+        else
+          make_non_reporting_input!(base, &block)
+        end
+      end
+
+      def make_reporting_input!(base, &block)
+        if block
+          raise ArgumentError, 'non-class passed along with block' unless base.is_a?(Class)
+
+          make_reporting_input_struct!(base, &block)
+        else
+          base
+        end
+      end
+
+      def make_reporting_input_struct!(base, &block)
+        raise ArgumentError, 'base class must be a soberswag reporting class!' unless base <= SoberSwag::Reporting::Input::Struct
+
+        Class.new(base, &block)
+      end
+
+      def make_non_reporting_input!(base, &block)
         if base.is_a?(Class)
           make_input_class(base, block)
         elsif block

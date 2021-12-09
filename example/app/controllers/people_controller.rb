@@ -66,7 +66,7 @@ class PeopleController < ApplicationController
 
   define :patch, :update, '/people/{id}' do
     request_body(PersonPatchParams)
-    path_params { attribute :id, Types::Params::Integer }
+    path_params(reporting: true) { attribute :id, SoberSwag::Reporting::Input::Converting::Integer }
     response(:ok, 'the person updated', PersonOutputObject)
     response(:unprocessable_entity, 'the validation errors', PersonErrorsOutputObject)
     tags 'people', 'update'
@@ -98,8 +98,8 @@ class PeopleController < ApplicationController
   end
 
   define :get, :show, '/people/{id}' do
-    path_params do
-      attribute :id, Types::Params::Integer
+    path_params(reporting: true) do
+      attribute :id, SoberSwag::Reporting::Input::Converting::Integer
     end
     response(:ok, 'the person requested', PersonOutputObject)
     tags 'people', 'show'
