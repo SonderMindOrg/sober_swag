@@ -16,6 +16,7 @@ module SoberSwag
       autoload(:Number, 'sober_swag/reporting/output/number')
       autoload(:Object, 'sober_swag/reporting/output/object')
       autoload(:Partitioned, 'sober_swag/reporting/output/partitioned')
+      autoload(:Pattern, 'sober_swag/reporting/output/pattern')
       autoload(:Referenced, 'sober_swag/reporting/output/referenced')
       autoload(:Struct, 'sober_swag/reporting/output/struct')
       autoload(:Text, 'sober_swag/reporting/output/text')

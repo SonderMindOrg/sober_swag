@@ -22,15 +22,27 @@ module SoberSwag
         end
 
         def serialize_report(value)
-          based = output.serialize_report(value)
+          base = output.serialize_report(value)
 
-          return based if base.is_a?(Report::Error)
+          return base if base.is_a?(Report::Error)
 
           if pattern.match?(base)
             base
           else
             Report::Value.new(['did not match pattern'])
           end
+        end
+
+        def swagger_schema
+          schema, defs = output.swagger_schema
+
+          merged =
+            if schema.key?(:$ref)
+              { oneOf: [schema] }
+            else
+              schema
+            end.merge(pattern: pattern.to_s.gsub('?-mix:', ''))
+          [merged, defs]
         end
       end
     end

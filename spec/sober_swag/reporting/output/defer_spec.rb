@@ -9,6 +9,8 @@ RSpec.describe SoberSwag::Reporting::Output::Defer do
 
   subject { described_class.new(proc { mock_object.output }) }
 
+  its(:swagger_schema) { should eq SoberSwag::Reporting::Output.number.swagger_schema }
+
   context 'when not calling anything' do
     it 'does not call the nested output' do
       subject
