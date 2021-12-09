@@ -38,6 +38,7 @@ class PeopleController < ApplicationController
 
     request_body(ReportingPersonCreate)
     response(:ok, 'the person created', PersonOutputObject)
+    response(:bad_request, 'the parse errors', SoberSwag::Reporting::Report::Output)
     response(:unprocessable_entity, 'the validation errors', PersonErrorsOutputObject)
     tags 'people', 'create'
   end
@@ -58,6 +59,7 @@ class PeopleController < ApplicationController
     end
     path_params(reporting: true) { attribute :id, SoberSwag::Reporting::Input::Converting::Integer }
     response(:ok, 'the person updated', PersonOutputObject)
+    response(:bad_request, 'the parse errors', SoberSwag::Reporting::Report::Output)
     response(:unprocessable_entity, 'the validation errors', PersonErrorsOutputObject)
     tags 'people', 'update'
   end
@@ -80,6 +82,7 @@ class PeopleController < ApplicationController
       attribute? :view, SoberSwag::Reporting::Input.text.enum('base', 'detail')
     end
     response(:ok, 'all the people', PersonOutputObject.list)
+    response(:bad_request, 'the parse errors', SoberSwag::Reporting::Report::Output)
     tags 'people', 'list'
   end
   def index
@@ -96,6 +99,7 @@ class PeopleController < ApplicationController
       attribute :id, SoberSwag::Reporting::Input::Converting::Integer
     end
     response(:ok, 'the person requested', PersonOutputObject)
+    response(:bad_request, 'the parse errors', SoberSwag::Reporting::Report::Output)
     tags 'people', 'show'
   end
   def show
