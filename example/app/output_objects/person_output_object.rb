@@ -24,7 +24,9 @@ class PersonOutputObject < SoberSwag::Reporting::Output::Struct
     field(
       :initials,
       SoberSwag::Reporting::Output::Text.new
-    )
+    ) do |person|
+      [person.first_name[0..0], person.last_name[0..0]].compact.map { |x| "#{x}." }.join(' ')
+    end
 
     field(
       :posts,
