@@ -52,4 +52,112 @@ For reporting *outputs*, all values:
 - Have a method `swagger_schema` which converts the node to its swagger schema
 
 From there, everything is done via composition.
+Nodes delegate to other nodes to provide functionality like "wrap this type in a common reference" and "validate that this string matches this regexp."
 
+## Input Structs
+
+SoberSwag's reporting mode includes a class called `SoberSwag::Reporting::Input::Struct`.
+It can be used to model *struct inputs*, IE, inputs that have some properties and are represented by JSON objects.
+
+These structs behave much like Ruby structs, and implement inheritance *correctly*.
+This means that the following works:
+
+```ruby
+class Person < SoberSwag::Reporting::Input::Struct
+  attribute :first_name, SoberSwag::Reporting::Input.text
+  attribute :last_name, SoberSwag::Reporting::Input.text
+end
+
+class GradedPerson < Person
+  attribute :grade, SoberSwag::Reporting::Input.text.enum('A', 'B', 'C', 'D', 'F')
+end
+```
+
+## Output Structs
+
+SoberSwag's Reporting Output Structs work much the same way.
+You can define *fields* on them, which they will serialize.
+You can use them to define how to serialize an object, like so:
+
+```ruby
+class PersonOutput < SoberSwag::Output::Struct
+  field :first_name, SoberSwag::Reporting::Output.text
+  field :last_name, SoberSwag::Reporting::Output.text
+
+  field :grade, SoberSwag::Reporting::Output.text.nilable do
+    if object_to_serialize.respond_to?(:grade)
+      object_to_serialize.grade
+    else
+      nil
+    end
+  end
+
+  field :has_grade, SoberSwag::Reporting::Output.bool do
+    grade.nil? # fields are defined as *methods* on the output struct
+  end
+end
+```
+
+Output Structs can also have *views*.
+Views can be nested only once.
+A view will *always inherit all attributes of the parent object, regardless of order.*
+
+```ruby
+class AlternativePersonOutput < SoberSwag::Output::Struct
+  field :first_name, SoberSwag::Reporting::Output.text
+
+  view :with_grade do
+    field :grade, SoberSwag::Reporting::Output.text.nilable do
+      if object_to_serialize.respond_to?(:grade)
+        object_to_serialize.grade
+      else
+        nil
+      end
+    end
+  end
+
+  field :last_name, SoberSwag::Reporting::Output.text
+end
+
+AlternativePersonOutput.views # => Set.new(:base, :with_grade)
+AlternativePersonOutput.view(:with_grade).serialize(my_person) # includes the last_name field
+```
+
+View relationships are modeled with *composition*.
+This leads to slightly more natural to read swagger schemas.
+
+## Dictionary Types
+
+SoberSwag's reporting outputs allow defining a *dictionary* of key-value types.
+This lets you represent an object like this in your schema:
+
+```json
+{
+  "name": "Advanced Time Travel",
+  "student_grades": {
+    "student_id_1": "F",
+    "student_id_2": "F"
+  }
+}
+```
+
+This type would probably be represented by:
+
+```ruby
+class Classroom < SoberSwag::Reporting::Input::Struct
+  attribute :name, SoberSwag::Reporting::Input.text
+  attribute :student_grades, SoberSwag::Reporting::Input::Dictionary.of(
+    SoberSwag::Reporting::Input.text.enum('A', 'B', 'C', 'D', 'F')
+  )
+end
+```
+
+## Referenced Types
+
+If you have a type you use a lot, and you want to refer to it by a common name, you can describe it like so:
+
+```ruby
+GradeEnum = SoberSwag::Reporting::Input.text.enum('A', 'B', 'C', 'D', 'F').referenced('GradeEnum')
+```
+
+This will now be represented as a Reference type in generated swagger.
