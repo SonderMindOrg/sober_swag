@@ -3,6 +3,20 @@ module SoberSwag
     module Output
       ##
       # Partition output into one of two possible cases.
+      # We use a block to decide if we should use the first or the second.
+      # If the block returns a truthy value, we use the first output.
+      # If it returns a fasly value, we use the second.
+      #
+      # This is useful to serialize sum types, or types where it can be EITHER one thing OR another.
+      # IE, if I can resolve a dispute by EITHER transfering money OR refunding a customer, I can do this:
+      #
+      # ```ruby
+      # ResolutionOutput = SoberSwag::Reporting::Output.new(
+      #   proc { |x| x.is_a?(Transfer) },
+      #   TransferOutput,
+      #   RefundOutput
+      # )
+      # ```
       class Partitioned < Base
         ##
         # @param partition [#call] block that returns true or false for the input type
