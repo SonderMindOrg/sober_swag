@@ -1,7 +1,10 @@
 module SoberSwag
   module Reporting
     ##
-    # Thrown we c
+    # Thrown we cannot generate a swagger schema for some reason.
+    #
+    # This typically only occurs if you use types that are too complicated.
+    # For example, an object type cannot be used as part of the path params.
     class InvalidSchemaError < StandardError
       def initialize(input)
         @input = input
