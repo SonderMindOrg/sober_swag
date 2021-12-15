@@ -52,7 +52,17 @@ module SoberSwag
           MergeObjects.new(parent, child.view(view))
         end
 
-        # TODO: serialize report
+        def serialize_report(value)
+          parent_attrs = parent.serialize_report(value)
+
+          return parent_attrs if parent_attrs.is_a?(Report::Value)
+
+          child_attrs = child.serialize_report(value)
+
+          return child_attrs if child_attrs.is_a?(Report::Value)
+
+          merge_results(parent_attrs, child_attrs)
+        end
 
         ##
         # Swagger schema.
@@ -70,6 +80,16 @@ module SoberSwag
             end
           end
           [{ allOf: mapped }, found]
+        end
+
+        private
+
+        def merge_results(par, chi)
+          return Report::MergedObject.new(par, chi) if [par, chi].all? { |c| c.is_a?(Report::Base) }
+          return par if par.is_a?(Report::Base)
+          return chi if chi.is_a?(Report::Base)
+
+          par.to_h.merge(chi.to_h)
         end
       end
     end

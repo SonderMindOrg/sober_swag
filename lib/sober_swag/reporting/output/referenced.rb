@@ -22,6 +22,10 @@ module SoberSwag
           output.call(input)
         end
 
+        def serialize_report(input)
+          output.serialize_report(input)
+        end
+
         def ref_path
           "#/components/schemas/#{reference}"
         end

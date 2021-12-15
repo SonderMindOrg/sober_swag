@@ -32,6 +32,34 @@ RSpec.describe SoberSwag::Reporting::Output::Struct do
       it { should be_key(:$ref) }
     end
 
+    describe 'when inheritance happens' do
+      let(:input_type) { Struct.new(:first_name, :last_name, :id) }
+
+      subject(:inherited) do
+        Class.new(output) do
+          identifier 'DetailPerson'
+
+          field(:id, SoberSwag::Reporting::Output::Number.new)
+        end
+      end
+
+      it do # rubocop:disable RSpec/ExampleLength
+        expect(subject).to(
+          serialize_output(
+            input_type.new('Bob', 'Smith', 1)
+          ).to(
+            {
+              first_name: 'Bob',
+              last_name: 'Smith',
+              id: 1
+            }
+          )
+        )
+      end
+
+      it { should report_on_output(input_type.new('Bob', 'Smith', '1')) }
+    end
+
     describe 'referenced swagger schemas' do
       subject(:references) do
         SoberSwag::Reporting::Compiler::Schema.new.tap { |s|
