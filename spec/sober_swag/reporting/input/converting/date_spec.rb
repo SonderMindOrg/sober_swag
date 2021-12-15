@@ -12,4 +12,6 @@ RSpec.describe SoberSwag::Reporting::Input::Converting::Date do
   it 'converts rfc3339' do
     expect(subject).to parse_input(date.rfc3339).to(date)
   end
+
+  it { should report_on_input('garbage values') }
 end
