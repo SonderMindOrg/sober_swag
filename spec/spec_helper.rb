@@ -23,6 +23,9 @@ RSpec.configure do |config|
   end
 end
 
+##
+# Custom matcher: validates that a `SoberSwag::Reporting::Input` can parse
+# a given input.
 RSpec::Matchers.define :parse_input do |input|
   match do |actual|
     if defined?(@parse_to)
@@ -32,11 +35,15 @@ RSpec::Matchers.define :parse_input do |input|
     end
   end
 
+  ##
+  # chain: Validate that this parser can parse to a particular value.
   chain(:to) do |parse_to|
     @parse_to = parse_to
   end
 end
 
+##
+# Custom matcher: validates that a `SoberSwag::Reporting::Output` can successfully output something.
 RSpec::Matchers.define :serialize_output do |input|
   match do |actual|
     if defined?(@serialize_to)
@@ -46,11 +53,15 @@ RSpec::Matchers.define :serialize_output do |input|
     end
   end
 
+  ##
+  # Chain: validate that the result of applying an output is a particular value.
   chain :to do |serialize_to|
     @serialize_to = serialize_to
   end
 end
 
+##
+# Custom matcher: validates that a `SoberSwag::Reporting::Input` produces a report on a given input value.
 RSpec::Matchers.define :report_on_input do |input|
   match do |actual|
     result = actual.call(input)
@@ -64,11 +75,16 @@ RSpec::Matchers.define :report_on_input do |input|
     end
   end
 
+  ##
+  # Chain: validate that one of the reported problems matches a given matcher.
   chain :with_message do |message|
     @message_body = message
   end
 end
 
+##
+# Custom matcher: validates that a `SoberSwag::Reporting::Output` produces a report when it tries to serialize
+# a given value.
 RSpec::Matchers.define :report_on_output do |input|
   match do |actual|
     result = actual.serialize_report(input)
@@ -82,6 +98,8 @@ RSpec::Matchers.define :report_on_output do |input|
     end
   end
 
+  ##
+  # Chain: validate that one of the reported messages matches a matcher.
   chain :with_message do |message|
     @message_body = message
   end
