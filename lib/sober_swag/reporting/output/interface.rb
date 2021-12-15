@@ -43,6 +43,12 @@ module SoberSwag
         # If the block given returns *false*, we will use `other` as the serializer.
         # Otherwise, we will use `self`.
         #
+        # This might be useful to serialize a sum type:
+        #
+        # ```ruby
+        # ResolutionOutput = TransferOutput.partitioned(RefundOutput) { |to_serialize| to_serialize.is_a?(Transfer)
+        # ```
+        #
         # @param other [Interface] serializer to use if the block returns false
         # @yieldreturn [true,false] false if we should use the other serializer
         # @return [Interface]
