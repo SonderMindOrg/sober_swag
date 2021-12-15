@@ -7,6 +7,26 @@ module SoberSwag
       #
       # Note: this *does not* save you from infinite schema generation.
       # This type *must* return some sort of {Referenced} type in order to do that!
+      #
+      # The common use case for this is mutual recursion.
+      # Something like...
+      #
+      # ```ruby
+      # class PersonOutput < SoberSwag::Reporting::Output::Struct
+      #   field :first_name, SoberSwag::Reporting::Output.text
+      #   view :detail do
+      #     field :classes, SoberSwag::Reporting::Output::Defer.new { ClassroomOutput.view(:base).array }
+      #   end
+      # end
+      #
+      # class ClassroomOutut < SoberSwag::Reporting::Output::Struct
+      #   field :class_name, SoberSwag::Reporting::Output.text
+      #
+      #   view :detail do
+      #     field :students, SoberSwag::Reporting::Output::Defer.new { PersonOutput.view(:base).array }
+      #   end
+      # end
+      # ```
       class Defer < Base
         ##
         # Nicer initialization: uses a block.
