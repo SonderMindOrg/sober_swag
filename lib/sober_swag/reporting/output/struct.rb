@@ -55,11 +55,13 @@ module SoberSwag
           # If this schema has any views, it will be defined as a map of possible views to the actual views used.
           # Otherwise, it will directly be the base definition.
           def single_output
-            if view_map.any?
-              Viewed.new(identified_view_map)
-            else
-              inherited_output
-            end.referenced(identifier)
+            single =
+              if view_map.any?
+                Viewed.new(identified_view_map)
+              else
+                inherited_output
+              end
+            identifier ? single.referenced(identifier) : single
           end
 
           ##
@@ -95,12 +97,15 @@ module SoberSwag
           # This means that any views added to any parent output objects *will* be visible in children.
           # @return [Interface]
           def inherited_output
-            if parent_struct
-              MergeObjects
-                .new(parent_struct.inherited_output, object_output)
-            else
-              object_output
-            end.referenced([identifier, 'Base'].join('.'))
+            inherited =
+              if parent_struct
+                MergeObjects
+                  .new(parent_struct.inherited_output, object_output)
+              else
+                object_output
+              end
+
+            identifier ? inherited.referenced([identifier, 'Base'].join('.')) : inherited
           end
 
           ##

@@ -58,6 +58,12 @@ RSpec.describe SoberSwag::Reporting::Output::Struct do
       end
 
       it { should report_on_output(input_type.new('Bob', 'Smith', '1')) }
+
+      describe '#swagger_schema[0]' do
+        subject { inherited.swagger_schema[0] }
+
+        it { should include('$ref': include('DetailPerson')) }
+      end
     end
 
     describe 'referenced swagger schemas' do
