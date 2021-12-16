@@ -46,7 +46,7 @@ For reporting *outputs*, all values:
 - Have a method `serialize_report` which serializes in "reporting mode," IE, it will return a report if serialization happened improperly
 - Have a method `views` which returns a *set of applicable views*.
   This is used to implement a serializer with many alternatives.
-  These views *propogate* correctly.
+  These views *propagate* correctly.
   So if you have views `[:base, :detail]` on a serializer for a person, a serializer for an array of people will have the same views.
 - Have a method `view` which takes in an argument, and returns a serializer specialized to that view.
 - Have a method `swagger_schema` which converts the node to its swagger schema
