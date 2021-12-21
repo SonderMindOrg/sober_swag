@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.22.0] 2021-12-21
+
+- Added `SoberSwag::Reporting`, which is basically a v2 of the gem!
+  Docs for this can be found in [docs/reporting.md].
+
 ## [v0.21.0] 2021-09-02
 
 - Added a new method of serializing views based on hash lookups, improving performance
