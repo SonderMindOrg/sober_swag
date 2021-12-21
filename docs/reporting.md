@@ -161,3 +161,16 @@ GradeEnum = SoberSwag::Reporting::Input.text.enum('A', 'B', 'C', 'D', 'F').refer
 ```
 
 This will now be represented as a Reference type in generated swagger.
+
+## Things not present
+
+There are basically two things to keep in mind when upgrading to `SoberSwag::Reporting`.
+
+1. There is no longer a `default` for a type.
+   This is because that was really hard to model in Swagger, and can be better served via use of `.mapped` and `.optional`.
+   We may add this back eventually.
+2. Serializers no longer take an arbitrary `options` key.
+   Instead, view management is now *explicit*.
+   This is because it was too tempting to pass data to serialize in the options key, which is against the point of the serializers.
+
+
