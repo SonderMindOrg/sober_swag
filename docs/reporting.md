@@ -53,6 +53,18 @@ For reporting *outputs*, all values:
 
 From there, everything is done via composition.
 Nodes delegate to other nodes to provide functionality like "wrap this type in a common reference" and "validate that this string matches this regexp."
+Currently, the only validator built-in is matching a regexp or being a member of an enum, but we may add more in the future.
+You can also use `.mapped` to do custom validation:
+
+```ruby
+NotTheStringBob = SoberSwag::Reporting::Input.text.mapped do |text|
+  if text == "Bob"
+    Report::Value.new(['was the string bob I specifically told you not to be the string bob'])
+  else
+    text
+  end
+end
+```
 
 ## Input Structs
 
