@@ -112,7 +112,8 @@ end
 ```
 
 Output Structs can also have *views*.
-Views can be nested only once.
+Views can be nested only once - if you use a serializer with views as the key of an object, we will *always* use the base view.
+This prevents some weirdness with the non-reporting SoberSwag serializers, where views could technically be read by child objects in some circumstances as they were only passed in the `view` key.
 A view will *always inherit all attributes of the parent object, regardless of order.*
 
 ```ruby
