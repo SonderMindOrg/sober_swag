@@ -34,7 +34,8 @@ RSpec.describe 'people controller create', type: :request do
 
       it { should_not be_successful }
       it { should_not be_server_error }
-      it { should be_unprocessable }
+      it { should be_bad_request }
+      it { should have_attributes(status: 400) }
     end
 
     describe 'the act of requesting' do
@@ -46,7 +47,7 @@ RSpec.describe 'people controller create', type: :request do
     describe 'the response body' do
       subject { request && response && JSON.parse(response.body) }
 
-      it { should have_key('first_name') }
+      it { should have_key('$.person.first_name') }
     end
   end
 end

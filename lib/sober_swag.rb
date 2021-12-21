@@ -24,6 +24,7 @@ module SoberSwag
   autoload :InputObject, 'sober_swag/input_object'
   autoload :Server, 'sober_swag/server'
   autoload :Type, 'sober_swag/type'
+  autoload :Reporting, 'sober_swag/reporting'
 
   ##
   # Define a struct of something.

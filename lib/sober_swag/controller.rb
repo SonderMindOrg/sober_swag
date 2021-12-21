@@ -114,7 +114,7 @@ module SoberSwag
           r = current_action_def
           raise UndefinedPathError unless r&.path_params_class
 
-          r.path_params_class.call(request.path_parameters)
+          build_parsed_sober_swag(r.path_params_class, request.path_parameters)
         end
     end
 
@@ -128,7 +128,7 @@ module SoberSwag
           r = current_action_def
           raise UndefinedBodyError unless r&.request_body_class
 
-          r.request_body_class.call(body_params)
+          build_parsed_sober_swag(r.request_body_class, body_params)
         end
     end
 
@@ -142,7 +142,7 @@ module SoberSwag
           r = current_action_def
           raise UndefinedQueryError unless r&.query_params_class
 
-          r.query_params_class.call(request.query_parameters)
+          build_parsed_sober_swag(r.query_params_class, request.query_parameters)
         end
     end
 
@@ -154,8 +154,13 @@ module SoberSwag
     def respond!(status, entity, serializer_opts: {}, rails_opts: {})
       r = current_action_def
       serializer = r.response_serializers[Rack::Utils.status_code(status)]
-      serializer ||= serializer.new if serializer.respond_to?(:new)
-      render json: serializer.serialize(entity, serializer_opts), status: status, **rails_opts
+      if serializer.respond_to?(:reporting?) && serializer.reporting?
+        serializer = serializer.view(serializer_opts[:view].to_sym) if serializer_opts.key?(:view)
+        render json: serializer.call(entity), status: status, **rails_opts
+      else
+        serializer ||= serializer.new if serializer.respond_to?(:new)
+        render json: serializer.serialize(entity, serializer_opts), status: status, **rails_opts
+      end
     end
 
     ##
@@ -176,6 +181,14 @@ module SoberSwag
     # @return [SoberSwag::Controller::Route]
     def current_action_def
       self.class.find_route(params[:action])
+    end
+
+    def build_parsed_sober_swag(parser, params)
+      if parser.respond_to?(:call!)
+        parser.call!(params)
+      else
+        parser.call(params)
+      end
     end
   end
 end

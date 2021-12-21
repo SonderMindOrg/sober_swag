@@ -30,7 +30,7 @@ RSpec.describe 'Index action for people' do
       end
 
       it 'has the right person' do
-        expect(parsed_body).to include(include('id' => person.id))
+        expect(parsed_body).to include(include('id' => person.id.to_s))
       end
     end
 

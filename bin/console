@@ -9,11 +9,6 @@ Bio = SoberSwag.input_object do
   attribute :gender, SoberSwag::Types::String.enum('male', 'female') | SoberSwag::Types::String
 end
 
-Person = SoberSwag.input_object do
-  attribute :name, SoberSwag::Types::String
-  attribute? :bio, Bio.optional
-end
-
 MultiFloorLocation = SoberSwag.input_object do
   attribute :building, SoberSwag::Types::String.enum('science', 'mathematics', 'literature')
   attribute :floor, SoberSwag::Types::String
@@ -25,12 +20,37 @@ SingleFloorLocation = SoberSwag.input_object do
   attribute :room, SoberSwag::Types::Integer
 end
 
-SchoolClass = SoberSwag.input_object do
-  attribute :prof, Person.meta(description: 'The person who teaches this class.')
-  attribute :students, SoberSwag::Types::Array.of(Person)
-  attribute :location, (SingleFloorLocation | MultiFloorLocation).meta(description: 'What building and room this is in')
+SortDirections = SoberSwag::Types::CommaArray.of(SoberSwag::Types::String.enum('created_at', 'updated_at', '-created_at', '-updated_at'))
+
+# test
+class Whatever < SoberSwag::Reporting::Input::Struct
+  attribute :first_name, SoberSwag::Reporting::Input::Text.new
+  attribute :last_name, SoberSwag::Reporting::Input::Text.new
+  attribute? :father, SoberSwag::Reporting::Input::Null.new | SoberSwag::Reporting::Input::Defer.new(proc { Whatever }), description: 'if the father is in our db, will be present'
+  attribute? :mother, SoberSwag::Reporting::Input::Null.new | SoberSwag::Reporting::Input::Defer.new(proc { Whatever }), description: 'if the mother is in our db, will be present'
 end
 
-SortDirections = SoberSwag::Types::CommaArray.of(SoberSwag::Types::String.enum('created_at', 'updated_at', '-created_at', '-updated_at'))
+# Kinda neat thing
+class Otherwised < Whatever
+  attribute :ident, SoberSwag::Reporting::Input::Text.new.with_pattern(/^[A-Za-z0-9]+$/)
+end
+
+ArrayOfPeople = Otherwised.or(Whatever).list
+
+##
+# Output for a person
+class OutputPerson < SoberSwag::Reporting::Output::Struct
+  field :first_name, SoberSwag::Reporting::Output::Text.new
+  field :last_name, SoberSwag::Reporting::Output::Text.new
+  define_view :detail do
+    field :initials, SoberSwag::Reporting::Output::Text.new do |obj|
+      [obj.first_name, obj.last_name].map { |e| e[0..0] }.map { |e| "#{e}." }.join(' ')
+    end
+  end
+end
+
+Person = Struct.new(:first_name, :last_name)
+
+OutputPerson.view(:base)
 
 Pry.start

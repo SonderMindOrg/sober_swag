@@ -5,35 +5,40 @@ class PeopleController < ApplicationController
 
   before_action :load_person, only: %i[show update]
 
-  PersonBodyParams = SoberSwag.input_object do
-    identifier 'PersonBodyParams'
+  ##
+  # Parameters to create or update a person.
+  class ReportingPersonParams < SoberSwag::Reporting::Input::Struct
+    identifier 'PersonReportingParams'
 
-    attribute :first_name, SoberSwag::Types::String
-    attribute :last_name, SoberSwag::Types::String
-    attribute? :date_of_birth, SoberSwag::Types::Params::DateTime.optional
+    attribute :first_name, SoberSwag::Reporting::Input::Text.new.with_pattern(/.+/)
+    attribute :last_name, SoberSwag::Reporting::Input::Text.new.with_pattern(/.+/)
+    attribute? :date_of_birth, SoberSwag::Reporting::Input::Converting::DateTime.optional
   end
 
-  PersonBodyPatchParams = SoberSwag.input_object(PersonBodyParams) do
-    identifier 'PersonBodyPatchParams'
+  ##
+  # Parameters to create a person.
+  class ReportingPersonCreate < SoberSwag::Reporting::Input::Struct
+    identifier 'ReportingPersonCreate'
 
-    attribute? :first_name, SoberSwag::Types::String
-    attribute? :last_name, SoberSwag::Types::String
-    attribute? :date_of_birth, SoberSwag::Types::Params::DateTime.optional
+    attribute :person, ReportingPersonParams
   end
 
-  PersonParams = SoberSwag.input_object do
-    identifier 'PersonParams'
-    attribute :person, PersonBodyParams
-  end
+  ##
+  # Patch body for a person.
+  class ReportingPersonPatchParams < SoberSwag::Reporting::Input::Struct
+    identifier 'PersonReportingPatchParams'
 
-  PersonPatchParams = SoberSwag.input_object do
-    identifier 'PersonPatchParams'
-    attribute :person, PersonBodyPatchParams
+    attribute? :first_name, SoberSwag::Reporting::Input.text.with_pattern(/.+/)
+    attribute? :last_name, SoberSwag::Reporting::Input.text.with_pattern(/.+/)
+    attribute? :date_of_birth, SoberSwag::Reporting::Input::Converting::DateTime.optional
   end
 
   define :post, :create, '/people/' do
-    request_body(PersonParams)
+    summary 'Create a person'
+
+    request_body(ReportingPersonCreate)
     response(:ok, 'the person created', PersonOutputObject)
+    response(:bad_request, 'the parse errors', SoberSwag::Reporting::Report::Output)
     response(:unprocessable_entity, 'the validation errors', PersonErrorsOutputObject)
     tags 'people', 'create'
   end
@@ -47,9 +52,14 @@ class PeopleController < ApplicationController
   end
 
   define :patch, :update, '/people/{id}' do
-    request_body(PersonPatchParams)
-    path_params { attribute :id, Types::Params::Integer }
+    summary 'Update a person'
+
+    request_body(reporting: true) do
+      attribute :person, ReportingPersonPatchParams
+    end
+    path_params(reporting: true) { attribute :id, SoberSwag::Reporting::Input::Converting::Integer }
     response(:ok, 'the person updated', PersonOutputObject)
+    response(:bad_request, 'the parse errors', SoberSwag::Reporting::Report::Output)
     response(:unprocessable_entity, 'the validation errors', PersonErrorsOutputObject)
     tags 'people', 'update'
   end
@@ -62,28 +72,34 @@ class PeopleController < ApplicationController
   end
 
   define :get, :index, '/people/' do
-    query_params do
+    summary 'List persons'
+
+    query_params(reporting: true) do
       attribute? :filters do
-        attribute? :first_name, Types::String
-        attribute? :last_name, Types::String
+        attribute? :first_name, SoberSwag::Reporting::Input.text
+        attribute? :last_name, SoberSwag::Reporting::Input.text
       end
-      attribute :view, Types::String.default('base'.freeze).enum('base', 'detail')
+      attribute? :view, SoberSwag::Reporting::Input.text.enum('base', 'detail')
     end
-    response(:ok, 'all the people', PersonOutputObject.array)
+    response(:ok, 'all the people', PersonOutputObject.list)
+    response(:bad_request, 'the parse errors', SoberSwag::Reporting::Report::Output)
     tags 'people', 'list'
   end
   def index
     @people = Person.all
     @people = @people.where('UPPER(first_name) LIKE UPPER(?)', "%#{parsed_query.filters.first_name}%") if parsed_query.filters&.first_name
     @people = @people.where('UPPER(last_name) LIKE UPPER(?)', "%#{parsed_query.filters.last_name}%") if parsed_query.filters&.last_name
-    respond!(:ok, @people.includes(:posts), serializer_opts: { view: parsed_query.view })
+    respond!(:ok, @people.includes(:posts), serializer_opts: { view: parsed_query.view || :base })
   end
 
   define :get, :show, '/people/{id}' do
-    path_params do
-      attribute :id, Types::Params::Integer
+    summary 'Get a single person by id'
+
+    path_params(reporting: true) do
+      attribute :id, SoberSwag::Reporting::Input::Converting::Integer
     end
     response(:ok, 'the person requested', PersonOutputObject)
+    response(:bad_request, 'the parse errors', SoberSwag::Reporting::Report::Output)
     tags 'people', 'show'
   end
   def show
