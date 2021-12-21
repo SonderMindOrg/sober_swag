@@ -28,6 +28,7 @@ As you can see, we get a dictionary of JSON-path values to errors.
 
 More interestingly, you can use serializers in "reporting mode," which will *verify* that you're actually serializing what you said you would.
 If you mess up, it'll give you a report of where the errors were.
+This is intended to be used to make writing specs easier: to check that your serializer gives the right types, just use it in reporting mode and check the value!
 
 ## Basic Design
 
