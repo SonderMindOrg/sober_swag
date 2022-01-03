@@ -35,6 +35,15 @@ module SoberSwag
           List.new(self)
         end
 
+        ##
+        # Constrained values: must be in range.
+        # @return [InRange]
+        def in_range(range)
+          raise ArgumentError, "need a range, not a #{range.class}" unless range.is_a?(Range)
+
+          InRange.new(self, range)
+        end
+
         def referenced(name)
           Referenced.new(self, name)
         end
