@@ -15,6 +15,7 @@ module SoberSwag
       autoload(:MergeObjects, 'sober_swag/reporting/output/merge_objects')
       autoload(:Null, 'sober_swag/reporting/output/null')
       autoload(:Number, 'sober_swag/reporting/output/number')
+      autoload(:Enum, 'sober_swag/reporting/output/enum')
       autoload(:Object, 'sober_swag/reporting/output/object')
       autoload(:Partitioned, 'sober_swag/reporting/output/partitioned')
       autoload(:Pattern, 'sober_swag/reporting/output/pattern')

@@ -65,7 +65,7 @@ module SoberSwag
         end
 
         def field_schemas
-          fields.reduce([{}, Set.new]) do |(field_schemas, found), (k, v)|
+          fields.reduce([{}, {}]) do |(field_schemas, found), (k, v)|
             key_schema, key_found = v.property_schema
             [
               field_schemas.merge(k => key_schema),

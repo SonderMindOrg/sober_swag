@@ -30,6 +30,12 @@ module SoberSwag
           ViaMap.new(self, block)
         end
 
+        ##
+        # @return [SoberSwag::Reporting::Output::Enum]
+        def enum(*cases)
+          Enum.new(self, cases)
+        end
+
         def referenced(name)
           Referenced.new(self, name)
         end
