@@ -44,6 +44,12 @@ module SoberSwag
           InRange.new(self, range)
         end
 
+        ##
+        # Constrained values: must be a multiple of the given number
+        def multiple_of(number)
+          MultipleOf.new(self, number)
+        end
+
         def referenced(name)
           Referenced.new(self, name)
         end
@@ -81,6 +87,17 @@ module SoberSwag
 
         def swagger_query_schema
           raise InvalidSchemaError::InvalidForQueryError.new(self) # rubocop:disable Style/RaiseArgs
+        end
+
+        def modify_schema(base, addition)
+          schema, found = base.swagger_schema
+          merged =
+            if schema.key?(:$ref)
+              { allOf: [schema] }
+            else
+              schema
+            end.merge(addition)
+          [merged, found]
         end
 
         def add_schema_key(base, addition)

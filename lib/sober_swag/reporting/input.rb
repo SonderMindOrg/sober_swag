@@ -16,6 +16,7 @@ module SoberSwag
       autoload :Interface, 'sober_swag/reporting/input/interface'
       autoload :InRange, 'sober_swag/reporting/input/in_range'
       autoload :List, 'sober_swag/reporting/input/list'
+      autoload :MultipleOf, 'sober_swag/reporting/input/multiple_of'
       autoload :Mapped, 'sober_swag/reporting/input/mapped'
       autoload :MergeObjects, 'sober_swag/reporting/input/merge_objects'
       autoload :Null, 'sober_swag/reporting/input/null'
