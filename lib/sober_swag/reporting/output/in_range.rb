@@ -27,7 +27,7 @@ module SoberSwag
 
           return rep if rep.is_a?(Report::Base)
 
-          return Report::Value.new(['was not in minimum/maximum range']) unless range.member?(rep) 
+          return Report::Value.new(['was not in minimum/maximum range']) unless range.member?(rep)
 
           rep
         end
@@ -35,7 +35,7 @@ module SoberSwag
         def swagger_schema
           schema, found = output.swagger_schema
 
-          merged = 
+          merged =
             if schema.key?(:$ref)
               { allOf: [schema] }
             else
