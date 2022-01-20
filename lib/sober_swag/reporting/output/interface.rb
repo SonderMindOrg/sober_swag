@@ -40,6 +40,15 @@ module SoberSwag
           Referenced.new(self, name)
         end
 
+        ##
+        # @return [SoberSwag::Reporting::Output::InRange]
+        # Constrained values: must be within the given range.
+        def in_range(range)
+          raise ArgumentError, 'need a range' unless range.is_a?(Range)
+
+          InRange.new(self, range)
+        end
+
         def list
           List.new(self)
         end
