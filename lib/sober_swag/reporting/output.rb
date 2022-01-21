@@ -10,6 +10,7 @@ module SoberSwag
       autoload(:Defer, 'sober_swag/reporting/output/defer')
       autoload(:Described, 'sober_swag/reporting/output/described')
       autoload(:Dictionary, 'sober_swag/reporting/output/dictionary')
+      autoload(:InRange, 'sober_swag/reporting/output/in_range')
       autoload(:Interface, 'sober_swag/reporting/output/interface')
       autoload(:List, 'sober_swag/reporting/output/list')
       autoload(:MergeObjects, 'sober_swag/reporting/output/merge_objects')
