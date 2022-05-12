@@ -42,6 +42,7 @@ module SoberSwag
       #   @param type the attribute type
       def attribute(key, parent = SoberSwag::InputObject, &block)
         raise ArgumentError, "parent class #{parent} is not an input object type!" unless valid_field_def?(parent, block)
+        raise ArgumentError, "cannot mix reporting and non-reporting types at attribute #{key}" if parent.is_a?(SoberSwag::Reporting::Input::Interface)
 
         super(key, parent, &block)
       end

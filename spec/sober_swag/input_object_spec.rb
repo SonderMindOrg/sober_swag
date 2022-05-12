@@ -38,6 +38,17 @@ RSpec.describe SoberSwag::InputObject do
     end
   end
 
+  describe 'illegal mixing of reporting and non-reporting' do
+    it 'raises an error when you try to do this' do
+      expect {
+        SoberSwag.input_object do
+          identifier 'illegal'
+          attribute :bar, SoberSwag::Reporting::Input::Text.new
+        end
+      }.to raise_error(ArgumentError, /mix reporting/)
+    end
+  end
+
   describe '.type_attribute' do
     let(:accept) do
       SoberSwag.input_object do
