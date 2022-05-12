@@ -20,6 +20,8 @@ module SoberSwag
           #
           #   You can access other methods from this method.
           def field(name, output, description: nil, &extract)
+            raise ArgumentError, "output of field #{name} is not a SoberSwag::Reporting::Output::Interface" unless output.is_a?(Interface)
+
             define_field(name, extract)
 
             object_fields[name] = Object::Property.new(

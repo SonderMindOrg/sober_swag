@@ -1,6 +1,16 @@
 require 'spec_helper'
 
 RSpec.describe SoberSwag::Reporting::Output::Struct do
+  describe 'illegal mixing of reporting and non-reporting' do
+    it 'raises an error' do
+      expect {
+        Class.new(described_class) do
+          field :first_name, SoberSwag::Serializer.primitive(SoberSwag::Types::String)
+        end
+      }.to raise_error(ArgumentError, /Interface/)
+    end
+  end
+
   context 'with an output with views' do
     let(:input_type) { Struct.new(:first_name, :last_name) }
 
