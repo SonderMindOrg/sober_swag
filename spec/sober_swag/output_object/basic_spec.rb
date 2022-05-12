@@ -42,4 +42,14 @@ RSpec.describe 'a basic SoberSwag::OutputObject' do
       expect(roundtripped).to be_a(output_object.base.type)
     end
   end
+
+  describe 'bad definitions' do
+    it 'does not allow you to use a SoberSwag::Reporting::Output as a field def' do
+      expect {
+        SoberSwag::OutputObject.define do
+          field :foo, SoberSwag::Reporting::Output.text
+        end
+      }.to raise_error(ArgumentError, /non-reporting/)
+    end
+  end
 end
