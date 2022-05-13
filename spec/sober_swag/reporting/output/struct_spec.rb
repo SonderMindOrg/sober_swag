@@ -1,6 +1,16 @@
 require 'spec_helper'
 
 RSpec.describe SoberSwag::Reporting::Output::Struct do
+  describe 'illegal mixing of reporting and non-reporting' do
+    it 'raises an error' do
+      expect {
+        Class.new(described_class) do
+          field :first_name, SoberSwag::Serializer.primitive(SoberSwag::Types::String)
+        end
+      }.to raise_error(ArgumentError, /Interface/)
+    end
+  end
+
   context 'with an output with views' do
     let(:input_type) { Struct.new(:first_name, :last_name) }
 
@@ -8,22 +18,26 @@ RSpec.describe SoberSwag::Reporting::Output::Struct do
       Class.new(described_class) do
         identifier 'Person'
 
-        field(:first_name, SoberSwag::Reporting::Output::Text.new)
-        field(:last_name, SoberSwag::Reporting::Output::Text.new)
+        field(:first_name, SoberSwag::Reporting::Output.text)
+        field(:last_name, SoberSwag::Reporting::Output.text)
 
         define_view :detail do
           field(
             :initials,
-            SoberSwag::Reporting::Output::Text.new,
+            SoberSwag::Reporting::Output.text,
             description: 'does not handle hyphenation, consider this deprecated please'
           ) do |o|
             [o.first_name, o.last_name].map { |i| "#{i[0..0]}." }.join(' ')
           end
         end
+
+        define_inherited_view :ultra_detail, inherits: :detail do
+          field(:first_name_length, SoberSwag::Reporting::Output.number) { |o| o.first_name.length }
+        end
       end
     end
 
-    its(:views) { should contain_exactly(:base, :detail) }
+    its(:views) { should contain_exactly(:base, :detail, :ultra_detail) }
     it { should serialize_output(input_type.new('Bob', 'Smith')).to({ first_name: 'Bob', last_name: 'Smith' }) }
 
     describe 'swagger direct schema' do
@@ -74,8 +88,7 @@ RSpec.describe SoberSwag::Reporting::Output::Struct do
       end
 
       it { should be_a(Hash) }
-      its(:length) { should eq 3 }
-      its(:keys) { should contain_exactly('Person', 'Person.Base', 'Person.Detail') }
+      its(:keys) { should contain_exactly('Person', 'Person.Base', 'Person.Detail', 'Person.Detail.Base', 'Person.UltraDetail') }
 
       describe 'root Person key' do
         subject(:base) { references['Person'] }
@@ -107,6 +120,18 @@ RSpec.describe SoberSwag::Reporting::Output::Struct do
 
           it { should include("$ref": end_with('Person.Base')) }
           it { should include(include(type: 'object', properties: be_key(:initials))) }
+        end
+      end
+
+      describe 'Person.UltraDetail' do
+        subject(:base) { references['Person.UltraDetail'] }
+
+        it { should be_key(:allOf) }
+
+        describe '[:allOf]' do
+          subject { base[:allOf] }
+
+          it { should include("$ref": end_with('Person.Detail.Base')) }
         end
       end
     end

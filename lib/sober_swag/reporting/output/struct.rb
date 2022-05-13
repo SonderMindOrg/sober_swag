@@ -20,6 +20,8 @@ module SoberSwag
           #
           #   You can access other methods from this method.
           def field(name, output, description: nil, &extract)
+            raise ArgumentError, "output of field #{name} is not a SoberSwag::Reporting::Output::Interface" unless output.is_a?(Interface)
+
             define_field(name, extract)
 
             object_fields[name] = Object::Property.new(
@@ -158,22 +160,20 @@ module SoberSwag
           # @param name [Symbol] name of this view.
           # @yieldself [self] a block in which you can add more fields to the view.
           # @return [Class]
-          def define_view(name, &block) # rubocop:disable Metrics/MethodLength
-            raise ArgumentError, "duplicate view #{name}" if name == :base || views.include?(name)
+          def define_view(name, &block)
+            define_view_with_parent(name, self, block)
+          end
 
-            classy_name = name.to_s.classify
-
-            Class.new(self).tap do |c|
-              c.instance_eval(&block)
-              c.define_singleton_method(:define_view) do |*|
-                raise ArgumentError, 'no nesting views'
-              end
-              c.define_singleton_method(:identifier) do
-                [parent_struct.identifier, classy_name.gsub('::', '.')].join('.')
-              end
-              const_set(classy_name, c)
-              view_map[name] = c
-            end
+          ##
+          # Defines a view for this object, which "inherits" another view.
+          # @see #define_view for how views behave.
+          #
+          # @param name [Symbol] name of this view
+          # @param inherits [Symbol] name of the view this view inherits
+          # @yieldself [self] a block in which you can add more fields to this view
+          # @return [Class]
+          def define_inherited_view(name, inherits:, &block)
+            define_view_with_parent(name, view_class(inherits), block)
           end
 
           ##
@@ -197,6 +197,16 @@ module SoberSwag
             return inherited_output if name == :base
 
             view_map.fetch(name).view(:base)
+          end
+
+          ##
+          # Equivalent to .view, but returns the raw view class.
+          #
+          # @return [Class]
+          def view_class(name)
+            return self if name == :base
+
+            view_map.fetch(name)
           end
 
           attr_accessor :parent_struct
@@ -225,6 +235,21 @@ module SoberSwag
           end
 
           private
+
+          def define_view_with_parent(name, parent, block)
+            raise ArgumentError, "duplicate view #{name}" if name == :base || views.include?(name)
+
+            classy_name = name.to_s.classify
+            us = self # grab this so its identifier doesn't get nested under whatever parent it inherits from, since its our view
+
+            Class.new(parent).tap do |c|
+              c.instance_eval(&block)
+              c.define_singleton_method(:define_view) { |*| raise ArgumentError, 'no nesting views' }
+              c.define_singleton_method(:identifier) { [us.identifier, classy_name.gsub('::', '.')].join('.') }
+              const_set(classy_name, c)
+              view_map[name] = c
+            end
+          end
 
           def identified_view_map
             view_map.transform_values(&:identified_without_base).merge(base: inherited_output)

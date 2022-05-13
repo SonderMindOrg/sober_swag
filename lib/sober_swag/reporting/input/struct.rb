@@ -76,6 +76,7 @@ module SoberSwag
           #
           def add_attribute!(name, input, required:, description: nil)
             raise ArgumentError, 'name must be a symbol' unless name.is_a?(Symbol)
+            raise ArgumentError, 'input type must be a SoberSwag::Reporting::Input::Interface' unless input.is_a?(Interface)
 
             define_attribute(name) # defines an instance method to access this attribute
 

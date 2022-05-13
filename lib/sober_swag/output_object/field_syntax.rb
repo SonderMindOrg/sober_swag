@@ -11,6 +11,8 @@ module SoberSwag
       # @param from [Symbol] method name to extract this field from, for convenience.
       # @param block [Proc] optional way to extract this field.
       def field(name, serializer, from: nil, &block)
+        raise ArgumentError, "do not mix reporting and non-reporting outputs (at key #{name})" if serializer.is_a?(SoberSwag::Reporting::Output::Interface)
+
         add_field!(Field.new(name, serializer, from: from, &block))
       end
 

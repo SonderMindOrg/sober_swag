@@ -20,6 +20,16 @@ RSpec.describe SoberSwag::Reporting::Input::Struct do
     end
   end
 
+  describe 'illegal mixing of non-reporting and reporting types' do
+    it 'raises an error' do
+      expect {
+        Class.new(described_class) do
+          attribute :first_name, SoberSwag::Types::String
+        end
+      }.to raise_error(ArgumentError, /must be a/)
+    end
+  end
+
   context 'with a basic first/last name' do
     subject { struct_class }
 
