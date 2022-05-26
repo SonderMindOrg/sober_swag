@@ -213,6 +213,30 @@ The following "primitive types" are available:
   This serializes out a string type in the JSON.
   It can serialize out ruby strings.
 
+### The Transforming Type
+
+For `SoberSwag::Reporting::Output`, there's a "fundamental" type that does *transformation*, called `via_map`.
+It lets you apply a ruby block before passing the input on to the serializer after it.
+It's most often used like this:
+
+```ruby
+screaming_output = SoberSwag::Reporting::Output.text.via_map { |old_text| old_text.upcase }
+screaming_output.call("what the heck")
+# => "WHAT THE HECK"
+```
+
+Note that this calls the block *before* passing to the next serializer.
+So:
+
+```ruby
+example = SoberSwag::Reporting::Output.text.via_map { |x| x.downcase }.via_map { |x| x + ", OK?" }
+example.call("WHAT THE HECK?")
+# => "what the heck, ok?"
+```
+
+This type winds up being extremely useful in a *lot* of places.
+That's why it gets its own section!
+
 #### Composite Types
 
 The following "composite types," or types built from other types, are available:
