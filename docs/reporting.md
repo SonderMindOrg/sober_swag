@@ -120,7 +120,7 @@ A view will *always inherit all attributes of the parent object, regardless of o
 class AlternativePersonOutput < SoberSwag::Output::Struct
   field :first_name, SoberSwag::Reporting::Output.text
 
-  view :with_grade do
+  define_view :with_grade do
     field :grade, SoberSwag::Reporting::Output.text.nilable do
       if object_to_serialize.respond_to?(:grade)
         object_to_serialize.grade
@@ -187,4 +187,73 @@ There are basically two things to keep in mind when upgrading to `SoberSwag::Rep
    Instead, view management is now *explicit*.
    This is because it was too tempting to pass data to serialize in the options key, which is against the point of the serializers.
 
+## API Overview
 
+This section presents an overview of the available reporting outputs and inputs.
+
+### `SoberSwag::Reporting::Output`
+
+This module contains reporting *outputs*.
+These act as type-checked serializers.
+
+#### Primitive Types
+
+The following "primitive types" are available:
+
+- `SoberSwag::Reporting::Output.bool`, which returns a `SoberSwag::Reporting::Output::Bool`.
+  This type is for serializing boolean values, IE, `true` or `false`.
+  It will serialize the boolean directly to the JSON.
+- `SoberSwag::Reporting::Output.null`, which returns a `SoberSwag::Reporting::Output::Null`.
+  This type serializes out `null` in JSON.
+  This can only serialize the ruby value `nil`.
+- `SoberSwag::Reporting::Output.number`, returns a `SoberSwag::Reporting::Output::Number`.
+  This type serializes out numbers in JSON.
+  It can serialize out most ruby numeric types.
+- `SoberSwag::Reporting::Output.text`, which returns a `SoberSwag::Reporting::Output::Text`.
+  This serializes out a string type in the JSON.
+  It can serialize out ruby strings.
+
+#### Composite Types
+
+The following "composite types," or types built from other types, are available:
+
+- `SoberSwag::Reporting::Output::List`, which can be constructed via `SoberSwag::Reporting::Output::List.new(other_type)`, or by calling `.list` on any other reporting output.
+  This serializes out an array of the passed-in type.
+  So, `SoberSwag::Reporting::Output.text.list` is an array of strings in JSON, like `["foo", "bar"]`.
+  This type will serialize out anything that responds to `#map`.
+- `SoberSwag::Reporting::Output::Dictionary`, which can be constructed via `SoberSwag::Reporting::Output::Dictionary.of(other_output)`.
+  This type serializes out a key-value dictionary, IE, a JSON object.
+  So, `SoberSwag::Reporting::Output::Dictionary.of(SoberSwag::Reporting::Output.text)` will let you serialize JSON like `{ "foo": "bar", "baz": "yes" }`.
+  This type can serialize out any ruby hash.
+- `SoberSwag::Reporting::Output::Partitioned`, which represents the *choice* of two serializers.
+  It takes in a block to decide which serializer to use, a serializer to use if the block returns `true`, and a serializer to use if the block returns `false`.
+  That is, to serialize out *either* a string *or* a number, you might use:
+  ```ruby
+  SoberSwag::Reporting::Output::Partitioned.new(
+    proc { |x| x.is_a?(String) },
+    SoberSwag::Reporting::Output.text,
+    SoberSwag::Reporting::Output.number
+  )
+  ```
+- `SoberSwag::Reporting::Output::Viewed`, which lets you define a *view map* for an object.
+  This is mostly used as an implementation detail, but can be occasionally useful if you want to provide
+  a list of "views" with no common "base," like an output object might have. In this case, the "base"
+  view is more of a "default" rather than a "parent."
+
+### Validation Types
+
+OpenAPI v3 supports some *validations* on types, in addition to raw types.
+For example, you can specify in your documentation that a value will be within a *range* of values.
+These `SoberSwag::Reporting::Output` types provide that documentation - and perform those validations!
+
+- `SoberSwag::Reporting::Output::InRange` validates that a value will be within a certain *range* of values.
+  This is most useful with numbers.
+  For example:
+  ```ruby
+  SoberSwag::Reporting::Output.number.in_range(0..10)
+  ```
+- `SoberSwag::Reporting::Output::Pattern` validates that a value will match a certain *pattern.*
+  This is useful with strings:
+  ```ruby
+  SoberSwag::Reporting::Output::Pattern.new(SoberSwag::Reporting::Output.text, /foo|bar|baz|my-[0-5*/)
+  ```
