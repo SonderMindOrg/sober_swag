@@ -327,7 +327,7 @@ These types are the "primitives" of `SoberSwag::Reporting::Input`, the most basi
 
 ### The Transforming Type
 
-Much like `via_map` for `SoberSwag::Reporting::Output`, there's a fundmantal type that does *transformation*, called the `mapped`.
+Much like `via_map` for `SoberSwag::Reporting::Output`, there's a fundamental type that does *transformation*, called the `mapped`.
 This lets you do some transformation of input *after* others have ran.
 So:
 
