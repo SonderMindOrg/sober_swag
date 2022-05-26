@@ -1,6 +1,6 @@
 # Changelog
 
-## vNEXT
+## [v0.24.1] 2022-05-26
 
 - Added a better `#message` to `SoberSwag::Reporting::Report::Error`
 
