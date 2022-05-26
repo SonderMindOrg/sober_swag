@@ -303,3 +303,50 @@ These `SoberSwag::Reporting::Output` types provide that documentation - and perf
   ```ruby
   SoberSwag::Reporting::Output::Pattern.new(SoberSwag::Reporting::Output.text, /foo|bar|baz|my-[0-5*/)
   ```
+
+## `SoberSwag::Reporting::Input`
+
+This module is used for *parsers*, which take in some input and return a nicer type.
+
+### Basic Types
+
+These types are the "primitives" of `SoberSwag::Reporting::Input`, the most basic types:
+
+- `SoberSwag::Reporting::Input::Null` parses a JSON `null` value.
+  It will parse it to a ruby `nil`, naturally.
+  You probably want to construct one via `SoberSwag::Reporting::Input.null`.
+- `SoberSwag::Reporting::Input::Number` parses a JSON number.
+  It will parse to either a ruby `Integer` or a ruby `Float`, depending on the format (we use Ruby's internal format for this).
+  You probably want to construct one via `SoberSwag::Reporting::Input.number`.
+- `SoberSwag::Reporting::Input::Bool`, which parses a JSON bool (`true` or `false`).
+  This will parse to a ruby `true` or `false`.
+  You probably want to construct it with `SoberSwag::Reporting::Output.bool`.
+- `SoberSwag::Reporting::Input::Text`, which parses a JSON string (`"mike stoklassa"`, `"richard evans"`, or `"jay bauman"` for example).
+  This will parse to a ruby string.
+  You probably want to construct it with `SoberSwag::Reporting::Output.text`.
+
+### The Transforming Type
+
+Much like `via_map` for `SoberSwag::Reporting::Output`, there's a fundmantal type that does *transformation*, called the `mapped`.
+This lets you do some transformation of input *after* others have ran.
+So:
+
+```ruby
+quiet = SoberSwag::Reporting::Input.text.mapped { |x| x.downcase }
+quiet.call("WHAT THE HECK")
+# => "what the heck"
+```
+
+Note that this composes as follows:
+
+```ruby
+example = SoberSwag::Reporting::Input.text.mapped { |x| x.downcase }.mapped { |x| x + ", OK?" }
+
+example.call("WHAT THE HECK")
+# => "what the heck, OK?"
+# As you can see, the *first* function applies first, then the *second*.
+```
+
+You might notice that this is the opposite behavior of of `SoberSwag::Reporting::Output::ViaMap`.
+This is because *serialization* is the *opposite* of *parsing*.
+Kinda neat, huh?
