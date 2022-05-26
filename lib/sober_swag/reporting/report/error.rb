@@ -8,6 +8,10 @@ module SoberSwag
           @report = report
         end
 
+        def message
+          "Reported errors: #{report.full_errors.join(', ')}"
+        end
+
         attr_reader :report
       end
     end
