@@ -1,5 +1,9 @@
 # Changelog
 
+## vNEXT
+
+- Added a better `#message` to `SoberSwag::Reporting::Report::Error`
+
 ## [v0.22.0] 2021-12-21
 
 - Added `SoberSwag::Reporting`, which is basically a v2 of the gem!
