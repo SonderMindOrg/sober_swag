@@ -208,7 +208,7 @@ The following "primitive types" are available:
   This can only serialize the ruby value `nil`.
 - `SoberSwag::Reporting::Output.number`, returns a `SoberSwag::Reporting::Output::Number`.
   This type serializes out numbers in JSON.
-  It can serialize out most ruby numeric types.
+  It can serialize out most ruby numeric types, including `Integer` and `Float`.
 - `SoberSwag::Reporting::Output.text`, which returns a `SoberSwag::Reporting::Output::Text`.
   This serializes out a string type in the JSON.
   It can serialize out ruby strings.
@@ -217,14 +217,36 @@ The following "primitive types" are available:
 
 The following "composite types," or types built from other types, are available:
 
-- `SoberSwag::Reporting::Output::List`, which can be constructed via `SoberSwag::Reporting::Output::List.new(other_type)`, or by calling `.list` on any other reporting output.
-  This serializes out an array of the passed-in type.
-  So, `SoberSwag::Reporting::Output.text.list` is an array of strings in JSON, like `["foo", "bar"]`.
-  This type will serialize out anything that responds to `#map`.
-- `SoberSwag::Reporting::Output::Dictionary`, which can be constructed via `SoberSwag::Reporting::Output::Dictionary.of(other_output)`.
+- `SoberSwag::Reporting::Output::List`, which seralizes out *lists* of values.
+  You can construct one in two ways:
+
+  ```ruby
+  SoberSwag::Reporting::Output::List.new(SoberSwag::Reporting::Output.text)
+  # or, via the instance method
+  SoberSwag::Reporting::Output.text.list
+  ```
+  This produces an output that can serialize to JSON arrays.
+  For example, either of these can produce:
+
+  ```json
+  ["foo", "bar"]
+  ```
+
+  This serialize will work with anything that responds to `#map`.
+
+- `SoberSwag::Reporting::Output::Dictionary`, which can be constructed via:
+  ```ruby
+  `SoberSwag::Reporting::Output::Dictionary.of(SoberSwag::Reporting::Output.number)
+  ```
+
   This type serializes out a key-value dictionary, IE, a JSON object.
-  So, `SoberSwag::Reporting::Output::Dictionary.of(SoberSwag::Reporting::Output.text)` will let you serialize JSON like `{ "foo": "bar", "baz": "yes" }`.
-  This type can serialize out any ruby hash.
+  So, the above can serialize:
+  ```ruby
+  { "foo": 10, "bar": 11 }
+  ```
+  This type will only serialize out ruby hashes.
+  It will, conveniently, convert symbol keys to strings for you.
+
 - `SoberSwag::Reporting::Output::Partitioned`, which represents the *choice* of two serializers.
   It takes in a block to decide which serializer to use, a serializer to use if the block returns `true`, and a serializer to use if the block returns `false`.
   That is, to serialize out *either* a string *or* a number, you might use:
