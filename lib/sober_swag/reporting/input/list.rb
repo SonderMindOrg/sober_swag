@@ -7,6 +7,12 @@ module SoberSwag
       # Called List to avoid name conflicts.
       class List < Base
         ##
+        # @see #new
+        def self.of(element)
+          initialize(element)
+        end
+
+        ##
         # @param element [Base] the parser for elements
         def initialize(element)
           @element = element

@@ -350,3 +350,56 @@ example.call("WHAT THE HECK")
 You might notice that this is the opposite behavior of of `SoberSwag::Reporting::Output::ViaMap`.
 This is because *serialization* is the *opposite* of *parsing*.
 Kinda neat, huh?
+
+### Composite Types
+
+These types work with *one or more* inputs to build up *another*.
+
+- `SoberSwag::Reporting::Input::List`, which lets you parse a JSON array.
+  IE:
+  ```ruby
+  SoberSwag::Reporting::Input::List.of(SoberSwag::Reporting::Input.number)
+  ```
+  Lets you parse a list of numbers.
+- `SoberSwag::Reporting::Input::Either`, which lets you parse one input, and if that fails, parse another.
+  This represents a *choice* of input types.
+  This is best used via:
+  ```ruby
+  SoberSwag::Reporting::Input.text | SoberSwag::Reporting::Input.number
+  # or
+  SoberSwag::Reporting::Input.text.or SoberSwag::Reporting::Input.number
+  ```
+  This is useful if you want to allow multiple input formats.
+- `SoberSwag::Reporting::Input::Dictionary`, which lets you parse a JSON dictionary with arbitrary keys.
+  For example, to parse this JSON (assuming you don't know the keys ahead of time):
+  ```json
+  {
+    "mike": 100,
+    "bob": 1000,
+    "joey": 12,
+    "yes": 1213
+  }
+  ```
+  You can use:
+  ```ruby
+  SoberSwag::Reporting::Input::Dictionary.of(SoberSwag::Reporting::Input.number)
+  ```
+
+  This will parse to a Ruby hash, with string keys.
+  If you want symbols, you can simply use `.mapped`:
+  ```ruby
+  SoberSwag::Reporting::Input::Dictionary.of(
+    SoberSwag::Reporting::Input.number
+  ).mapped { |hash| hash.transform_keys(&:to_sym) }
+  ```
+  Pretty cool, right?
+- `SoberSwag::Reporting::Input::Enum`, which lets you parse an *enum value*.
+  This input will validate that the given value is in the enum.
+  Note that this doesn't only work with strings!
+  You can use:
+
+  ```ruby
+  SoberSwag::Reporting::Input.number.enum(-1, 0, 1)
+  ```
+
+  And things will work fine.
