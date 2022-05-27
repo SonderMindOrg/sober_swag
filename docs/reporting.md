@@ -408,3 +408,44 @@ These types work with *one or more* inputs to build up *another*.
   ```
 
   And things will work fine.
+
+### Validating Types
+
+These types provide *validation* on an input.
+The validations provided match the specifications in swagger.
+
+- `SoberSwag::Reporting::Input::InRange`, which specifies that a value should be *within a range*.
+  You can use it like:
+
+  ```ruby
+  SoberSwag::Reporting::Input::InRange.new(
+    SoberSwag::Reporting::Input::Number,
+    1..100
+  )
+  ```
+- `SoberSwag::Reporting::Input::MultipleOf`, which specifies that a number is a *multiple of* some other number.
+  You can use it like this:
+  ```ruby
+  SoberSwag::Reporting::Input.number.multiple_of(2)
+  ```
+
+  Note that the `#multiple_of` method is only available on the `SoberSwag::Reporting::Input::Number` class.
+- `SoberSwag::Reporting::Input::Pattern`, which lets you check that an input *matches a regexp*.
+  You can use it like:
+
+  ```ruby
+  SoberSwag::Reporting::Input.text.with_pattern(/\A(R|r)ich (E|e)vans\z/)
+  ```
+
+  Note that the `with_pattern` method is only available on `SoberSwag::Reporting::Input::Text`
+
+### Documentating Types
+
+These types allow you to add additional documentation.
+
+- `SoberSwag::Reporting::Input::Format`, which provides *format description*.
+  This lets you specify that a given input should have a given format.
+  Formats are just a string, so you can use custom formats:
+  ```ruby
+  SoberSwag::Reporting::Input.text.format('user-uuid')
+  ```
