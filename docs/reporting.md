@@ -235,7 +235,12 @@ example.call("WHAT THE HECK?")
 ```
 
 This type winds up being extremely useful in a *lot* of places.
-That's why it gets its own section!
+For example, you can use it to provide extra information to a serializer:
+
+```ruby
+serializer = MyCoolOutput.via_map { |x| CoolStruct.new(record: x, metadata: metadata_from_elsewhere) }
+render json: serializer.list.call(my_record_relation)
+```
 
 #### Composite Types
 
