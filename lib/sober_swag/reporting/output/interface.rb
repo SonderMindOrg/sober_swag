@@ -53,6 +53,8 @@ module SoberSwag
           List.new(self)
         end
 
+        alias array list
+
         ##
         # Partition this serializer into two potentials.
         # If the block given returns *false*, we will use `other` as the serializer.
@@ -83,10 +85,6 @@ module SoberSwag
             Null.new,
             self
           )
-        end
-
-        def array
-          List.new(self)
         end
 
         def described(description)
