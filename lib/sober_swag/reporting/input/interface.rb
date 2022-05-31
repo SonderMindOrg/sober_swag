@@ -35,6 +35,8 @@ module SoberSwag
           List.new(self)
         end
 
+        alias array list
+
         ##
         # Constrained values: must be in range.
         # @return [InRange]
