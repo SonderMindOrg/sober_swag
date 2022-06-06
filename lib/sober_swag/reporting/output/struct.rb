@@ -20,7 +20,7 @@ module SoberSwag
           #
           #   You can access other methods from this method.
           def field(name, output, description: nil, &extract)
-            raise ArgumentError, "output of field #{name} is not a SoberSwag::Reporting::Output::Interface" unless output.is_a?(Interface)
+            raise ArgumentError, bad_field_message(name, output) unless output.is_a?(Interface)
 
             define_field(name, extract)
 
@@ -235,6 +235,14 @@ module SoberSwag
           end
 
           private
+
+          def bad_field_message(name, field_type)
+            [
+              "Output type used for field #{name.inspect} was",
+              "#{field_type.inspect}, which is not an instance of",
+              SoberSwag::Reporting::Output::Interface.name
+            ].join(' ')
+          end
 
           def define_view_with_parent(name, parent, block)
             raise ArgumentError, "duplicate view #{name}" if name == :base || views.include?(name)
