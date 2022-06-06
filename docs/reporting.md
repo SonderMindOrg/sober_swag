@@ -187,16 +187,16 @@ There are basically two things to keep in mind when upgrading to `SoberSwag::Rep
    Instead, view management is now *explicit*.
    This is because it was too tempting to pass data to serialize in the options key, which is against the point of the serializers.
 
-## API Overview
+# API Overview
 
 This section presents an overview of the available reporting outputs and inputs.
 
-### `SoberSwag::Reporting::Output`
+## `SoberSwag::Reporting::Output`
 
 This module contains reporting *outputs*.
 These act as type-checked serializers.
 
-#### Primitive Types
+### Primitive Types
 
 The following "primitive types" are available:
 
@@ -242,7 +242,7 @@ serializer = MyCoolOutput.via_map { |x| CoolStruct.new(record: x, metadata: meta
 render json: serializer.list.call(my_record_relation)
 ```
 
-#### Composite Types
+### Composite Types
 
 The following "composite types," or types built from other types, are available:
 
