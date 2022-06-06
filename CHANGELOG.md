@@ -1,5 +1,9 @@
 # Changelog
 
+## vNEXT
+
+- Adds more description to the error raised if you try to use a non-reporting output type as the output of a field
+
 ## [v0.24.1] 2022-05-26
 
 - Added a better `#message` to `SoberSwag::Reporting::Report::Error`
