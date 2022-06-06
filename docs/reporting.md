@@ -470,3 +470,46 @@ These types allow you to add additional documentation.
   ```ruby
   SoberSwag::Reporting::Input.text.format('user-uuid')
   ```
+
+  Note that adding a format *will not do any magic validation whatsoever*.
+  See the section on custom validations for how to do that.
+
+### Converting Types
+
+For convenience's sake, SoberSwag comes with a few built-in *converting inputs*.
+These convert JSON objects into some common types that you would want to use in ruby.
+
+- `SoberSwag::Reporting::Input::Converting::Bool`, which tries to coerce an input value to a boolean.
+  It will convert the following JSON values to `true`:
+
+  - The strings `"y"`, `"yes"`, `"true"`, `"t"`, or the all-caps variants of any
+  - The string `"1"`
+  - The number `1`
+  - a JSON `true`
+
+  And the following to false:
+
+  - The strings `"f"`, `"no"`, `"false"`, `"n"`, or any allcaps variant
+  - The number `0`
+  - An actual JSON `false`
+- `SoberSwag::Reporting::Input::Converting::Date`, which tries to parse a date string.
+  More specifically, it:
+  - First tries to parse a date with [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339).
+    It uses [`Date#rfc3339`](https://ruby-doc.org/stdlib-3.1.2/libdoc/date/rdoc/Date.html#method-c-rfc3339) to do this.
+  - Then tries to parse with [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601).
+    It uses [`Date#iso8601`](https://ruby-doc.org/stdlib-3.1.2/libdoc/date/rdoc/Date.html#method-c-iso8601) to do this.
+  - If both of the above fail, return a descriptive error (more specifically, the error specifies that the string was not an RFC 3339 date string or an ISO 8601 date string).
+- `SoberSwag::Reporting::Input::Converting::DateTime`, which works in much the same way.
+  More specifically, it...
+  - First tries to parse a timestamp with [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339).
+    It uses [`DateTime#rfc3339`](https://ruby-doc.org/stdlib-2.6.1/libdoc/date/rdoc/DateTime.html#method-c-rfc3339) to do this.
+  - Then tries to parse with [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601).
+    It uses [`DateTime#iso8601`](https://ruby-doc.org/stdlib-2.6.1/libdoc/date/rdoc/DateTime.html#method-c-iso8601) to do this.
+  - If both of the above fail, return a descriptive error (more specifically, the error specifies that the string was not an RFC 3339 date-time or an ISO 8601 date-time string).
+- `SoberSwag::Reporting::Input::Converting::Decimal`, which tries to parse a decimal number.
+  If a number is passed, it will convert that number to a `BigDecimal` via `#to_d`.
+  If a string is passed, it uses [`Kernel#BigDecimal`](https://ruby-doc.org/stdlib-2.6/libdoc/bigdecimal/rdoc/Kernel.html#method-i-BigDecimal) to try to parse a decimal from a string.
+  Note: you may wish to combine this with some sort of source-length check, to ensure people cannot force you to construct extremely large, memory-intense decimals.
+- `SoberSwag::Reporting::Input::Converting::Integer`, which tries to parse an integer number.
+  If a JSON number is passed, it uses `#to_i` to convert it to an integer.
+  If a string it passed, it uses [`Kernel#Integer`](https://ruby-doc.org/core-2.7.1/Kernel.html) to attempt to do the conversion, and reports an error if that fails.
