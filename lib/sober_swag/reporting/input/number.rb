@@ -10,6 +10,13 @@ module SoberSwag
           input
         end
 
+        ##
+        # @param other [Integer] number to specify this is a multiple of
+        # @return [SoberSwag::Reporting::Input::MultipleOf]
+        def multiple_of(other)
+          MultipleOf.new(self, other)
+        end
+
         def swagger_schema
           [{ type: 'number' }, {}]
         end

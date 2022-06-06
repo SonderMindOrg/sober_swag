@@ -120,7 +120,7 @@ A view will *always inherit all attributes of the parent object, regardless of o
 class AlternativePersonOutput < SoberSwag::Output::Struct
   field :first_name, SoberSwag::Reporting::Output.text
 
-  view :with_grade do
+  define_view :with_grade do
     field :grade, SoberSwag::Reporting::Output.text.nilable do
       if object_to_serialize.respond_to?(:grade)
         object_to_serialize.grade
@@ -187,4 +187,329 @@ There are basically two things to keep in mind when upgrading to `SoberSwag::Rep
    Instead, view management is now *explicit*.
    This is because it was too tempting to pass data to serialize in the options key, which is against the point of the serializers.
 
+# API Overview
 
+This section presents an overview of the available reporting outputs and inputs.
+
+## `SoberSwag::Reporting::Output`
+
+This module contains reporting *outputs*.
+These act as type-checked serializers.
+
+### Primitive Types
+
+The following "primitive types" are available:
+
+- `SoberSwag::Reporting::Output.bool`, which returns a `SoberSwag::Reporting::Output::Bool`.
+  This type is for serializing boolean values, IE, `true` or `false`.
+  It will serialize the boolean directly to the JSON.
+- `SoberSwag::Reporting::Output.null`, which returns a `SoberSwag::Reporting::Output::Null`.
+  This type serializes out `null` in JSON.
+  This can only serialize the ruby value `nil`.
+- `SoberSwag::Reporting::Output.number`, returns a `SoberSwag::Reporting::Output::Number`.
+  This type serializes out numbers in JSON.
+  It can serialize out most ruby numeric types, including `Integer` and `Float`.
+- `SoberSwag::Reporting::Output.text`, which returns a `SoberSwag::Reporting::Output::Text`.
+  This serializes out a string type in the JSON.
+  It can serialize out ruby strings.
+
+### The Transforming Type
+
+For `SoberSwag::Reporting::Output`, there's a "fundamental" type that does *transformation*, called `via_map`.
+It lets you apply a ruby block before passing the input on to the serializer after it.
+It's most often used like this:
+
+```ruby
+screaming_output = SoberSwag::Reporting::Output.text.via_map { |old_text| old_text.upcase }
+screaming_output.call("what the heck")
+# => "WHAT THE HECK"
+```
+
+Note that this calls the block *before* passing to the next serializer.
+So:
+
+```ruby
+example = SoberSwag::Reporting::Output.text.via_map { |x| x.downcase }.via_map { |x| x + ", OK?" }
+example.call("WHAT THE HECK?")
+# => "what the heck, ok?"
+```
+
+This type winds up being extremely useful in a *lot* of places.
+For example, you can use it to provide extra information to a serializer:
+
+```ruby
+serializer = MyCoolOutput.via_map { |x| CoolStruct.new(record: x, metadata: metadata_from_elsewhere) }
+render json: serializer.list.call(my_record_relation)
+```
+
+### Composite Types
+
+The following "composite types," or types built from other types, are available:
+
+- `SoberSwag::Reporting::Output::List`, which seralizes out *lists* of values.
+  You can construct one in two ways:
+
+  ```ruby
+  SoberSwag::Reporting::Output::List.new(SoberSwag::Reporting::Output.text)
+  # or, via the instance method
+  SoberSwag::Reporting::Output.text.list
+  ```
+  This produces an output that can serialize to JSON arrays.
+  For example, either of these can produce:
+
+  ```json
+  ["foo", "bar"]
+  ```
+
+  This serialize will work with anything that responds to `#map`.
+
+- `SoberSwag::Reporting::Output::Dictionary`, which can be constructed via:
+  ```ruby
+  SoberSwag::Reporting::Output::Dictionary.of(SoberSwag::Reporting::Output.number)
+  ```
+
+  This type serializes out a key-value dictionary, IE, a JSON object.
+  So, the above can serialize:
+  ```ruby
+  { "foo": 10, "bar": 11 }
+  ```
+  This type will only serialize out ruby hashes.
+  It will, conveniently, convert symbol keys to strings for you.
+
+- `SoberSwag::Reporting::Output::Partitioned`, which represents the *choice* of two serializers.
+  It takes in a block to decide which serializer to use, a serializer to use if the block returns `true`, and a serializer to use if the block returns `false`.
+  That is, to serialize out *either* a string *or* a number, you might use:
+  ```ruby
+  SoberSwag::Reporting::Output::Partitioned.new(
+    proc { |x| x.is_a?(String) },
+    SoberSwag::Reporting::Output.text,
+    SoberSwag::Reporting::Output.number
+  )
+  ```
+- `SoberSwag::Reporting::Output::Viewed`, which lets you define a *view map* for an object.
+  This is mostly used as an implementation detail, but can be occasionally useful if you want to provide
+  a list of "views" with no common "base," like an output object might have. In this case, the "base"
+  view is more of a "default" rather than a "parent."
+
+### Validation Types
+
+OpenAPI v3 supports some *validations* on types, in addition to raw types.
+For example, you can specify in your documentation that a value will be within a *range* of values.
+These `SoberSwag::Reporting::Output` types provide that documentation - and perform those validations!
+
+- `SoberSwag::Reporting::Output::InRange` validates that a value will be within a certain *range* of values.
+  This is most useful with numbers.
+  For example:
+  ```ruby
+  SoberSwag::Reporting::Output.number.in_range(0..10)
+  ```
+- `SoberSwag::Reporting::Output::Pattern` validates that a value will match a certain *pattern.*
+  This is useful with strings:
+  ```ruby
+  SoberSwag::Reporting::Output::Pattern.new(SoberSwag::Reporting::Output.text, /foo|bar|baz|my-[0-5*/)
+  ```
+
+## `SoberSwag::Reporting::Input`
+
+This module is used for *parsers*, which take in some input and return a nicer type.
+
+### Basic Types
+
+These types are the "primitives" of `SoberSwag::Reporting::Input`, the most basic types:
+
+- `SoberSwag::Reporting::Input::Null` parses a JSON `null` value.
+  It will parse it to a ruby `nil`, naturally.
+  You probably want to construct one via `SoberSwag::Reporting::Input.null`.
+- `SoberSwag::Reporting::Input::Number` parses a JSON number.
+  It will parse to either a ruby `Integer` or a ruby `Float`, depending on the format (we use Ruby's internal format for this).
+  You probably want to construct one via `SoberSwag::Reporting::Input.number`.
+- `SoberSwag::Reporting::Input::Bool`, which parses a JSON bool (`true` or `false`).
+  This will parse to a ruby `true` or `false`.
+  You probably want to construct it with `SoberSwag::Reporting::Output.bool`.
+- `SoberSwag::Reporting::Input::Text`, which parses a JSON string (`"mike stoklassa"`, `"richard evans"`, or `"jay bauman"` for example).
+  This will parse to a ruby string.
+  You probably want to construct it with `SoberSwag::Reporting::Output.text`.
+
+### The Transforming Type
+
+Much like `via_map` for `SoberSwag::Reporting::Output`, there's a fundamental type that does *transformation*, called the `mapped`.
+This lets you do some transformation of input *after* others have ran.
+So:
+
+```ruby
+quiet = SoberSwag::Reporting::Input.text.mapped { |x| x.downcase }
+quiet.call("WHAT THE HECK")
+# => "what the heck"
+```
+
+Note that this composes as follows:
+
+```ruby
+example = SoberSwag::Reporting::Input.text.mapped { |x| x.downcase }.mapped { |x| x + ", OK?" }
+
+example.call("WHAT THE HECK")
+# => "what the heck, OK?"
+# As you can see, the *first* function applies first, then the *second*.
+```
+
+You might notice that this is the opposite behavior of of `SoberSwag::Reporting::Output::ViaMap`.
+This is because *serialization* is the *opposite* of *parsing*.
+Kinda neat, huh?
+
+### Composite Types
+
+These types work with *one or more* inputs to build up *another*.
+
+- `SoberSwag::Reporting::Input::List`, which lets you parse a JSON array.
+  IE:
+  ```ruby
+  SoberSwag::Reporting::Input::List.of(SoberSwag::Reporting::Input.number)
+  ```
+  Lets you parse a list of numbers.
+- `SoberSwag::Reporting::Input::Either`, which lets you parse one input, and if that fails, parse another.
+  This represents a *choice* of input types.
+  This is best used via:
+  ```ruby
+  SoberSwag::Reporting::Input.text | SoberSwag::Reporting::Input.number
+  # or
+  SoberSwag::Reporting::Input.text.or SoberSwag::Reporting::Input.number
+  ```
+  This is useful if you want to allow multiple input formats.
+- `SoberSwag::Reporting::Input::Dictionary`, which lets you parse a JSON dictionary with arbitrary keys.
+  For example, to parse this JSON (assuming you don't know the keys ahead of time):
+  ```json
+  {
+    "mike": 100,
+    "bob": 1000,
+    "joey": 12,
+    "yes": 1213
+  }
+  ```
+  You can use:
+  ```ruby
+  SoberSwag::Reporting::Input::Dictionary.of(SoberSwag::Reporting::Input.number)
+  ```
+
+  This will parse to a Ruby hash, with string keys.
+  If you want symbols, you can simply use `.mapped`:
+  ```ruby
+  SoberSwag::Reporting::Input::Dictionary.of(
+    SoberSwag::Reporting::Input.number
+  ).mapped { |hash| hash.transform_keys(&:to_sym) }
+  ```
+  Pretty cool, right?
+- `SoberSwag::Reporting::Input::Enum`, which lets you parse an *enum value*.
+  This input will validate that the given value is in the enum.
+  Note that this doesn't only work with strings!
+  You can use:
+
+  ```ruby
+  SoberSwag::Reporting::Input.number.enum(-1, 0, 1)
+  ```
+
+  And things will work fine.
+
+### Validating Types
+
+These types provide *validation* on an input.
+The validations provided match the specifications in swagger.
+
+- `SoberSwag::Reporting::Input::InRange`, which specifies that a value should be *within a range*.
+  You can use it like:
+
+  ```ruby
+  SoberSwag::Reporting::Input::InRange.new(
+    SoberSwag::Reporting::Input::Number,
+    1..100
+  )
+  ```
+- `SoberSwag::Reporting::Input::MultipleOf`, which specifies that a number is a *multiple of* some other number.
+  You can use it like this:
+  ```ruby
+  SoberSwag::Reporting::Input.number.multiple_of(2)
+  ```
+
+  Note that the `#multiple_of` method is only available on the `SoberSwag::Reporting::Input::Number` class.
+- `SoberSwag::Reporting::Input::Pattern`, which lets you check that an input *matches a regexp*.
+  You can use it like:
+
+  ```ruby
+  SoberSwag::Reporting::Input.text.with_pattern(/\A(R|r)ich (E|e)vans\z/)
+  ```
+
+  Note that the `with_pattern` method is only available on `SoberSwag::Reporting::Input::Text`
+
+#### Custom Validations
+
+You might have a scenario where you need to do a *custom validation* that is not in this list.
+In order to do this, you can use our old friend, `via_map`.
+If you return any instance of `SoberSwag::Reporting::Report::Base` from via-map, it will be treated as a *parse error*.
+This can be used for custom validations, like so:
+
+```ruby
+UuidInput = SoberSwag::Reporting::Input.text.format('custom-identifier').via_map do |inputted_string|
+  if inputted_string == 'special-value'
+    SoberSwag::Reporting::Report::Value.new(['was the string "special-value", which is reserved'])
+  else
+    inputted_string
+  end
+end
+```
+
+Please note that this functionality is intended to enable data *format* validation.
+**If you are making a call to a database or some API within a `via_map` block, you are doing something weird**.
+Sometimes you do need to do weird things, of course, but it is generally **not appropriate** to use input validation to ensure that ids exist or whatever - leave that up to your rails models!
+
+### Documentating Types
+
+These types allow you to add additional documentation.
+
+- `SoberSwag::Reporting::Input::Format`, which provides *format description*.
+  This lets you specify that a given input should have a given format.
+  Formats are just a string, so you can use custom formats:
+  ```ruby
+  SoberSwag::Reporting::Input.text.format('user-uuid')
+  ```
+
+  Note that adding a format *will not do any magic validation whatsoever*.
+  See the section on custom validations for how to do that.
+
+### Converting Types
+
+For convenience's sake, SoberSwag comes with a few built-in *converting inputs*.
+These convert JSON objects into some common types that you would want to use in ruby.
+
+- `SoberSwag::Reporting::Input::Converting::Bool`, which tries to coerce an input value to a boolean.
+  It will convert the following JSON values to `true`:
+
+  - The strings `"y"`, `"yes"`, `"true"`, `"t"`, or the all-caps variants of any
+  - The string `"1"`
+  - The number `1`
+  - a JSON `true`
+
+  And the following to false:
+
+  - The strings `"f"`, `"no"`, `"false"`, `"n"`, or any allcaps variant
+  - The number `0`
+  - An actual JSON `false`
+- `SoberSwag::Reporting::Input::Converting::Date`, which tries to parse a date string.
+  More specifically, it:
+  - First tries to parse a date with [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339).
+    It uses [`Date#rfc3339`](https://ruby-doc.org/stdlib-3.1.2/libdoc/date/rdoc/Date.html#method-c-rfc3339) to do this.
+  - Then tries to parse with [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601).
+    It uses [`Date#iso8601`](https://ruby-doc.org/stdlib-3.1.2/libdoc/date/rdoc/Date.html#method-c-iso8601) to do this.
+  - If both of the above fail, return a descriptive error (more specifically, the error specifies that the string was not an RFC 3339 date string or an ISO 8601 date string).
+- `SoberSwag::Reporting::Input::Converting::DateTime`, which works in much the same way.
+  More specifically, it...
+  - First tries to parse a timestamp with [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339).
+    It uses [`DateTime#rfc3339`](https://ruby-doc.org/stdlib-2.6.1/libdoc/date/rdoc/DateTime.html#method-c-rfc3339) to do this.
+  - Then tries to parse with [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601).
+    It uses [`DateTime#iso8601`](https://ruby-doc.org/stdlib-2.6.1/libdoc/date/rdoc/DateTime.html#method-c-iso8601) to do this.
+  - If both of the above fail, return a descriptive error (more specifically, the error specifies that the string was not an RFC 3339 date-time or an ISO 8601 date-time string).
+- `SoberSwag::Reporting::Input::Converting::Decimal`, which tries to parse a decimal number.
+  If a number is passed, it will convert that number to a `BigDecimal` via `#to_d`.
+  If a string is passed, it uses [`Kernel#BigDecimal`](https://ruby-doc.org/stdlib-2.6/libdoc/bigdecimal/rdoc/Kernel.html#method-i-BigDecimal) to try to parse a decimal from a string.
+  Note: you may wish to combine this with some sort of source-length check, to ensure people cannot force you to construct extremely large, memory-intense decimals.
+- `SoberSwag::Reporting::Input::Converting::Integer`, which tries to parse an integer number.
+  If a JSON number is passed, it uses `#to_i` to convert it to an integer.
+  If a string it passed, it uses [`Kernel#Integer`](https://ruby-doc.org/core-2.7.1/Kernel.html) to attempt to do the conversion, and reports an error if that fails.
