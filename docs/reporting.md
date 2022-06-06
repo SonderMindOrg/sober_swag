@@ -439,6 +439,27 @@ The validations provided match the specifications in swagger.
 
   Note that the `with_pattern` method is only available on `SoberSwag::Reporting::Input::Text`
 
+#### Custom Validations
+
+You might have a scenario where you need to do a *custom validation* that is not in this list.
+In order to do this, you can use our old friend, `via_map`.
+If you return any instance of `SoberSwag::Reporting::Report::Base` from via-map, it will be treated as a *parse error*.
+This can be used for custom validations, like so:
+
+```ruby
+UuidInput = SoberSwag::Reporting::Input.text.format('custom-identifier').via_map do |inputted_string|
+  if inputted_string == 'special-value'
+    SoberSwag::Reporting::Report::Value.new(['was the string "special-value", which is reserved'])
+  else
+    inputted_string
+  end
+end
+```
+
+Please note that this functionality is intended to enable data *format* validation.
+**If you are making a call to a database or some API within a `via_map` block, you are doing something weird**.
+Sometimes you do need to do weird things, of course, but it is generally **not appropriate** to use input validation to ensure that ids exist or whatever - leave that up to your rails models!
+
 ### Documentating Types
 
 These types allow you to add additional documentation.
