@@ -3,6 +3,7 @@
 ## vNEXT
 
 - Adds more description to the error raised if you try to use a non-reporting output type as the output of a field
+- Add a lot more documentation for the reporting interface in [`docs/reporting.md`](docs/reporting.md)
 
 ## [v0.24.1] 2022-05-26
 
