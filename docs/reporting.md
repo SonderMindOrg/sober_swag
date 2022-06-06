@@ -265,7 +265,7 @@ The following "composite types," or types built from other types, are available:
 
 - `SoberSwag::Reporting::Output::Dictionary`, which can be constructed via:
   ```ruby
-  `SoberSwag::Reporting::Output::Dictionary.of(SoberSwag::Reporting::Output.number)
+  SoberSwag::Reporting::Output::Dictionary.of(SoberSwag::Reporting::Output.number)
   ```
 
   This type serializes out a key-value dictionary, IE, a JSON object.
