@@ -1,6 +1,6 @@
 # Changelog
 
-## vNEXT
+## [v0.25.0] 2022-06-07
 
 - Adds more description to the error raised if you try to use a non-reporting output type as the output of a field
 - Add a lot more documentation for the reporting interface in [`docs/reporting.md`](docs/reporting.md)
