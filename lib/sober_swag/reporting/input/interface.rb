@@ -27,6 +27,8 @@ module SoberSwag
           self | Null.new
         end
 
+        alias nilable optional
+
         ##
         # A list of this input.
         #
