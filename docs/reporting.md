@@ -418,10 +418,7 @@ The validations provided match the specifications in swagger.
   You can use it like:
 
   ```ruby
-  SoberSwag::Reporting::Input::InRange.new(
-    SoberSwag::Reporting::Input::Number,
-    1..100
-  )
+  SoberSwag::Reporting::Input.number.in_range(1..100)
   ```
 - `SoberSwag::Reporting::Input::MultipleOf`, which specifies that a number is a *multiple of* some other number.
   You can use it like this:
