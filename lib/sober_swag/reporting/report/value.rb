@@ -8,6 +8,8 @@ module SoberSwag
         ##
         # @param problems [Array<String>] problems with it
         def initialize(problems)
+          raise ArgumentError, "#{problems} was not an enum" unless problems.respond_to?(:each)
+
           @problems = problems
         end
 
