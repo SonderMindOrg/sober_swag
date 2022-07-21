@@ -42,7 +42,7 @@ module SoberSwag
         def swagger_schema
           schema, found = element.swagger_schema
 
-          [{ type: 'list', items: schema }, found]
+          [{ type: 'array', items: schema }, found]
         end
       end
     end
