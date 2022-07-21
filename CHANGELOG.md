@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.25.1] 2022-07-2021
+
+- Stricer validation on report arguments
+- Fix a bad report argument
+
 ## [v0.25.0] 2022-06-07
 
 - Adds more description to the error raised if you try to use a non-reporting output type as the output of a field
