@@ -11,7 +11,7 @@ RSpec.describe SoberSwag::Reporting::Input::List do
   describe '#swagger_schema[0]' do
     subject { input.swagger_schema[0] }
 
-    its([:type]) { should eq 'list' }
+    its([:type]) { should eq 'array' }
     its([:items]) { should be_a(Hash) & include(type: 'number') }
   end
 end
