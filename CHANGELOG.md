@@ -1,5 +1,9 @@
 # Changelog
 
+## [vNEXT] ????-??-??
+
+- Correct the type of list inputs from `list` to `array`
+
 ## [v0.25.1] 2022-07-2021
 
 - Stricer validation on report arguments
