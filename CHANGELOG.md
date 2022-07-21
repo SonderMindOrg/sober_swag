@@ -1,6 +1,6 @@
 # Changelog
 
-## [vNEXT] ????-??-??
+## [v0.25.2] 2022-07-2021
 
 - Correct the type of list inputs from `list` to `array`
 
