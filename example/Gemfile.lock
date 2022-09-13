@@ -189,7 +189,8 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
-    sqlite3 (1.4.4)
+    sqlite3 (1.5.0)
+      mini_portile2 (~> 2.8.0)
     thor (1.2.1)
     thread_safe (0.3.6)
     tzinfo (1.2.10)
@@ -215,7 +216,7 @@ DEPENDENCIES
   sober_swag!
   spring
   spring-watcher-listen (~> 2.0.0)
-  sqlite3 (~> 1.4)
+  sqlite3 (~> 1.5)
   tzinfo-data
 
 BUNDLED WITH
