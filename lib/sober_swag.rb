@@ -7,6 +7,7 @@ require 'dry-types'
 require 'sober_swag/types'
 require 'sober_swag/version'
 require 'active_support/inflector'
+require 'active_support/deprecation'
 
 ##
 # Root namespace for the SoberSwag Module.
@@ -14,6 +15,8 @@ module SoberSwag
   ##
   # Root Error Class for SoberSwag errors.
   class Error < StandardError; end
+
+  Deprecator = ActiveSupport::Deprecation.new('1.0', 'sober_swag')
 
   autoload :Parser, 'sober_swag/parser'
   autoload :Serializer, 'sober_swag/serializer'
@@ -34,6 +37,8 @@ module SoberSwag
   # @yieldself [SoberSwag::InputObject]
   # @return [Class] the input object class generated
   def self.input_object(parent = nil, &block)
+    SoberSwag::Deprecator.warn('Legacy input objects will be removed in 1.0')
+
     Class.new(parent || SoberSwag::InputObject, &block)
   end
 end

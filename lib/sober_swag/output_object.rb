@@ -7,6 +7,8 @@ module SoberSwag
   #
   # Under the hood, this is actually all based on {SoberSwag::Serializer::Base}.
   class OutputObject < SoberSwag::Serializer::Base
+    SoberSwag::Deprecator.warn('Do not use OutputObject as it will be removed in 1.0, define a reporting output instead')
+
     autoload(:Field, 'sober_swag/output_object/field')
     autoload(:Definition, 'sober_swag/output_object/definition')
     autoload(:FieldSyntax, 'sober_swag/output_object/field_syntax')
@@ -39,6 +41,8 @@ module SoberSwag
     # @return [Class] the serializer generated.
     # @yieldself [SoberSwag::OutputObject::Definition]
     def self.define(&block)
+      SoberSwag::Deprecator.warn('Legacy OutputObjects will be removed in 1.0')
+
       d = Definition.new.tap do |o|
         o.instance_eval(&block)
       end
